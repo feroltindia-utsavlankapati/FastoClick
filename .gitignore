@@ -1,0 +1,18 @@
+
+
+# common
+.env
+.env.production
+.env.development
+.env.example
+
+
+# client- FRONTEND 
+node_modules/
+
+
+# server - BACKEND
+__pycache__/
+.venv/
+venv/
+env/

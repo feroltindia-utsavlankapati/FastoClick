@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #E0E5EC;
+    color: #3D4852;
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: #3D4852;
+    font-weight: 700;
+  }
+}
+
+/* Custom Soft UI Utilities */
+.soft-extruded {
+  background-color: #E0E5EC;
+  box-shadow: 9px 9px 16px rgba(163, 177, 198, 0.6), -9px -9px 16px rgba(255, 255, 255, 0.5);
+}
+
+.soft-extruded-hover {
+  transition: all 0.3s ease-out;
+}
+.soft-extruded-hover:hover {
+  box-shadow: 12px 12px 20px rgba(163, 177, 198, 0.7), -12px -12px 20px rgba(255, 255, 255, 0.6);
+  transform: translateY(-2px);
+}
+
+.soft-extruded-sm {
+  background-color: #E0E5EC;
+  box-shadow: 5px 5px 10px rgba(163, 177, 198, 0.6), -5px -5px 10px rgba(255, 255, 255, 0.5);
+}
+
+.soft-inset {
+  background-color: #E0E5EC;
+  box-shadow: inset 6px 6px 10px rgba(163, 177, 198, 0.6), inset -6px -6px 10px rgba(255, 255, 255, 0.5);
+}
+
+.soft-inset-deep {
+  background-color: #E0E5EC;
+  box-shadow: inset 10px 10px 20px rgba(163, 177, 198, 0.7), inset -10px -10px 20px rgba(255, 255, 255, 0.6);
+}
+
+.soft-inset-sm {
+  background-color: #E0E5EC;
+  box-shadow: inset 3px 3px 6px rgba(163, 177, 198, 0.6), inset -3px -3px 6px rgba(255, 255, 255, 0.5);
+}
+
+/* Button micro-interactions */
+.soft-btn {
+  background-color: #E0E5EC;
+  box-shadow: 6px 6px 12px rgba(163, 177, 198, 0.6), -6px -6px 12px rgba(255, 255, 255, 0.5);
+  color: #3D4852;
+  transition: all 0.2s ease-out;
+}
+.soft-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 8px 8px 16px rgba(163, 177, 198, 0.7), -8px -8px 16px rgba(255, 255, 255, 0.6);
+}
+.soft-btn:active {
+  transform: translateY(0.5px);
+  box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6), inset -4px -4px 8px rgba(255, 255, 255, 0.5);
+}
+
+.soft-btn-primary {
+  background-color: #6C63FF;
+  box-shadow: 6px 6px 12px rgba(108, 99, 255, 0.3), -6px -6px 12px rgba(255, 255, 255, 0.5);
+  color: #FFFFFF;
+  transition: all 0.2s ease-out;
+}
+.soft-btn-primary:hover {
+  background-color: #8B84FF;
+  transform: translateY(-1px);
+  box-shadow: 8px 8px 16px rgba(108, 99, 255, 0.4), -8px -8px 16px rgba(255, 255, 255, 0.6);
+}
+.soft-btn-primary:active {
+  transform: translateY(0.5px);
+  box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.3), inset -4px -4px 8px rgba(255, 255, 255, 0.2);
+}
+
+/* Ambient animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}

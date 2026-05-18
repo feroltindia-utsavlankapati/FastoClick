@@ -1,0 +1,125 @@
+# =========================
+# Core Backend Framework
+# =========================
+requests
+httpx
+aiohttp
+
+fastapi
+uvicorn[standard]
+gunicorn
+
+pydantic
+pydantic-settings
+python-dotenv
+
+python-multipart
+email-validator
+
+# =========================
+# Agentic AI Frameworks
+# =========================
+dspy
+openai
+
+langchain
+langchain-core
+langchain-community
+langchain-openai
+
+tiktoken
+
+# =========================
+# Database & ORM
+# =========================
+sqlalchemy
+alembic
+
+asyncpg
+psycopg2-binary
+
+redis
+
+# =========================
+# Authentication & Security
+# =========================
+passlib[bcrypt]
+python-jose[cryptography]
+bcrypt==4.3.0
+
+cryptography
+
+# =========================
+# Background Tasks & Queue
+# =========================
+celery
+apscheduler
+
+# =========================
+# Logging & Monitoring
+# =========================
+loguru
+rich
+
+# =========================
+# Validation & Utilities
+# =========================
+orjson
+ujson
+
+tenacity
+
+# =========================
+# File Handling
+# =========================
+pillow
+python-magic
+
+# =========================
+# Web Scraping / Automation
+# =========================
+beautifulsoup4
+lxml
+selenium
+playwright
+
+# =========================
+# Data Processing
+# =========================
+pandas
+numpy
+
+# =========================
+# AI / ML Utilities
+# =========================
+scikit-learn
+
+# =========================
+# API & Serialization
+# =========================
+PyYAML
+
+# =========================
+# Development Tools
+# =========================
+black
+isort
+flake8
+
+pytest
+pytest-asyncio
+
+watchfiles
+
+# =========================
+# Agent & Workflow Engines
+# =========================
+langgraph
+temporalio
+litellm
+
+# =========================
+# Document Extraction & Export
+# =========================
+PyMuPDF
+openpyxl

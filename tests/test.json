@@ -1,0 +1,114 @@
+{
+    "success": true,
+    "data": {
+        "plan": {
+            "company_name": "",
+            "industry": "",
+            "target_audience": "",
+            "generated_at": "2026-05-18T10:18:33.975586",
+            "strategy": {
+                "business_goal": "Drive rapid brand awareness and revenue growth for the new product launch",
+                "marketing_goal": "Acquire 10,000 qualified leads and achieve a 5% conversion rate within the first 90 days",
+                "core_strategy": [
+                    "Leverage high‑impact paid media (social, search, programmatic) with aggressive creative testing to maximize reach and frequency",
+                    "Deploy an omnichannel funnel using influencer partnerships, email nurture sequences, and retargeting to move prospects from awareness to purchase",
+                    "Implement real‑time analytics and rapid optimization loops to allocate budget to the highest‑performing assets and channels"
+                ]
+            },
+            "campaign_plans": {
+                "phases": [
+                    {
+                        "phase": "Phase 1 - Research & Strategy",
+                        "duration": "Week 1-2",
+                        "tasks": [
+                            "Conduct market and competitor analysis",
+                            "Define target audience personas",
+                            "Set campaign objectives and KPIs",
+                            "Develop messaging framework and value proposition"
+                        ]
+                    },
+                    {
+                        "phase": "Phase 2 - Creative Development",
+                        "duration": "Week 3-4",
+                        "tasks": [
+                            "Create visual assets (graphics, video, copy)",
+                            "Design landing pages and ad creatives",
+                            "Draft email sequences and social media posts",
+                            "Obtain stakeholder approvals"
+                        ]
+                    },
+                    {
+                        "phase": "Phase 3 - Launch & Activation",
+                        "duration": "Week 5-6",
+                        "tasks": [
+                            "Set up tracking and analytics tools",
+                            "Deploy ads across selected channels",
+                            "Initiate email and social media rollout",
+                            "Monitor real‑time performance and adjust spend"
+                        ]
+                    },
+                    {
+                        "phase": "Phase 4 - Optimization & Reporting",
+                        "duration": "Week 7-8",
+                        "tasks": [
+                            "Analyze data against KPIs",
+                            "A/B test creatives and messaging",
+                            "Optimize budget allocation",
+                            "Prepare final performance report and recommendations"
+                        ]
+                    }
+                ],
+                "channels": [
+                    {
+                        "channel": "Google Ads (Search)",
+                        "objective": "Drive high-intent traffic to the landing page and generate qualified leads",
+                        "kpi": "Cost per Lead (CPL) and Conversion Rate"
+                    },
+                    {
+                        "channel": "Facebook & Instagram Ads",
+                        "objective": "Increase brand awareness and engagement among the target demographic",
+                        "kpi": "Reach, Engagement Rate, and Cost per Thousand Impressions (CPM)"
+                    },
+                    {
+                        "channel": "Email Marketing",
+                        "objective": "Nurture leads from the initial campaign and move them through the sales funnel",
+                        "kpi": "Open Rate, Click‑Through Rate (CTR), and Lead-to‑Customer Conversion Rate"
+                    },
+                    {
+                        "channel": "Content Marketing (SEO Blog)",
+                        "objective": "Establish authority, improve organic visibility, and attract long‑term traffic",
+                        "kpi": "Organic Sessions, Keyword Rankings, and Time on Page"
+                    }
+                ],
+                "execution_plan": [
+                    {
+                        "week": "Week 1",
+                        "activity": "Kickoff meeting, define target audience, finalize creative concepts and messaging",
+                        "owner": "Marketing Team",
+                        "status": "Pending"
+                    },
+                    {
+                        "week": "Week 2",
+                        "activity": "Produce creative assets (graphics, video, copy) and set up ad accounts",
+                        "owner": "Creative Team",
+                        "status": "Pending"
+                    },
+                    {
+                        "week": "Week 3",
+                        "activity": "Launch paid media campaigns across selected channels and begin organic content rollout",
+                        "owner": "Performance Marketing Team",
+                        "status": "Pending"
+                    },
+                    {
+                        "week": "Week 4",
+                        "activity": "Monitor performance, optimize bids and creatives, and compile first-week analytics report",
+                        "owner": "Analytics Team",
+                        "status": "Pending"
+                    }
+                ]
+            }
+        },
+        "confidence": 0.95,
+        "iterations": 5
+    }
+}
