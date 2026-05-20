@@ -4,7 +4,8 @@ import NavigationBar from "../UI/NavigationBar";
 import {
   Lightbulb, ChevronDown, ChevronUp, Loader2, Trash2,
   AlertTriangle, Check, Target, Layers, Megaphone,
-  Star, FileText, Palette, TrendingUp, ArrowRight, RefreshCw
+  Star, FileText, Palette, TrendingUp, ArrowRight, RefreshCw,
+  Sparkles, Send
 } from "lucide-react";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -55,9 +56,41 @@ export default function ContentIdeasPage() {
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [expandedId, setExpandedId]         = useState<string | null>(null);
   const [activeTab, setActiveTab]           = useState<"ideas"|"categories"|"tone">("ideas");
+  const [refinementFeedback, setRefinementFeedback] = useState("");
+  const [refining, setRefining]             = useState(false);
   const [error, setError]                   = useState<string | null>(null);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+
+  const handleRefine = async (resultId: string) => {
+    if (!token || !refinementFeedback.trim()) return;
+    setRefining(true);
+    try {
+      const res = await fetch(
+        `http://localhost:8000/agent/content-ideas/${resultId}/refine`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ feedback: refinementFeedback }),
+        }
+      );
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setResults(prev => prev.map(r => r.id === resultId ? data.data : r));
+        setRefinementFeedback("");
+      } else {
+        alert(data.detail || "Refinement failed.");
+      }
+    } catch (err) {
+      console.error("Refinement failed:", err);
+      alert("Refinement connection error.");
+    } finally {
+      setRefining(false);
+    }
+  };
 
   useEffect(() => { fetchAll(); }, []);
 
@@ -410,6 +443,47 @@ export default function ContentIdeasPage() {
                           </div>
                         );
                       })()}
+
+                      {/* AI Refinement Panel */}
+                      <div className="mt-8 border-t border-[#d0d7e3] pt-6">
+                        <div className="soft-extruded-sm rounded-2xl p-5 bg-[#E0E5EC]">
+                          <h4 className="font-extrabold text-sm mb-2 text-[#6C63FF] flex items-center gap-2">
+                            <Sparkles size={16} /> Refine Content Ideas with AI
+                          </h4>
+                          <p className="text-xs text-[#6B7280] font-medium mb-3">
+                            Provide your specific queries, preferences, or requested changes. The AI will intelligently modify and regenerate the ideas and brand style according to your feedback.
+                          </p>
+                          <div className="flex flex-col gap-3">
+                            <textarea
+                              value={refinementFeedback}
+                              onChange={(e) => setRefinementFeedback(e.target.value)}
+                              placeholder="e.g. Focus more on video formats for YouTube, change the tone to bold and authoritative, or add specific promotional caption hooks..."
+                              rows={3}
+                              className="w-full soft-inset bg-transparent rounded-xl p-3 text-xs font-medium text-[#3D4852] focus:outline-none focus:ring-2 focus:ring-[#6C63FF] focus:ring-offset-2 focus:ring-offset-[#E0E5EC] transition-all resize-none"
+                              disabled={refining}
+                            />
+                            <div className="flex justify-end gap-2">
+                              <button
+                                onClick={() => handleRefine(record.id)}
+                                disabled={!refinementFeedback.trim() || refining}
+                                className="soft-btn-primary rounded-xl px-5 py-2 text-xs font-bold flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                {refining ? (
+                                  <>
+                                    <Loader2 size={13} className="animate-spin" />
+                                    Refining Ideas...
+                                  </>
+                                ) : (
+                                  <>
+                                    <Send size={13} />
+                                    Submit Feedback
+                                  </>
+                                )}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>

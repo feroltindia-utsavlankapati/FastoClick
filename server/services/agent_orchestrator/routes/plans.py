@@ -4,9 +4,15 @@ from sqlalchemy import delete
 from shared.database import async_session_maker
 from shared.models.tenant import StrategyPlan
 from shared.dependencies import get_current_tenant, TenantContext
+from shared.utils.ai_integration import AIClient
+from pydantic import BaseModel
 import json
 
 router = APIRouter()
+
+
+class RefineRequest(BaseModel):
+    feedback: str
 
 
 @router.get("/plans")
@@ -57,3 +63,135 @@ async def delete_plan(plan_id: str, tenant: TenantContext = Depends(get_current_
         await session.commit()
 
     return {"success": True, "message": f"Plan {plan_id} permanently deleted."}
+
+
+@router.post("/plans/{plan_id}/refine")
+async def refine_plan(
+    plan_id: str,
+    req: RefineRequest,
+    tenant: TenantContext = Depends(get_current_tenant)
+):
+    """
+    Intelligently refine a strategy plan based on the user's specific feedback/queries,
+    updating the plan in-place and returning the updated document.
+    """
+    async with async_session_maker() as session:
+        result = await session.execute(
+            select(StrategyPlan).where(
+                StrategyPlan.id == plan_id,
+                StrategyPlan.tenant_id == tenant.id
+            )
+        )
+        plan_record = result.scalars().first()
+
+        if not plan_record:
+            raise HTTPException(status_code=404, detail="Strategy plan not found or access denied.")
+
+        current_plan_data = json.loads(plan_record.plan_json)
+
+    system_prompt = """
+    You are an elite AI Marketing Strategy Planner specializing in iterative refinement.
+    You will receive a complete marketing strategy plan and the user's direct feedback/requested changes.
+    Your task is to intelligently modify the plan to satisfy all aspects of the user's feedback.
+    
+    CRITICAL RULES:
+    1. Retain the general structure, formatting, company name, industry, and successful components of the original plan except where modifications are explicitly requested or logically necessitated by the feedback.
+    2. Do NOT introduce placeholders or truncated arrays. Output the entire refined plan with all items fully developed.
+    3. Generate ONLY valid, parsable JSON matching the exact original structure.
+    4. Do NOT wrap the JSON in markdown formatting like ```json or ```.
+    """
+
+    prompt = f"""
+    Original Strategy Plan:
+    {json.dumps(current_plan_data, indent=2, ensure_ascii=False)}
+
+    User's Feedback / Requested Changes:
+    "{req.feedback}"
+
+    Return the refined strategy plan matching this structure:
+    {{
+        "company_name": "Must match original",
+        "industry": "Refine if requested, otherwise keep",
+        "target_audience": "Refine if requested, otherwise keep",
+        "generated_at": "Must match original",
+        "strategy": {{
+            "business_goal": "Refine if requested, otherwise keep",
+            "marketing_goal": "Refine if requested, otherwise keep",
+            "core_strategy": ["Strategy 1", "Strategy 2", ...]
+        }},
+        "campaign_plans": {{
+            "phases": [
+                {{
+                    "phase": "Phase name",
+                    "duration": "Duration",
+                    "tasks": ["Task 1", "Task 2"]
+                }}
+            ],
+            "channels": [
+                {{
+                    "channel": "Channel name",
+                    "objective": "Objective",
+                    "kpi": "KPI"
+                }}
+            ],
+            "execution_plan": [
+                {{
+                    "week": "Week info",
+                    "activity": "Activity description",
+                    "owner": "Owner",
+                    "status": "Status (e.g. Pending)"
+                }}
+            ]
+        }}
+    }}
+    """
+
+    try:
+        raw_result = await AIClient.generate_completion(tenant.id, prompt, system_prompt)
+
+        # Handle Mock AI Response fallback
+        if raw_result.startswith("[MOCK AI RESPONSE"):
+            # If mock, let's simulate a change in the business/marketing goal or core strategy
+            parsed_plan = current_plan_data.copy()
+            parsed_plan["strategy"]["business_goal"] += f" (Refined based on: {req.feedback})"
+            parsed_plan["strategy"]["core_strategy"].append(f"Additional refined strategy: {req.feedback}")
+        else:
+            cleaned = raw_result.strip()
+            if "```json" in cleaned:
+                cleaned = cleaned.split("```json")[1].split("```")[0].strip()
+            elif "```" in cleaned:
+                cleaned = cleaned.split("```")[1].split("```")[0].strip()
+
+            parsed_plan = json.loads(cleaned)
+
+        async with async_session_maker() as session:
+            result = await session.execute(
+                select(StrategyPlan).where(StrategyPlan.id == plan_id)
+            )
+            record = result.scalars().first()
+            if record:
+                record.plan_json = json.dumps(parsed_plan, ensure_ascii=False)
+                # Append user feedback to user prompt to track evolution
+                record.user_prompt = f"{record.user_prompt or ''}\n\n[Refined via: {req.feedback}]"
+                await session.commit()
+                await session.refresh(record)
+                plan_record = record
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Refinement generation failed: {str(e)}"
+        )
+
+    return {
+        "success": True,
+        "data": {
+            "id":           plan_record.id,
+            "company_name": plan_record.company_name,
+            "industry":     plan_record.industry,
+            "user_prompt":  plan_record.user_prompt,
+            "plan":         parsed_plan,
+            "created_at":   plan_record.created_at.isoformat() if plan_record.created_at else None
+        }
+    }
+
