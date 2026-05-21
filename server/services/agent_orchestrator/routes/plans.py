@@ -16,6 +16,10 @@ class RefineRequest(BaseModel):
     feedback: str
 
 
+class PlanUpdateRequest(BaseModel):
+    plan: dict
+
+
 @router.get("/plans")
 async def list_plans(
     product_id: Optional[str] = None,
@@ -78,6 +82,58 @@ async def delete_plan(plan_id: str, tenant: TenantContext = Depends(get_current_
         await session.commit()
 
     return {"success": True, "message": f"Plan {plan_id} permanently deleted."}
+
+
+@router.put("/plans/{plan_id}")
+async def update_plan(
+    plan_id: str,
+    req: PlanUpdateRequest,
+    tenant: TenantContext = Depends(get_current_tenant)
+):
+    """Update a strategy plan's structural content in-place."""
+    async with async_session_maker() as session:
+        result = await session.execute(
+            select(StrategyPlan).where(
+                StrategyPlan.id == plan_id,
+                StrategyPlan.tenant_id == tenant.id
+            )
+        )
+        plan_record = result.scalars().first()
+
+        if not plan_record:
+            raise HTTPException(status_code=404, detail="Strategy plan not found or access denied.")
+
+        # Update core details and outer fields if present inside the dictionary
+        company_name = req.plan.get("company_name", plan_record.company_name)
+        industry = req.plan.get("industry", plan_record.industry)
+        
+        plan_record.company_name = company_name
+        plan_record.industry = industry
+        plan_record.plan_json = json.dumps(req.plan, ensure_ascii=False)
+        
+        await session.commit()
+        await session.refresh(plan_record)
+
+        # Load products to get names
+        from shared.models.tenant import CompanyProduct
+        prod_result = await session.execute(select(CompanyProduct).where(CompanyProduct.tenant_id == tenant.id))
+        products = prod_result.scalars().all()
+        prod_map = {p.id: p.name for p in products}
+
+    return {
+        "success": True,
+        "data": {
+            "id":           plan_record.id,
+            "tenant_id":    plan_record.tenant_id,
+            "product_id":   plan_record.product_id,
+            "product_name": prod_map.get(plan_record.product_id) if plan_record.product_id else None,
+            "company_name": plan_record.company_name,
+            "industry":     plan_record.industry,
+            "user_prompt":  plan_record.user_prompt,
+            "plan":         req.plan,
+            "created_at":   plan_record.created_at.isoformat() if plan_record.created_at else None
+        }
+    }
 
 
 @router.post("/plans/{plan_id}/refine")

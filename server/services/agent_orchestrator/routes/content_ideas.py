@@ -16,6 +16,10 @@ class RefineRequest(BaseModel):
     feedback: str
 
 
+class ContentIdeasUpdateRequest(BaseModel):
+    result: dict
+
+
 @router.get("/content-ideas")
 async def list_content_ideas(
     product_id: Optional[str] = None,
@@ -106,6 +110,49 @@ async def delete_content_ideas(result_id: str, tenant: TenantContext = Depends(g
         await session.commit()
 
     return {"success": True, "message": f"Content ideas result {result_id} deleted."}
+
+
+@router.put("/content-ideas/{result_id}")
+async def update_content_ideas(
+    result_id: str,
+    req: ContentIdeasUpdateRequest,
+    tenant: TenantContext = Depends(get_current_tenant)
+):
+    """Update a content ideas result structural content in-place."""
+    async with async_session_maker() as session:
+        result = await session.execute(
+            select(ContentIdeasResult).where(
+                ContentIdeasResult.id == result_id,
+                ContentIdeasResult.tenant_id == tenant.id
+            )
+        )
+        record = result.scalars().first()
+
+        if not record:
+            raise HTTPException(status_code=404, detail="Content ideas result not found or access denied.")
+
+        # Update core details and outer fields if present inside the dictionary
+        industry = req.result.get("industry", record.industry)
+        plan_name = req.result.get("plan_name", record.plan_name)
+        
+        record.industry = industry
+        record.plan_name = plan_name
+        record.result_json = json.dumps(req.result, ensure_ascii=False)
+        
+        await session.commit()
+        await session.refresh(record)
+
+    return {
+        "success": True,
+        "data": {
+            "id":         record.id,
+            "plan_id":    record.plan_id,
+            "plan_name":  record.plan_name,
+            "industry":   record.industry,
+            "result":     req.result,
+            "created_at": record.created_at.isoformat() if record.created_at else None
+        }
+    }
 
 
 @router.post("/content-ideas/{result_id}/refine")
