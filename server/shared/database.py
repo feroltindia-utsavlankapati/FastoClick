@@ -16,7 +16,10 @@ async_session_maker = async_sessionmaker(
 async def init_db():
     from shared.models.base import Base
     # import models to register them
-    from shared.models.tenant import Tenant, User, CompanyContext, StrategyPlan, ContentIdeasResult
+    from shared.models.tenant import (
+        Tenant, User, CompanyContext, StrategyPlan, ContentIdeasResult, CompanyProduct,
+        SocialPlatformCredential, ConnectedSocialAccount, ScheduledPost, MediaAsset, PostAnalytics
+    )
     async with engine.begin() as conn:
         # For dev: auto-create tables
         await conn.run_sync(

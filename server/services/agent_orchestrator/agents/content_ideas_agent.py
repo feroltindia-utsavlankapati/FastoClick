@@ -142,6 +142,7 @@ class ContentIdeasAgent(BaseMarketingAgent):
 
                 plan_data = json.loads(db_plan.plan_json)
                 state["extra_data"]["source_plan"] = plan_data
+                state["extra_data"]["product_id"] = db_plan.product_id
                 state["extra_data"]["content_output"]["plan_name"]       = plan_data.get("company_name", "Unknown")
                 state["extra_data"]["content_output"]["target_audience"] = plan_data.get("target_audience", "General Audience")
                 state["extra_data"]["content_output"]["overview"]        = (
@@ -336,6 +337,7 @@ class ContentIdeasAgent(BaseMarketingAgent):
             async with async_session_maker() as session:
                 record = ContentIdeasResult(
                     tenant_id=tenant_id,
+                    product_id=state["extra_data"].get("product_id"),
                     plan_id=plan_id,
                     plan_name=final_output["plan_name"],
                     industry=final_output["industry"],

@@ -94,3 +94,197 @@
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
+
+/* ─── Social Media Integration Utilities ─── */
+
+/* Status Badges */
+.soft-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.soft-badge-blue {
+  background: rgba(99, 141, 255, 0.15);
+  color: #638DFF;
+}
+.soft-badge-amber {
+  background: rgba(245, 158, 11, 0.15);
+  color: #D97706;
+}
+.soft-badge-green {
+  background: rgba(16, 185, 129, 0.15);
+  color: #059669;
+}
+.soft-badge-red {
+  background: rgba(239, 68, 68, 0.15);
+  color: #DC2626;
+}
+.soft-badge-gray {
+  background: rgba(107, 114, 128, 0.12);
+  color: #6B7280;
+}
+.soft-badge-purple {
+  background: rgba(108, 99, 255, 0.15);
+  color: #6C63FF;
+}
+
+/* Calendar */
+.soft-calendar-cell {
+  background-color: #E0E5EC;
+  box-shadow: 3px 3px 6px rgba(163, 177, 198, 0.5), -3px -3px 6px rgba(255, 255, 255, 0.4);
+  border-radius: 16px;
+  padding: 8px;
+  min-height: 80px;
+  transition: all 0.2s ease-out;
+  cursor: pointer;
+}
+.soft-calendar-cell:hover {
+  box-shadow: 5px 5px 10px rgba(163, 177, 198, 0.6), -5px -5px 10px rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+}
+.soft-calendar-cell.today {
+  box-shadow: inset 4px 4px 8px rgba(108, 99, 255, 0.15), inset -4px -4px 8px rgba(255, 255, 255, 0.5);
+  border: 2px solid rgba(108, 99, 255, 0.3);
+}
+
+/* Drag & Drop Zone */
+.soft-dropzone {
+  background-color: #E0E5EC;
+  box-shadow: inset 6px 6px 10px rgba(163, 177, 198, 0.5), inset -6px -6px 10px rgba(255, 255, 255, 0.4);
+  border: 2px dashed rgba(108, 99, 255, 0.25);
+  border-radius: 24px;
+  padding: 32px;
+  text-align: center;
+  transition: all 0.3s ease-out;
+  cursor: pointer;
+}
+.soft-dropzone:hover,
+.soft-dropzone.active {
+  border-color: rgba(108, 99, 255, 0.5);
+  box-shadow: inset 8px 8px 14px rgba(163, 177, 198, 0.6), inset -8px -8px 14px rgba(255, 255, 255, 0.5);
+}
+
+/* Platform Brand Colors */
+.platform-meta { color: #1877F2; }
+.platform-twitter { color: #000000; }
+.platform-linkedin { color: #0A66C2; }
+.platform-youtube { color: #FF0000; }
+.platform-tiktok { color: #00F2EA; }
+.platform-pinterest { color: #E60023; }
+
+.platform-bg-meta { background-color: rgba(24, 119, 242, 0.12); }
+.platform-bg-twitter { background-color: rgba(0, 0, 0, 0.08); }
+.platform-bg-linkedin { background-color: rgba(10, 102, 194, 0.12); }
+.platform-bg-youtube { background-color: rgba(255, 0, 0, 0.1); }
+.platform-bg-tiktok { background-color: rgba(0, 242, 234, 0.1); }
+.platform-bg-pinterest { background-color: rgba(230, 0, 35, 0.1); }
+
+/* Tabs */
+.soft-tab {
+  padding: 10px 24px;
+  border-radius: 16px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #6B7280;
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+  border: none;
+  background: transparent;
+}
+.soft-tab:hover {
+  color: #3D4852;
+}
+.soft-tab.active {
+  background-color: #E0E5EC;
+  box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6), inset -4px -4px 8px rgba(255, 255, 255, 0.5);
+  color: #6C63FF;
+}
+
+/* Soft input field */
+.soft-input {
+  background-color: #E0E5EC;
+  box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.5), inset -4px -4px 8px rgba(255, 255, 255, 0.4);
+  border: none;
+  border-radius: 16px;
+  padding: 12px 18px;
+  font-size: 0.875rem;
+  color: #3D4852;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  outline: none;
+  transition: box-shadow 0.2s ease;
+  width: 100%;
+}
+.soft-input:focus {
+  box-shadow: inset 6px 6px 12px rgba(163, 177, 198, 0.6), inset -6px -6px 12px rgba(255, 255, 255, 0.5),
+              0 0 0 3px rgba(108, 99, 255, 0.2);
+}
+.soft-input::placeholder {
+  color: #9CA3AF;
+}
+
+/* Textarea variant */
+.soft-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Soft Checkbox */
+.soft-checkbox {
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 8px;
+  background-color: #E0E5EC;
+  box-shadow: inset 3px 3px 6px rgba(163, 177, 198, 0.5), inset -3px -3px 6px rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+}
+.soft-checkbox:checked {
+  background-color: #6C63FF;
+  box-shadow: 2px 2px 4px rgba(108, 99, 255, 0.3), -2px -2px 4px rgba(255, 255, 255, 0.3);
+}
+.soft-checkbox:checked::after {
+  content: '✓';
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Soft transition utility */
+.soft-transition {
+  transition: all 0.3s ease-out;
+}
+
+/* Pulse animation for live indicators */
+@keyframes soft-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.animate-soft-pulse {
+  animation: soft-pulse 2s ease-in-out infinite;
+}
+
+/* Skeleton loader */
+.soft-skeleton {
+  background: linear-gradient(90deg, #E0E5EC 25%, #d3d8df 50%, #E0E5EC 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 12px;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

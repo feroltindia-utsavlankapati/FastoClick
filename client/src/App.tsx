@@ -6,6 +6,11 @@ import WorkflowPage from "./components/pages/WorkflowPage";
 import CompanyContextPage from "./components/pages/CompanyContextPage";
 import PlansPage from "./components/pages/PlansPage";
 import ContentIdeasPage from "./components/pages/ContentIdeasPage";
+import SocialHubPage from "./components/pages/SocialHubPage";
+import ContentCalendarPage from "./components/pages/ContentCalendarPage";
+import MediaLibraryPage from "./components/pages/MediaLibraryPage";
+import SocialAnalyticsPage from "./components/pages/SocialAnalyticsPage";
+import ProfilePage from "./components/pages/ProfilePage";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const token = localStorage.getItem("token");
@@ -77,6 +82,56 @@ function App() {
           element={
             <ProtectedRoute>
               <ContentIdeasPage />
+            </ProtectedRoute>
+          } 
+        />
+
+        {/* Protected Social Hub Route */}
+        <Route 
+          path="/social" 
+          element={
+            <ProtectedRoute>
+              <SocialHubPage />
+            </ProtectedRoute>
+          } 
+        />
+
+        {/* Protected Content Calendar Route */}
+        <Route 
+          path="/calendar" 
+          element={
+            <ProtectedRoute>
+              <ContentCalendarPage />
+            </ProtectedRoute>
+          } 
+        />
+
+        {/* Protected Media Library Route */}
+        <Route 
+          path="/media-library" 
+          element={
+            <ProtectedRoute>
+              <MediaLibraryPage />
+            </ProtectedRoute>
+          } 
+        />
+
+        {/* Protected Social Analytics Route */}
+        <Route 
+          path="/social-analytics" 
+          element={
+            <ProtectedRoute>
+              <SocialAnalyticsPage />
+            </ProtectedRoute>
+          } 
+        />
+
+        {/* Protected Profile Route */}
+        <Route 
+          path="/profile" 
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
             </ProtectedRoute>
           } 
         />

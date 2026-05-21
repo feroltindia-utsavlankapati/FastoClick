@@ -84,7 +84,10 @@ class StrategyAgent(BaseMarketingAgent):
             _step("User prompt", task.description or task.data.get("description", ""))
             _step("Tenant ID", state["tenant_id"])
 
+            product_id = task.data.get("product_id")
+
             state["extra_data"] = {
+                "product_id": product_id,
                 "strategy_plan": {
                     "company_name": "Unknown",
                     "industry": "Unknown",
@@ -143,6 +146,9 @@ class StrategyAgent(BaseMarketingAgent):
         if current_task == "basic_info":
             _step("Source", "Fetching company data directly from database (no LLM)")
             try:
+                product_id = state["extra_data"].get("product_id")
+                product_context = ""
+                
                 async with async_session_maker() as session:
                     tenant_result = await session.execute(
                         select(Tenant).where(Tenant.id == tenant_id)
@@ -154,22 +160,49 @@ class StrategyAgent(BaseMarketingAgent):
                     )
                     ctx = ctx_result.scalars().first()
 
+                    if product_id:
+                        from shared.models.tenant import CompanyProduct
+                        prod_result = await session.execute(
+                            select(CompanyProduct).where(CompanyProduct.id == product_id)
+                        )
+                        prod_record = prod_result.scalars().first()
+                        if prod_record:
+                            product_context = (
+                                f"--- TARGET PRODUCT/SERVICE DETAILS ---\n"
+                                f"Name: {prod_record.name}\n"
+                                f"Type: {prod_record.type}\n"
+                                f"Description: {prod_record.description or ''}\n"
+                                f"Target Audience: {prod_record.target_audience or ''}\n"
+                                f"Features: {prod_record.features or ''}\n"
+                            )
+                            state["extra_data"]["product_name"] = prod_record.name
+                            state["extra_data"]["product_type"] = prod_record.type
+                            state["extra_data"]["product_description"] = prod_record.description
+                            state["extra_data"]["product_target_audience"] = prod_record.target_audience
+                            state["extra_data"]["product_features"] = prod_record.features
+
                 company_name = (tenant_record.name if tenant_record else None) or "Unknown"
                 industry     = (ctx.focus if ctx else None) or "General"
-                target_audience = (
-                    (ctx.product_details if ctx else None)
-                    or (ctx.service_details if ctx else None)
-                    or "General Audience"
-                )
+                
+                if product_id and "product_name" in state["extra_data"]:
+                    target_audience = state["extra_data"].get("product_target_audience") or "General Audience"
+                else:
+                    target_audience = (
+                        (ctx.product_details if ctx else None)
+                        or (ctx.service_details if ctx else None)
+                        or "General Audience"
+                    )
 
                 state["extra_data"]["strategy_plan"]["company_name"]    = company_name
                 state["extra_data"]["strategy_plan"]["industry"]        = industry
                 state["extra_data"]["strategy_plan"]["target_audience"] = target_audience
+                state["extra_data"]["product_context"] = product_context
 
                 _ok("Company data loaded from DB", {
                     "company_name":    company_name,
                     "industry":        industry,
-                    "target_audience": target_audience
+                    "target_audience": target_audience,
+                    "product_id":      product_id
                 })
                 logger.info(
                     f"Loaded company data: name='{company_name}', "
@@ -185,9 +218,11 @@ class StrategyAgent(BaseMarketingAgent):
 
         # ── LLM TASKS ─────────────────────────────────────────────
         prompt = ""
+        product_context = state["extra_data"].get("product_context", "")
         if current_task == "core_strategy":
             prompt = f"""
             Analyze the user prompt: '{user_prompt}'.
+            {product_context}
             Define the core marketing strategy.
             Return a JSON object with EXACTLY these keys:
             {{
@@ -199,6 +234,7 @@ class StrategyAgent(BaseMarketingAgent):
         elif current_task == "phases":
             prompt = f"""
             Based on the strategy for '{user_prompt}', define 4 execution phases.
+            {product_context}
             Return a JSON array of objects, where each object has EXACTLY these keys:
             [
                 {{
@@ -211,6 +247,7 @@ class StrategyAgent(BaseMarketingAgent):
         elif current_task == "channels":
             prompt = f"""
             Based on the strategy for '{user_prompt}', define 4 marketing channels.
+            {product_context}
             Return a JSON array of objects, where each object has EXACTLY these keys:
             [
                 {{
@@ -223,6 +260,7 @@ class StrategyAgent(BaseMarketingAgent):
         elif current_task == "execution_plan":
             prompt = f"""
             Based on the strategy for '{user_prompt}', create a 4-week execution timeline.
+            {product_context}
             Return a JSON array of objects, where each object has EXACTLY these keys:
             [
                 {{
@@ -370,6 +408,7 @@ class StrategyAgent(BaseMarketingAgent):
             async with async_session_maker() as session:
                 db_plan = StrategyPlan(
                     tenant_id=state["tenant_id"],
+                    product_id=state["extra_data"].get("product_id"),
                     company_name=strategy["company_name"],
                     industry=strategy["industry"],
                     user_prompt=state["extra_data"].get("user_prompt", ""),

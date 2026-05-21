@@ -7,6 +7,7 @@ from shared.dependencies import get_current_tenant, TenantContext
 from shared.utils.ai_integration import AIClient
 from pydantic import BaseModel
 import json
+from typing import Optional
 
 router = APIRouter()
 
@@ -16,30 +17,44 @@ class RefineRequest(BaseModel):
 
 
 @router.get("/content-ideas")
-async def list_content_ideas(tenant: TenantContext = Depends(get_current_tenant)):
+async def list_content_ideas(
+    product_id: Optional[str] = None,
+    tenant: TenantContext = Depends(get_current_tenant)
+):
     """Return all content idea results for the authenticated tenant, newest first."""
     async with async_session_maker() as session:
-        result = await session.execute(
-            select(ContentIdeasResult)
-            .where(ContentIdeasResult.tenant_id == tenant.id)
-            .order_by(ContentIdeasResult.created_at.desc())
-        )
+        query = select(ContentIdeasResult).where(ContentIdeasResult.tenant_id == tenant.id)
+        if product_id:
+            query = query.where(ContentIdeasResult.product_id == product_id)
+        query = query.order_by(ContentIdeasResult.created_at.desc())
+        
+        result = await session.execute(query)
         records = result.scalars().all()
+        
+        # Load products to get names
+        from shared.models.tenant import CompanyProduct
+        prod_result = await session.execute(select(CompanyProduct).where(CompanyProduct.tenant_id == tenant.id))
+        products = prod_result.scalars().all()
+        prod_map = {p.id: p.name for p in products}
 
     return {
         "success": True,
         "data": [
             {
-                "id":         r.id,
-                "plan_id":    r.plan_id,
-                "plan_name":  r.plan_name,
-                "industry":   r.industry,
-                "result":     json.loads(r.result_json),
-                "created_at": r.created_at.isoformat() if r.created_at else None
+                "id":           r.id,
+                "tenant_id":    r.tenant_id,
+                "product_id":   r.product_id,
+                "product_name": prod_map.get(r.product_id) if r.product_id else None,
+                "plan_id":      r.plan_id,
+                "plan_name":    r.plan_name,
+                "industry":     r.industry,
+                "result":       json.loads(r.result_json),
+                "created_at":   r.created_at.isoformat() if r.created_at else None
             }
             for r in records
         ]
     }
+
 
 
 @router.get("/content-ideas/{result_id}")

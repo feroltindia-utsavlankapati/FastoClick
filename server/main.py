@@ -21,6 +21,7 @@ async def lifespan(app: FastAPI):
         {"name": "Tenant Service", "module": "services.tenant.main:app", "port": 8002},
         {"name": "Agent Orchestrator Service", "module": "services.agent_orchestrator.main:app", "port": 8003},
         {"name": "Workflow Engine Service", "module": "services.workflow_engine.main:app", "port": 8004},
+        {"name": "Social Service", "module": "services.social.main:app", "port": 8005},
     ]
     
     server_dir = os.path.dirname(os.path.abspath(__file__))
@@ -98,6 +99,11 @@ async def proxy_agent(request: Request, path: str):
 async def proxy_workflow(request: Request, path: str):
     return await proxy_request(request, 8004)
 
+@app.api_route("/social/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"])
+async def proxy_social(request: Request, path: str):
+    return await proxy_request(request, 8005)
+
 if __name__ == "__main__":
     import uvicorn
+    # Trigger auto-reload for updated route changes
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)

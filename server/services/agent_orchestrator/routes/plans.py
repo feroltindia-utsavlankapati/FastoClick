@@ -7,6 +7,7 @@ from shared.dependencies import get_current_tenant, TenantContext
 from shared.utils.ai_integration import AIClient
 from pydantic import BaseModel
 import json
+from typing import Optional
 
 router = APIRouter()
 
@@ -16,21 +17,34 @@ class RefineRequest(BaseModel):
 
 
 @router.get("/plans")
-async def list_plans(tenant: TenantContext = Depends(get_current_tenant)):
+async def list_plans(
+    product_id: Optional[str] = None,
+    tenant: TenantContext = Depends(get_current_tenant)
+):
     """Return all saved strategy plans for the authenticated tenant, newest first."""
     async with async_session_maker() as session:
-        result = await session.execute(
-            select(StrategyPlan)
-            .where(StrategyPlan.tenant_id == tenant.id)
-            .order_by(StrategyPlan.created_at.desc())
-        )
+        query = select(StrategyPlan).where(StrategyPlan.tenant_id == tenant.id)
+        if product_id:
+            query = query.where(StrategyPlan.product_id == product_id)
+        query = query.order_by(StrategyPlan.created_at.desc())
+        
+        result = await session.execute(query)
         plans = result.scalars().all()
+        
+        # Load products to get names
+        from shared.models.tenant import CompanyProduct
+        prod_result = await session.execute(select(CompanyProduct).where(CompanyProduct.tenant_id == tenant.id))
+        products = prod_result.scalars().all()
+        prod_map = {p.id: p.name for p in products}
 
     return {
         "success": True,
         "data": [
             {
                 "id":           p.id,
+                "tenant_id":    p.tenant_id,
+                "product_id":   p.product_id,
+                "product_name": prod_map.get(p.product_id) if p.product_id else None,
                 "company_name": p.company_name,
                 "industry":     p.industry,
                 "user_prompt":  p.user_prompt,
@@ -40,6 +54,7 @@ async def list_plans(tenant: TenantContext = Depends(get_current_tenant)):
             for p in plans
         ]
     }
+
 
 
 @router.delete("/plans/{plan_id}")
