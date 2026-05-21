@@ -290,7 +290,10 @@ class InstagramProvider(SocialProvider):
                 else:
                     media_url = self._get_public_media_url(media_item)
                     
-                is_video = (media_item.get("mime_type") or "").startswith("video/")
+                m_type = (media_item.get("mime_type") or "").lower()
+                filename = (media_item.get("filename") or "").lower()
+                file_path = (media_item.get("file_path") or "").lower()
+                is_video = m_type.startswith("video/") or any(filename.endswith(ext) or file_path.endswith(ext) for ext in [".mp4", ".mov", ".avi", ".webm", ".mpeg", ".mpg", ".m4v", ".3gp", ".mov", ".wmv"])
 
                 # Step 1: Create media container
                 container_payload = {
@@ -299,7 +302,7 @@ class InstagramProvider(SocialProvider):
                 }
                 
                 if is_video:
-                    container_payload["media_type"] = "VIDEO"
+                    container_payload["media_type"] = "REELS"
                     container_payload["video_url"] = media_url
                 else:
                     container_payload["image_url"] = media_url
@@ -313,6 +316,40 @@ class InstagramProvider(SocialProvider):
                 
                 if not container_id:
                     raise Exception("Failed to create Instagram media container")
+
+                # If it's a video, poll container status until finished/ready
+                if is_video:
+                    import asyncio
+                    logger.info(f"Instagram video container {container_id} created. Starting status polling...")
+                    status_ready = False
+                    max_attempts = 30
+                    delay_seconds = 3
+                    
+                    for attempt in range(1, max_attempts + 1):
+                        await asyncio.sleep(delay_seconds)
+                        status_resp = await client.get(
+                            f"{GRAPH_API_BASE}/{container_id}",
+                            params={
+                                "fields": "status_code",
+                                "access_token": access_token
+                            }
+                        )
+                        if status_resp.status_code == 200:
+                            status_data = status_resp.json()
+                            status_code = status_data.get("status_code", "").upper()
+                            logger.info(f"Instagram video container {container_id} status (attempt {attempt}/{max_attempts}): {status_code}")
+                            if status_code == "FINISHED":
+                                status_ready = True
+                                break
+                            elif status_code == "ERROR":
+                                raise Exception("Instagram video processing failed on Meta's server (Status: ERROR)")
+                            elif status_code == "EXPIRED":
+                                raise Exception("Instagram video container expired before publishing (Status: EXPIRED)")
+                        else:
+                            logger.warning(f"Failed to check Instagram container status on attempt {attempt}: {status_resp.text}")
+                    
+                    if not status_ready:
+                        raise Exception("Instagram video processing timed out on Meta's server. Please try again.")
 
                 # Step 2: Publish media container
                 publish_payload = {
