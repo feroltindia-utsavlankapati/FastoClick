@@ -1,4 +1,5 @@
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+from sqlalchemy.pool import NullPool
 from shared.config import get_settings
 
 settings = get_settings()
@@ -6,7 +7,7 @@ settings = get_settings()
 engine = create_async_engine(
     settings.DATABASE_URL,
     echo=False,
-    # pool_size=settings.DATABASE_POOL_SIZE,  # Removed because SQLite doesn't support pool_size in the same way
+    poolclass=NullPool
 )
 
 async_session_maker = async_sessionmaker(
@@ -19,6 +20,9 @@ async def init_db():
     from shared.models.tenant import (
         Tenant, User, CompanyContext, StrategyPlan, ContentIdeasResult, CompanyProduct,
         SocialPlatformCredential, ConnectedSocialAccount, ScheduledPost, MediaAsset, PostAnalytics
+    )
+    from shared.models.email import (
+        Contact, EmailTemplate, EmailCampaign, EmailCampaignContact, EmailLog
     )
     async with engine.begin() as conn:
         # For dev: auto-create tables

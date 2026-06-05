@@ -22,6 +22,7 @@ async def lifespan(app: FastAPI):
         {"name": "Agent Orchestrator Service", "module": "services.agent_orchestrator.main:app", "port": 8003},
         {"name": "Workflow Engine Service", "module": "services.workflow_engine.main:app", "port": 8004},
         {"name": "Social Service", "module": "services.social.main:app", "port": 8005},
+        {"name": "Email Service", "module": "services.email.main:app", "port": 8006},
     ]
     
     server_dir = os.path.dirname(os.path.abspath(__file__))
@@ -102,6 +103,10 @@ async def proxy_workflow(request: Request, path: str):
 @app.api_route("/social/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"])
 async def proxy_social(request: Request, path: str):
     return await proxy_request(request, 8005)
+
+@app.api_route("/email/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"])
+async def proxy_email(request: Request, path: str):
+    return await proxy_request(request, 8006)
 
 if __name__ == "__main__":
     import uvicorn

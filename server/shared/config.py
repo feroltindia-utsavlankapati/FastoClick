@@ -1,6 +1,7 @@
 from pydantic_settings import BaseSettings
 from functools import lru_cache
 import os
+from typing import Optional
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -40,6 +41,15 @@ class Settings(BaseSettings):
         env_file = ".env"
         case_sensitive = True
 
+    # Email
+    SMTP_SERVER: str = os.getenv("SMTP_SERVER", "localhost")
+    SMTP_PORT: int = int(os.getenv("SMTP_PORT", 1025))
+    SMTP_TLS: bool = os.getenv("SMTP_TLS", "False").lower() in ['true', '1', 'yes']
+    SMTP_USERNAME: Optional[str] = os.getenv("SMTP_USERNAME")
+    SMTP_PASSWORD: Optional[str] = os.getenv("SMTP_PASSWORD")
+    SMTP_FROM_EMAIL: str = os.getenv("SMTP_FROM_EMAIL", "[EMAIL_ADDRESS]")
+
+    API_BASE_URL: str = os.getenv("API_BASE_URL", "http://localhost:8000")
 @lru_cache()
 def get_settings() -> Settings:
     return Settings()

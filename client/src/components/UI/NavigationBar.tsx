@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { 
     BarChart2, Brain, Bot, Settings, User, FileText, Lightbulb, 
     Share2, CalendarDays, Image, TrendingUp, ChevronDown, 
-    Sparkles, Menu, X, LogOut, ChevronRight
+    Sparkles, Menu, X, LogOut, ChevronRight, Mail, Users, PenTool, Activity, Braces
 } from "lucide-react";
 
 export default function NavigationBar() {
@@ -72,6 +72,18 @@ export default function NavigationBar() {
                 { path: "/social", label: "Social Hub", icon: <Share2 size={18} className="text-[#8B5CF6]" />, description: "Connect accounts & post scheduler" },
                 { path: "/calendar", label: "Content Calendar", icon: <CalendarDays size={18} className="text-[#06B6D4]" />, description: "Visual monthly scheduler & grid planner" },
                 { path: "/social-analytics", label: "Analytics Hub", icon: <TrendingUp size={18} className="text-[#10B981]" />, description: "Analyze follower growth & engagement metrics" }
+            ]
+        },
+        {
+            id: "email-marketing",
+            label: "Email Marketing",
+            icon: <Mail size={16} className="text-[#EAB308]" />,
+            items: [
+                { path: "/email/contacts", label: "Contacts", icon: <Users size={18} className="text-[#3B82F6]" />, description: "Manage contact lists & imports" },
+                { path: "/email/templates", label: "Templates", icon: <PenTool size={18} className="text-[#EC4899]" />, description: "Design email templates" },
+                { path: "/email/campaigns", label: "Campaigns", icon: <Mail size={18} className="text-[#EAB308]" />, description: "Schedule & send emails" },
+                { path: "/email/analytics", label: "Analytics", icon: <Activity size={18} className="text-[#10B981]" />, description: "Track opens, clicks & bounces" },
+                { path: "/email/placeholders", label: "Placeholders", icon: <Braces size={18} className="text-[#8B5CF6]" />, description: "View dynamic tags guide" }
             ]
         }
     ];

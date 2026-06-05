@@ -11,6 +11,11 @@ import ContentCalendarPage from "./components/pages/ContentCalendarPage";
 import MediaLibraryPage from "./components/pages/MediaLibraryPage";
 import SocialAnalyticsPage from "./components/pages/SocialAnalyticsPage";
 import ProfilePage from "./components/pages/ProfilePage";
+import EmailContactsPage from "./components/pages/EmailContactsPage";
+import EmailTemplatesPage from "./components/pages/EmailTemplatesPage";
+import EmailCampaignsPage from "./components/pages/EmailCampaignsPage";
+import EmailAnalyticsPage from "./components/pages/EmailAnalyticsPage";
+import EmailPlaceholdersPage from "./components/pages/EmailPlaceholdersPage";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const token = localStorage.getItem("token");
@@ -132,6 +137,48 @@ function App() {
           element={
             <ProtectedRoute>
               <ProfilePage />
+            </ProtectedRoute>
+          } 
+        />
+
+        {/* Protected Email Routes */}
+        <Route 
+          path="/email/contacts" 
+          element={
+            <ProtectedRoute>
+              <EmailContactsPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/email/templates" 
+          element={
+            <ProtectedRoute>
+              <EmailTemplatesPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/email/campaigns" 
+          element={
+            <ProtectedRoute>
+              <EmailCampaignsPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/email/analytics" 
+          element={
+            <ProtectedRoute>
+              <EmailAnalyticsPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/email/placeholders" 
+          element={
+            <ProtectedRoute>
+              <EmailPlaceholdersPage />
             </ProtectedRoute>
           } 
         />
