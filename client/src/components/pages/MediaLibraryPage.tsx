@@ -131,14 +131,14 @@ export default function MediaLibraryPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#E0E5EC] flex items-center justify-center">
-                <div className="animate-spin h-10 w-10 border-4 border-[#6C63FF] border-t-transparent rounded-full"></div>
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+                <div className="animate-spin h-10 w-10 border-4 border-primary-600 border-t-transparent rounded-full"></div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#E0E5EC] text-[#3D4852] font-sans flex flex-col">
+        <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col">
             <NavigationBar />
 
             <main className="flex-1 max-w-7xl mx-auto w-full p-6 md:p-10">
@@ -146,17 +146,17 @@ export default function MediaLibraryPage() {
                 <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                     <div>
                         <h1 className="text-4xl font-extrabold tracking-tight flex items-center gap-3">
-                            <span className="w-12 h-12 rounded-2xl soft-extruded flex items-center justify-center">
-                                <ImageIcon size={24} className="text-[#6C63FF]" />
+                            <span className="w-12 h-12 rounded-2xl bg-white border border-slate-200 shadow-sm rounded-xl flex items-center justify-center">
+                                <ImageIcon size={24} className="text-primary-600" />
                             </span>
                             Media Library
                         </h1>
-                        <p className="text-[#6B7280] mt-2 font-medium">
+                        <p className="text-slate-500 mt-2 font-medium">
                             Upload and manage images & videos for your social posts
                         </p>
                     </div>
                     <div className="flex items-center gap-3">
-                        <span className="text-sm text-[#6B7280] font-bold">{media.length} files</span>
+                        <span className="text-sm text-slate-500 font-bold">{media.length} files</span>
                     </div>
                 </header>
 
@@ -171,7 +171,7 @@ export default function MediaLibraryPage() {
 
                 {/* Upload Zone */}
                 <div
-                    className={`soft-dropzone mb-8 ${dragActive ? "active" : ""}`}
+                    className={`border-2 border-dashed border-slate-300 hover:border-primary-500 bg-slate-50 transition-colors mb-8 ${dragActive ? "active" : ""}`}
                     onDragEnter={handleDrag}
                     onDragLeave={handleDrag}
                     onDragOver={handleDrag}
@@ -188,12 +188,12 @@ export default function MediaLibraryPage() {
                     />
                     {uploading ? (
                         <div className="flex items-center justify-center gap-3">
-                            <div className="animate-spin h-6 w-6 border-3 border-[#6C63FF] border-t-transparent rounded-full"></div>
-                            <span className="font-bold text-[#6C63FF]">Uploading...</span>
+                            <div className="animate-spin h-6 w-6 border-3 border-primary-600 border-t-transparent rounded-full"></div>
+                            <span className="font-bold text-primary-600">Uploading...</span>
                         </div>
                     ) : (
                         <div>
-                            <Upload size={36} className="mx-auto text-[#6C63FF] mb-3" />
+                            <Upload size={36} className="mx-auto text-primary-600 mb-3" />
                             <p className="font-bold text-sm mb-1">
                                 {dragActive ? "Drop files here" : "Drag & drop files here"}
                             </p>
@@ -214,7 +214,7 @@ export default function MediaLibraryPage() {
                         <button
                             key={f.key}
                             onClick={() => handleFilterChange(f.key)}
-                            className={`soft-tab text-xs flex items-center gap-1.5 ${filter === f.key ? "active" : ""}`}
+                            className={`px-4 py-2 font-medium text-slate-600 hover:text-slate-900 transition-colors rounded-md text-xs flex items-center gap-1.5 ${filter === f.key ? "active" : ""}`}
                         >
                             {f.icon} {f.label}
                         </button>
@@ -223,15 +223,15 @@ export default function MediaLibraryPage() {
 
                 {/* Media Grid */}
                 {media.length === 0 ? (
-                    <div className="soft-extruded rounded-[32px] p-12 text-center">
+                    <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[32px] p-12 text-center">
                         <ImageIcon size={48} className="mx-auto text-[#9CA3AF] mb-4" />
                         <h3 className="text-xl font-bold mb-2">No Media Files</h3>
-                        <p className="text-[#6B7280]">Upload images and videos to use in your posts.</p>
+                        <p className="text-slate-500">Upload images and videos to use in your posts.</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         {media.map(item => (
-                            <div key={item.id} className="soft-extruded rounded-[20px] overflow-hidden group">
+                            <div key={item.id} className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[20px] overflow-hidden group">
                                 {/* Thumbnail */}
                                 <div className="aspect-square bg-[#d3d8df] relative overflow-hidden">
                                     {item.has_thumbnail || isImage(item.mime_type) ? (
@@ -253,7 +253,7 @@ export default function MediaLibraryPage() {
 
                                     {/* Type badge */}
                                     {isVideo(item.mime_type) && (
-                                        <div className="absolute top-2 left-2 soft-badge soft-badge-purple text-[10px]">
+                                        <div className="absolute top-2 left-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-700 text-[10px]">
                                             VIDEO
                                         </div>
                                     )}
@@ -264,7 +264,7 @@ export default function MediaLibraryPage() {
                                             onClick={() => handleDelete(item.id)}
                                             className="p-2.5 bg-white/90 rounded-xl hover:bg-white transition-colors"
                                         >
-                                            <Trash2 size={16} className="text-red-500" />
+                                            <Trash2 size={16} className="text-danger" />
                                         </button>
                                     </div>
                                 </div>

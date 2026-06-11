@@ -47,43 +47,43 @@ export default function NavigationBar() {
         {
             id: "ai-brain",
             label: "Brain & Agents",
-            icon: <Brain size={16} className="text-[#6C63FF]" />,
+            icon: <Brain size={16} className="text-primary-600" />,
             items: [
-                { path: "/company-context", label: "Knowledge Base", icon: <Brain size={18} className="text-[#6C63FF]" />, description: "Feed AI your company context & documents" },
-                { path: "/agents", label: "AI Agents", icon: <Bot size={18} className="text-[#3B82F6]" />, description: "Configure & deploy smart persona agents" },
-                { path: "/workflows", label: "Workflows", icon: <Settings size={18} className="text-[#10B981]" />, description: "Automate custom marketing pipelines" }
+                { path: "/company-context", label: "Knowledge Base", icon: <Brain size={18} className="text-primary-600" />, description: "Feed AI your company context & documents" },
+                { path: "/agents", label: "AI Agents", icon: <Bot size={18} className="text-info" />, description: "Configure & deploy smart persona agents" },
+                { path: "/workflows", label: "Workflows", icon: <Settings size={18} className="text-success" />, description: "Automate custom marketing pipelines" }
             ]
         },
         {
             id: "content-engine",
             label: "Content Engine",
-            icon: <Sparkles size={16} className="text-[#EF4444]" />,
+            icon: <Sparkles size={16} className="text-danger" />,
             items: [
-                { path: "/plans", label: "Marketing Plans", icon: <FileText size={18} className="text-[#EF4444]" />, description: "Generate comprehensive marketing strategies" },
-                { path: "/content-ideas", label: "Creative Ideas", icon: <Lightbulb size={18} className="text-[#F59E0B]" />, description: "Brainstorm viral topic ideas & hooks" },
-                { path: "/media-library", label: "Media Library", icon: <Image size={18} className="text-[#EC4899]" />, description: "Manage creative assets & attachments" }
+                { path: "/plans", label: "Marketing Plans", icon: <FileText size={18} className="text-danger" />, description: "Generate comprehensive marketing strategies" },
+                { path: "/content-ideas", label: "Creative Ideas", icon: <Lightbulb size={18} className="text-warning" />, description: "Brainstorm viral topic ideas & hooks" },
+                { path: "/media-library", label: "Media Library", icon: <Image size={18} className="text-pink-500" />, description: "Manage creative assets & attachments" }
             ]
         },
         {
             id: "social-hub",
             label: "Social Suite",
-            icon: <Share2 size={16} className="text-[#8B5CF6]" />,
+            icon: <Share2 size={16} className="text-purple-600" />,
             items: [
-                { path: "/social", label: "Social Hub", icon: <Share2 size={18} className="text-[#8B5CF6]" />, description: "Connect accounts & post scheduler" },
-                { path: "/calendar", label: "Content Calendar", icon: <CalendarDays size={18} className="text-[#06B6D4]" />, description: "Visual monthly scheduler & grid planner" },
-                { path: "/social-analytics", label: "Analytics Hub", icon: <TrendingUp size={18} className="text-[#10B981]" />, description: "Analyze follower growth & engagement metrics" }
+                { path: "/social", label: "Social Hub", icon: <Share2 size={18} className="text-purple-600" />, description: "Connect accounts & post scheduler" },
+                { path: "/calendar", label: "Content Calendar", icon: <CalendarDays size={18} className="text-cyan-500" />, description: "Visual monthly scheduler & grid planner" },
+                { path: "/social-analytics", label: "Analytics Hub", icon: <TrendingUp size={18} className="text-success" />, description: "Analyze follower growth & engagement metrics" }
             ]
         },
         {
             id: "email-marketing",
             label: "Email Marketing",
-            icon: <Mail size={16} className="text-[#EAB308]" />,
+            icon: <Mail size={16} className="text-warning" />,
             items: [
-                { path: "/email/contacts", label: "Contacts", icon: <Users size={18} className="text-[#3B82F6]" />, description: "Manage contact lists & imports" },
-                { path: "/email/templates", label: "Templates", icon: <PenTool size={18} className="text-[#EC4899]" />, description: "Design email templates" },
-                { path: "/email/campaigns", label: "Campaigns", icon: <Mail size={18} className="text-[#EAB308]" />, description: "Schedule & send emails" },
-                { path: "/email/analytics", label: "Analytics", icon: <Activity size={18} className="text-[#10B981]" />, description: "Track opens, clicks & bounces" },
-                { path: "/email/placeholders", label: "Placeholders", icon: <Braces size={18} className="text-[#8B5CF6]" />, description: "View dynamic tags guide" }
+                { path: "/email/contacts", label: "Contacts", icon: <Users size={18} className="text-info" />, description: "Manage contact lists & imports" },
+                { path: "/email/templates", label: "Templates", icon: <PenTool size={18} className="text-pink-500" />, description: "Design email templates" },
+                { path: "/email/campaigns", label: "Campaigns", icon: <Mail size={18} className="text-warning" />, description: "Schedule & send emails" },
+                { path: "/email/analytics", label: "Analytics", icon: <Activity size={18} className="text-success" />, description: "Track opens, clicks & bounces" },
+                { path: "/email/placeholders", label: "Placeholders", icon: <Braces size={18} className="text-purple-600" />, description: "View dynamic tags guide" }
             ]
         }
     ];
@@ -100,12 +100,10 @@ export default function NavigationBar() {
         document.addEventListener("click", handleOutsideClick);
         return () => {
             document.removeEventListener("click", handleOutsideClick);
-            // clear any pending timers
             Object.values(dropdownTimeoutRef.current).forEach(clearTimeout);
         };
     }, []);
 
-    // Handles delayed close to avoid jittery dropdown transitions
     const handleMouseEnter = (groupId: string) => {
         if (dropdownTimeoutRef.current[groupId]) {
             clearTimeout(dropdownTimeoutRef.current[groupId]);
@@ -125,33 +123,33 @@ export default function NavigationBar() {
     };
 
     return (
-        <nav className="sticky top-0 z-50 w-full bg-[#E0E5EC]/90 backdrop-blur-md border-b border-white/20 soft-transition">
-            <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <nav className="sticky top-0 z-50 w-full bg-white border-b border-slate-200 shadow-sm transition-smooth">
+            <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                 
                 {/* Logo / Brand */}
                 <Link 
                     to="/dashboard" 
-                    className="flex items-center gap-3 text-[#3D4852] font-extrabold text-xl tracking-tight focus:outline-none focus:ring-2 focus:ring-[#6C63FF] focus:ring-offset-2 focus:ring-offset-[#E0E5EC] rounded-xl p-1 shrink-0"
+                    className="flex items-center gap-2 text-slate-900 font-bold text-lg tracking-tight focus-ring rounded-md shrink-0"
                 >
-                    <span className="flex items-center gap-2">
-                        <span className="w-8 h-8 rounded-lg soft-btn flex items-center justify-center font-black text-xs text-[#6C63FF] border border-white/40">F</span>
-                        Fasto<span className="text-[#6C63FF]">Click</span>
-                    </span>
+                    <div className="w-8 h-8 rounded bg-primary-600 flex items-center justify-center text-white font-bold text-sm">
+                        F
+                    </div>
+                    Fasto<span className="text-primary-600">Click</span>
                 </Link>
 
                 {/* Desktop Grouped Navigation Links */}
-                <div className="hidden md:flex items-center gap-2 bg-[#E0E5EC]/50 soft-inset px-2 py-1.5 rounded-[24px]">
+                <div className="hidden md:flex items-center gap-1">
                     {/* Dashboard (Direct Link) */}
                     <Link
                         to="/dashboard"
-                        className={`flex items-center gap-1.5 px-4 py-2 rounded-2xl text-xs font-bold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#6C63FF]
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors focus-ring
                             ${isActive("/dashboard") 
-                                ? "soft-inset text-[#6C63FF]" 
-                                : "text-[#6B7280] hover:text-[#3D4852] hover:-translate-y-[1px]"
+                                ? "bg-slate-100 text-slate-900" 
+                                : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                             }
                         `}
                     >
-                        <BarChart2 size={15} />
+                        <BarChart2 size={16} />
                         Dashboard
                     </Link>
 
@@ -173,32 +171,29 @@ export default function NavigationBar() {
                                         e.stopPropagation();
                                         setActiveDropdown(prev => prev === group.id ? null : group.id);
                                     }}
-                                    className={`flex items-center gap-1.5 px-4 py-2 rounded-2xl text-xs font-bold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#6C63FF]
+                                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors focus-ring
                                         ${active 
-                                            ? "text-[#6C63FF] font-black" 
-                                            : "text-[#6B7280] hover:text-[#3D4852]"
+                                            ? "text-primary-700 bg-primary-50" 
+                                            : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                                         }
-                                        ${isOpen ? "soft-inset text-[#6C63FF]" : ""}
+                                        ${isOpen ? "bg-slate-100" : ""}
                                     `}
                                 >
                                     {group.icon}
                                     <span>{group.label}</span>
                                     <ChevronDown 
-                                        size={12} 
-                                        className={`transition-transform duration-300 ${isOpen ? "rotate-180 text-[#6C63FF]" : ""}`} 
+                                        size={14} 
+                                        className={`transition-transform duration-200 ${isOpen ? "rotate-180 text-primary-600" : "text-slate-400"}`} 
                                     />
                                 </button>
 
                                 {/* Dropdown Menu Panel */}
                                 {isOpen && (
                                     <div 
-                                        className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-80 bg-[#E0E5EC] rounded-[28px] p-4 soft-extruded border border-white/50 backdrop-blur-md shadow-2xl animate-in fade-in slide-in-from-top-3 duration-200 z-50"
+                                        className="absolute left-0 top-full mt-1 w-72 bg-white rounded-lg shadow-lg border border-slate-200 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150"
                                         onClick={(e) => e.stopPropagation()}
                                     >
-                                        {/* Little arrow indicator */}
-                                        <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#E0E5EC] rotate-45 border-l border-t border-white/50"></div>
-
-                                        <div className="flex flex-col gap-1 relative z-10">
+                                        <div className="flex flex-col">
                                             {group.items.map((item) => {
                                                 const itemActive = isActive(item.path);
                                                 return (
@@ -206,21 +201,19 @@ export default function NavigationBar() {
                                                         key={item.path}
                                                         to={item.path}
                                                         onClick={() => setActiveDropdown(null)}
-                                                        className={`flex items-start gap-3 p-3 rounded-2xl transition-all duration-300 group
+                                                        className={`flex items-start gap-3 px-4 py-2.5 transition-colors group
                                                             ${itemActive 
-                                                                ? "soft-inset text-[#6C63FF]" 
-                                                                : "hover:soft-inset text-[#3D4852] hover:translate-x-0.5"
+                                                                ? "bg-slate-50 text-primary-700" 
+                                                                : "hover:bg-slate-50 text-slate-700"
                                                             }
                                                         `}
                                                     >
-                                                        <span className={`p-2 rounded-xl bg-[#E0E5EC] border border-white/30 shrink-0 
-                                                            ${itemActive ? "soft-inset" : "soft-btn group-hover:soft-inset"}`}
-                                                        >
+                                                        <span className="mt-0.5 shrink-0">
                                                             {item.icon}
                                                         </span>
                                                         <div className="flex flex-col gap-0.5 text-left">
-                                                            <span className="font-extrabold text-xs tracking-tight text-[#3D4852]">{item.label}</span>
-                                                            <span className="text-[10px] text-[#6B7280] leading-snug font-medium">{item.description}</span>
+                                                            <span className={`text-sm font-medium ${itemActive ? 'text-slate-900' : 'text-slate-700 group-hover:text-slate-900'}`}>{item.label}</span>
+                                                            <span className="text-xs text-slate-500 leading-tight">{item.description}</span>
                                                         </div>
                                                     </Link>
                                                 );
@@ -237,21 +230,21 @@ export default function NavigationBar() {
                 <div className="hidden md:flex items-center gap-3">
                     <Link 
                         to="/profile" 
-                        className={`w-10 h-10 rounded-2xl flex items-center justify-center text-lg cursor-pointer overflow-hidden border border-white/20 transition-all duration-300
-                            ${isActive("/profile") ? "soft-inset" : "soft-btn hover:scale-[1.02]"}`}
+                        className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium cursor-pointer overflow-hidden border transition-colors focus-ring
+                            ${isActive("/profile") ? "border-primary-500 ring-2 ring-primary-100" : "border-slate-200 hover:border-slate-300"}`}
                         title="View Profile Settings"
                     >
                         {profileImage ? (
                             <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
                         ) : (
-                            <span className="font-extrabold text-xs text-[#6C63FF] tracking-wider">
-                                {username ? username.slice(0, 2).toUpperCase() : <User size={18} className="text-[#3D4852]" />}
+                            <span className="text-slate-600 bg-slate-100 w-full h-full flex items-center justify-center">
+                                {username ? username.slice(0, 2).toUpperCase() : <User size={16} />}
                             </span>
                         )}
                     </Link>
                     <button
                         onClick={handleLogout}
-                        className="w-10 h-10 rounded-2xl soft-btn flex items-center justify-center text-red-500 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+                        className="w-8 h-8 rounded flex items-center justify-center text-slate-500 hover:text-danger hover:bg-red-50 transition-colors focus-ring"
                         title="Sign Out"
                     >
                         <LogOut size={16} />
@@ -262,7 +255,7 @@ export default function NavigationBar() {
                 <div className="flex md:hidden items-center gap-2">
                     <button
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                        className="w-10 h-10 rounded-xl soft-btn flex items-center justify-center text-[#3D4852]"
+                        className="w-10 h-10 rounded-md flex items-center justify-center text-slate-600 hover:bg-slate-100 focus-ring"
                     >
                         {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
                     </button>
@@ -271,25 +264,24 @@ export default function NavigationBar() {
 
             {/* Mobile Navigation Drawer Overlay */}
             {mobileMenuOpen && (
-                <div className="md:hidden fixed inset-x-0 top-20 bg-[#E0E5EC] border-b border-white/20 soft-extruded p-6 max-h-[calc(100vh-80px)] overflow-y-auto z-40 animate-in slide-in-from-top duration-300">
-                    <div className="flex flex-col gap-4">
+                <div className="md:hidden border-t border-slate-200 bg-white">
+                    <div className="flex flex-col px-4 py-2">
                         
                         {/* Direct Links */}
                         <Link
                             to="/dashboard"
                             onClick={() => setMobileMenuOpen(false)}
-                            className={`flex items-center justify-between p-3.5 rounded-2xl text-xs font-bold transition-all
+                            className={`flex items-center justify-between py-3 px-2 rounded-md text-sm font-medium transition-colors
                                 ${isActive("/dashboard") 
-                                    ? "soft-inset text-[#6C63FF]" 
-                                    : "soft-btn text-[#6B7280]"
+                                    ? "bg-slate-50 text-primary-600" 
+                                    : "text-slate-700"
                                 }
                             `}
                         >
                             <span className="flex items-center gap-2">
-                                <BarChart2 size={16} className={isActive("/dashboard") ? "text-[#6C63FF]" : "text-[#6B7280]"} />
+                                <BarChart2 size={18} className={isActive("/dashboard") ? "text-primary-600" : "text-slate-500"} />
                                 Dashboard
                             </span>
-                            <ChevronRight size={14} />
                         </Link>
 
                         {/* Accordion groups */}
@@ -298,25 +290,24 @@ export default function NavigationBar() {
                             const expanded = mobileExpandedGroup === group.id;
 
                             return (
-                                <div key={group.id} className="flex flex-col gap-1.5">
+                                <div key={group.id} className="flex flex-col border-t border-slate-100 mt-1 pt-1">
                                     <button
                                         type="button"
                                         onClick={() => setMobileExpandedGroup(expanded ? null : group.id)}
-                                        className={`flex items-center justify-between p-3.5 rounded-2xl text-xs font-bold transition-all
-                                            ${active ? "text-[#6C63FF] bg-[#E0E5EC] border border-[#6C63FF]/20" : "soft-btn text-[#6B7280]"}
-                                            ${expanded ? "soft-inset" : ""}
+                                        className={`flex items-center justify-between py-3 px-2 rounded-md text-sm font-medium transition-colors
+                                            ${active ? "text-primary-600 bg-slate-50" : "text-slate-700"}
                                         `}
                                     >
                                         <span className="flex items-center gap-2">
                                             {group.icon}
                                             {group.label}
                                         </span>
-                                        <ChevronDown size={14} className={`transition-transform duration-300 ${expanded ? "rotate-180 text-[#6C63FF]" : ""}`} />
+                                        <ChevronDown size={16} className={`transition-transform duration-200 text-slate-400 ${expanded ? "rotate-180" : ""}`} />
                                     </button>
 
                                     {/* Expanded Accordion Items */}
                                     {expanded && (
-                                        <div className="flex flex-col gap-1.5 pl-4 pr-1 py-1 animate-in fade-in duration-200">
+                                        <div className="flex flex-col pl-4 pb-2 animate-in fade-in duration-200">
                                             {group.items.map((item) => {
                                                 const itemActive = isActive(item.path);
                                                 return (
@@ -324,20 +315,17 @@ export default function NavigationBar() {
                                                         key={item.path}
                                                         to={item.path}
                                                         onClick={() => setMobileMenuOpen(false)}
-                                                        className={`flex items-center gap-3 p-3 rounded-xl transition-all
+                                                        className={`flex items-center gap-3 py-2 px-2 rounded-md transition-colors
                                                             ${itemActive 
-                                                                ? "soft-inset text-[#6C63FF] font-black" 
-                                                                : "hover:soft-inset text-[#3D4852]"
+                                                                ? "text-primary-600 font-medium" 
+                                                                : "text-slate-600"
                                                             }
                                                         `}
                                                     >
-                                                        <span className={`p-1.5 rounded-lg border border-white/20 shrink-0 ${itemActive ? "soft-inset" : "bg-[#E0E5EC]"}`}>
+                                                        <span className="shrink-0">
                                                             {item.icon}
                                                         </span>
-                                                        <div className="flex flex-col">
-                                                            <span className="font-extrabold text-[11px]">{item.label}</span>
-                                                            <span className="text-[9px] text-[#8B95A5] truncate w-56">{item.description}</span>
-                                                        </div>
+                                                        <span className="text-sm">{item.label}</span>
                                                     </Link>
                                                 );
                                             })}
@@ -348,7 +336,7 @@ export default function NavigationBar() {
                         })}
 
                         {/* Divider */}
-                        <div className="h-px bg-white/40 my-2"></div>
+                        <div className="h-px bg-slate-200 my-2"></div>
 
                         {/* Sign Out on Mobile */}
                         <button
@@ -356,9 +344,9 @@ export default function NavigationBar() {
                                 setMobileMenuOpen(false);
                                 handleLogout();
                             }}
-                            className="flex items-center gap-2 p-3.5 rounded-2xl soft-btn text-red-500 font-bold text-xs justify-center"
+                            className="flex items-center gap-2 py-3 px-2 text-danger font-medium text-sm"
                         >
-                            <LogOut size={16} />
+                            <LogOut size={18} />
                             Sign Out
                         </button>
                     </div>
@@ -367,4 +355,3 @@ export default function NavigationBar() {
         </nav>
     );
 }
-

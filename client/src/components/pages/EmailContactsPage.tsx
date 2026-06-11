@@ -106,49 +106,49 @@ export default function EmailContactsPage() {
     );
 
     return (
-        <div className="min-h-screen bg-[#E0E5EC] text-[#3D4852] font-sans flex flex-col">
+        <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col">
             <NavigationBar />
             
             <main className="flex-1 max-w-7xl mx-auto w-full p-6 md:p-10 relative z-10 flex flex-col gap-8">
                 <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
                         <h1 className="text-4xl font-extrabold tracking-tight flex items-center gap-3">
-                            <span className="w-12 h-12 rounded-2xl soft-inset flex items-center justify-center">
+                            <span className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-center">
                                 <Users size={24} className="text-[#3B82F6]" />
                             </span>
                             Contact List
                         </h1>
-                        <p className="text-[#6B7280] mt-2 font-medium">Manage your email recipients and import bulk lists.</p>
+                        <p className="text-slate-500 mt-2 font-medium">Manage your email recipients and import bulk lists.</p>
                     </div>
                 </header>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {/* Import Section */}
-                    <div className="col-span-1 soft-extruded rounded-[32px] p-8 flex flex-col gap-6">
+                    <div className="col-span-1 bg-white border border-slate-200 shadow-sm rounded-xl rounded-[32px] p-8 flex flex-col gap-6">
                         <h2 className="text-xl font-bold flex items-center gap-2">
-                            <UploadCloud size={20} className="text-[#6C63FF]" /> Import Contacts
+                            <UploadCloud size={20} className="text-primary-600" /> Import Contacts
                         </h2>
                         <div className="flex flex-col gap-4">
-                            <p className="text-sm text-[#6B7280]">Upload a CSV or Excel file containing your contacts. Ensure there is an 'email' column.</p>
+                            <p className="text-sm text-slate-500">Upload a CSV or Excel file containing your contacts. Ensure there is an 'email' column.</p>
                             
                             <button 
                                 onClick={downloadSample}
-                                className="text-sm text-[#6C63FF] hover:underline flex items-center gap-1 font-bold w-fit"
+                                className="text-sm text-primary-600 hover:underline flex items-center gap-1 font-bold w-fit"
                             >
                                 <Download size={14} /> Download Sample CSV
                             </button>
 
-                            <div className="soft-inset p-4 rounded-2xl flex flex-col gap-4">
+                            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 rounded-2xl flex flex-col gap-4">
                                 <input 
                                     type="file" 
                                     accept=".csv, .xls, .xlsx"
                                     onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)}
-                                    className="text-sm w-full file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-[#E0E5EC] file:text-[#6C63FF] file:soft-extruded hover:file:soft-inset transition-all"
+                                    className="text-sm w-full file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-slate-50 file:text-primary-600 file:bg-white border border-slate-200 shadow-sm rounded-xl hover:file:bg-slate-50 border border-slate-200 rounded-xl transition-all"
                                 />
                                 <button 
                                     onClick={handleUpload}
                                     disabled={!file || uploading}
-                                    className="w-full py-3 rounded-xl soft-btn-primary font-bold shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                    className="w-full py-3 rounded-xl inline-flex items-center justify-center font-medium bg-primary-600 text-white hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 font-bold shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                 >
                                     {uploading ? (
                                         <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full" />
@@ -163,32 +163,32 @@ export default function EmailContactsPage() {
                     </div>
 
                     {/* Contacts Table Section */}
-                    <div className="col-span-1 md:col-span-2 soft-extruded rounded-[32px] p-8 flex flex-col gap-6 overflow-hidden">
+                    <div className="col-span-1 md:col-span-2 bg-white border border-slate-200 shadow-sm rounded-xl rounded-[32px] p-8 flex flex-col gap-6 overflow-hidden">
                         <div className="flex justify-between items-center">
                             <h2 className="text-xl font-bold flex items-center gap-2">
-                                <Users size={20} className="text-[#3D4852]" /> Contacts ({filteredContacts.length})
+                                <Users size={20} className="text-slate-900" /> Contacts ({filteredContacts.length})
                             </h2>
                             <div className="relative">
-                                <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#6B7280]" />
+                                <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
                                 <input
                                     type="text"
                                     placeholder="Search contacts..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="pl-10 pr-4 py-2 bg-transparent soft-inset rounded-full text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C63FF] w-64"
+                                    className="pl-10 pr-4 py-2 bg-transparent bg-slate-50 border border-slate-200 rounded-xl rounded-full text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 w-64"
                                 />
                             </div>
                         </div>
 
-                        <div className="flex-1 overflow-auto rounded-2xl soft-inset p-2">
+                        <div className="flex-1 overflow-auto rounded-2xl bg-slate-50 border border-slate-200 rounded-xl p-2">
                             {loading ? (
-                                <div className="h-40 flex items-center justify-center text-[#6B7280] font-bold">Loading...</div>
+                                <div className="h-40 flex items-center justify-center text-slate-500 font-bold">Loading...</div>
                             ) : filteredContacts.length === 0 ? (
-                                <div className="h-40 flex items-center justify-center text-[#6B7280] font-bold">No contacts found.</div>
+                                <div className="h-40 flex items-center justify-center text-slate-500 font-bold">No contacts found.</div>
                             ) : (
                                 <table className="w-full text-left text-sm whitespace-nowrap">
                                     <thead>
-                                        <tr className="text-[#6B7280] border-b border-white/20">
+                                        <tr className="text-slate-500 border-b border-white/20">
                                             <th className="px-4 py-3 font-bold">Name</th>
                                             <th className="px-4 py-3 font-bold">Email</th>
                                             <th className="px-4 py-3 font-bold">Company</th>
@@ -198,12 +198,12 @@ export default function EmailContactsPage() {
                                     </thead>
                                     <tbody>
                                         {filteredContacts.map(c => (
-                                            <tr key={c.id} className="border-b border-white/10 hover:bg-[#E0E5EC]/50 transition-colors">
-                                                <td className="px-4 py-3 font-bold text-[#3D4852]">
+                                            <tr key={c.id} className="border-b border-white/10 hover:bg-slate-50/50 transition-colors">
+                                                <td className="px-4 py-3 font-bold text-slate-900">
                                                     {c.first_name || c.last_name ? `${c.first_name || ""} ${c.last_name || ""}` : "—"}
                                                 </td>
-                                                <td className="px-4 py-3 text-[#6B7280]">{c.email}</td>
-                                                <td className="px-4 py-3 text-[#6B7280]">{c.company_name || "—"}</td>
+                                                <td className="px-4 py-3 text-slate-500">{c.email}</td>
+                                                <td className="px-4 py-3 text-slate-500">{c.company_name || "—"}</td>
                                                 <td className="px-4 py-3">
                                                     {c.is_unsubscribed ? (
                                                         <span className="px-2 py-1 bg-red-100 text-red-600 rounded-lg text-xs font-bold">Unsubscribed</span>
@@ -214,7 +214,7 @@ export default function EmailContactsPage() {
                                                 <td className="px-4 py-3 text-right">
                                                     <button 
                                                         onClick={() => handleDelete(c.id)}
-                                                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                                        className="p-2 text-danger hover:bg-red-50 rounded-lg transition-colors"
                                                         title="Delete Contact"
                                                     >
                                                         <Trash2 size={16} />

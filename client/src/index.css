@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,285 +6,39 @@
 
 @layer base {
   body {
-    background-color: #E0E5EC;
-    color: #3D4852;
-    font-family: 'DM Sans', sans-serif;
+    @apply bg-slate-50 text-slate-900 font-sans antialiased;
     overflow-x: hidden;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    color: #3D4852;
-    font-weight: 700;
+    @apply font-bold tracking-tight text-slate-900;
   }
 }
 
-/* Custom Soft UI Utilities */
-.soft-extruded {
-  background-color: #E0E5EC;
-  box-shadow: 9px 9px 16px rgba(163, 177, 198, 0.6), -9px -9px 16px rgba(255, 255, 255, 0.5);
+@layer utilities {
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  }
+  
+  /* Platform Brand Colors for Social specific integrations */
+  .platform-meta { color: #1877F2; }
+  .platform-twitter { color: #000000; }
+  .platform-linkedin { color: #0A66C2; }
+  .platform-youtube { color: #FF0000; }
+  .platform-tiktok { color: #000000; }
+  .platform-pinterest { color: #E60023; }
+
+  .platform-bg-meta { background-color: rgba(24, 119, 242, 0.1); }
+  .platform-bg-twitter { background-color: rgba(0, 0, 0, 0.05); }
+  .platform-bg-linkedin { background-color: rgba(10, 102, 194, 0.1); }
+  .platform-bg-youtube { background-color: rgba(255, 0, 0, 0.1); }
+  .platform-bg-tiktok { background-color: rgba(0, 0, 0, 0.05); }
+  .platform-bg-pinterest { background-color: rgba(230, 0, 35, 0.1); }
 }
 
-.soft-extruded-hover {
-  transition: all 0.3s ease-out;
-}
-.soft-extruded-hover:hover {
-  box-shadow: 12px 12px 20px rgba(163, 177, 198, 0.7), -12px -12px 20px rgba(255, 255, 255, 0.6);
-  transform: translateY(-2px);
+/* Base custom styles to ensure simple transitions */
+.transition-smooth {
+  transition: all 0.2s ease-in-out;
 }
 
-.soft-extruded-sm {
-  background-color: #E0E5EC;
-  box-shadow: 5px 5px 10px rgba(163, 177, 198, 0.6), -5px -5px 10px rgba(255, 255, 255, 0.5);
-}
-
-.soft-inset {
-  background-color: #E0E5EC;
-  box-shadow: inset 6px 6px 10px rgba(163, 177, 198, 0.6), inset -6px -6px 10px rgba(255, 255, 255, 0.5);
-}
-
-.soft-inset-deep {
-  background-color: #E0E5EC;
-  box-shadow: inset 10px 10px 20px rgba(163, 177, 198, 0.7), inset -10px -10px 20px rgba(255, 255, 255, 0.6);
-}
-
-.soft-inset-sm {
-  background-color: #E0E5EC;
-  box-shadow: inset 3px 3px 6px rgba(163, 177, 198, 0.6), inset -3px -3px 6px rgba(255, 255, 255, 0.5);
-}
-
-/* Button micro-interactions */
-.soft-btn {
-  background-color: #E0E5EC;
-  box-shadow: 6px 6px 12px rgba(163, 177, 198, 0.6), -6px -6px 12px rgba(255, 255, 255, 0.5);
-  color: #3D4852;
-  transition: all 0.2s ease-out;
-}
-.soft-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 8px 8px 16px rgba(163, 177, 198, 0.7), -8px -8px 16px rgba(255, 255, 255, 0.6);
-}
-.soft-btn:active {
-  transform: translateY(0.5px);
-  box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6), inset -4px -4px 8px rgba(255, 255, 255, 0.5);
-}
-
-.soft-btn-primary {
-  background-color: #6C63FF;
-  box-shadow: 6px 6px 12px rgba(108, 99, 255, 0.3), -6px -6px 12px rgba(255, 255, 255, 0.5);
-  color: #FFFFFF;
-  transition: all 0.2s ease-out;
-}
-.soft-btn-primary:hover {
-  background-color: #8B84FF;
-  transform: translateY(-1px);
-  box-shadow: 8px 8px 16px rgba(108, 99, 255, 0.4), -8px -8px 16px rgba(255, 255, 255, 0.6);
-}
-.soft-btn-primary:active {
-  transform: translateY(0.5px);
-  box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.3), inset -4px -4px 8px rgba(255, 255, 255, 0.2);
-}
-
-/* Ambient animations */
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
-
-.animate-float {
-  animation: float 3s ease-in-out infinite;
-}
-
-/* ─── Social Media Integration Utilities ─── */
-
-/* Status Badges */
-.soft-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 14px;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.soft-badge-blue {
-  background: rgba(99, 141, 255, 0.15);
-  color: #638DFF;
-}
-.soft-badge-amber {
-  background: rgba(245, 158, 11, 0.15);
-  color: #D97706;
-}
-.soft-badge-green {
-  background: rgba(16, 185, 129, 0.15);
-  color: #059669;
-}
-.soft-badge-red {
-  background: rgba(239, 68, 68, 0.15);
-  color: #DC2626;
-}
-.soft-badge-gray {
-  background: rgba(107, 114, 128, 0.12);
-  color: #6B7280;
-}
-.soft-badge-purple {
-  background: rgba(108, 99, 255, 0.15);
-  color: #6C63FF;
-}
-
-/* Calendar */
-.soft-calendar-cell {
-  background-color: #E0E5EC;
-  box-shadow: 3px 3px 6px rgba(163, 177, 198, 0.5), -3px -3px 6px rgba(255, 255, 255, 0.4);
-  border-radius: 16px;
-  padding: 8px;
-  min-height: 80px;
-  transition: all 0.2s ease-out;
-  cursor: pointer;
-}
-.soft-calendar-cell:hover {
-  box-shadow: 5px 5px 10px rgba(163, 177, 198, 0.6), -5px -5px 10px rgba(255, 255, 255, 0.5);
-  transform: translateY(-1px);
-}
-.soft-calendar-cell.today {
-  box-shadow: inset 4px 4px 8px rgba(108, 99, 255, 0.15), inset -4px -4px 8px rgba(255, 255, 255, 0.5);
-  border: 2px solid rgba(108, 99, 255, 0.3);
-}
-
-/* Drag & Drop Zone */
-.soft-dropzone {
-  background-color: #E0E5EC;
-  box-shadow: inset 6px 6px 10px rgba(163, 177, 198, 0.5), inset -6px -6px 10px rgba(255, 255, 255, 0.4);
-  border: 2px dashed rgba(108, 99, 255, 0.25);
-  border-radius: 24px;
-  padding: 32px;
-  text-align: center;
-  transition: all 0.3s ease-out;
-  cursor: pointer;
-}
-.soft-dropzone:hover,
-.soft-dropzone.active {
-  border-color: rgba(108, 99, 255, 0.5);
-  box-shadow: inset 8px 8px 14px rgba(163, 177, 198, 0.6), inset -8px -8px 14px rgba(255, 255, 255, 0.5);
-}
-
-/* Platform Brand Colors */
-.platform-meta { color: #1877F2; }
-.platform-twitter { color: #000000; }
-.platform-linkedin { color: #0A66C2; }
-.platform-youtube { color: #FF0000; }
-.platform-tiktok { color: #00F2EA; }
-.platform-pinterest { color: #E60023; }
-
-.platform-bg-meta { background-color: rgba(24, 119, 242, 0.12); }
-.platform-bg-twitter { background-color: rgba(0, 0, 0, 0.08); }
-.platform-bg-linkedin { background-color: rgba(10, 102, 194, 0.12); }
-.platform-bg-youtube { background-color: rgba(255, 0, 0, 0.1); }
-.platform-bg-tiktok { background-color: rgba(0, 242, 234, 0.1); }
-.platform-bg-pinterest { background-color: rgba(230, 0, 35, 0.1); }
-
-/* Tabs */
-.soft-tab {
-  padding: 10px 24px;
-  border-radius: 16px;
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: #6B7280;
-  cursor: pointer;
-  transition: all 0.2s ease-out;
-  border: none;
-  background: transparent;
-}
-.soft-tab:hover {
-  color: #3D4852;
-}
-.soft-tab.active {
-  background-color: #E0E5EC;
-  box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6), inset -4px -4px 8px rgba(255, 255, 255, 0.5);
-  color: #6C63FF;
-}
-
-/* Soft input field */
-.soft-input {
-  background-color: #E0E5EC;
-  box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.5), inset -4px -4px 8px rgba(255, 255, 255, 0.4);
-  border: none;
-  border-radius: 16px;
-  padding: 12px 18px;
-  font-size: 0.875rem;
-  color: #3D4852;
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 500;
-  outline: none;
-  transition: box-shadow 0.2s ease;
-  width: 100%;
-}
-.soft-input:focus {
-  box-shadow: inset 6px 6px 12px rgba(163, 177, 198, 0.6), inset -6px -6px 12px rgba(255, 255, 255, 0.5),
-              0 0 0 3px rgba(108, 99, 255, 0.2);
-}
-.soft-input::placeholder {
-  color: #9CA3AF;
-}
-
-/* Textarea variant */
-.soft-textarea {
-  resize: vertical;
-  min-height: 100px;
-}
-
-/* Soft Checkbox */
-.soft-checkbox {
-  appearance: none;
-  width: 22px;
-  height: 22px;
-  border-radius: 8px;
-  background-color: #E0E5EC;
-  box-shadow: inset 3px 3px 6px rgba(163, 177, 198, 0.5), inset -3px -3px 6px rgba(255, 255, 255, 0.4);
-  cursor: pointer;
-  position: relative;
-  transition: all 0.2s;
-}
-.soft-checkbox:checked {
-  background-color: #6C63FF;
-  box-shadow: 2px 2px 4px rgba(108, 99, 255, 0.3), -2px -2px 4px rgba(255, 255, 255, 0.3);
-}
-.soft-checkbox:checked::after {
-  content: '✓';
-  color: white;
-  font-size: 14px;
-  font-weight: 700;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-/* Soft transition utility */
-.soft-transition {
-  transition: all 0.3s ease-out;
-}
-
-/* Pulse animation for live indicators */
-@keyframes soft-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-.animate-soft-pulse {
-  animation: soft-pulse 2s ease-in-out infinite;
-}
-
-/* Skeleton loader */
-.soft-skeleton {
-  background: linear-gradient(90deg, #E0E5EC 25%, #d3d8df 50%, #E0E5EC 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: 12px;
-}
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
+/* We will rely entirely on Tailwind Utility classes for standard components (Buttons, Inputs, Cards). No custom `.soft-*` classes anymore. */

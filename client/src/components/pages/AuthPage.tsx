@@ -5,6 +5,9 @@ import {
   Building2, ArrowRight, Loader2,
   AlertCircle, CheckCircle2, BarChart3, Brain, Target
 } from "lucide-react";
+import Input from "../UI/Input";
+import Button from "../UI/Button";
+import Card from "../UI/Card";
 
 const FEATURES = [
   { icon: BarChart3, label: "AI-Driven Analytics" },
@@ -12,50 +15,6 @@ const FEATURES = [
   { icon: Target,    label: "Strategy Planning" },
 ];
 
-// ─── Neumorphic Input ─────────────────────────────────────────────────────────
-function NeoInput({
-  id, label, type = "text", value, onChange,
-  placeholder, icon: Icon, required = false, rightEl,
-}: {
-  id: string; label: string; type?: string; value: string;
-  onChange: (v: string) => void; placeholder: string;
-  icon: React.ElementType; required?: boolean;
-  rightEl?: React.ReactNode;
-}) {
-  return (
-    <div className="space-y-2">
-      <label htmlFor={id} className="block text-xs font-extrabold uppercase tracking-widest text-[#6B7280]">
-        {label}
-      </label>
-      <div className="relative">
-        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#A0AEC0] pointer-events-none">
-          <Icon size={16} />
-        </span>
-        <input
-          id={id}
-          type={type}
-          required={required}
-          value={value}
-          onChange={e => onChange(e.target.value)}
-          placeholder={placeholder}
-          className="
-            w-full soft-inset-deep bg-transparent rounded-2xl
-            pl-11 pr-12 py-3.5 text-sm text-[#3D4852]
-            placeholder-[#A0AEC0] font-medium
-            focus:outline-none focus:ring-2 focus:ring-[#6C63FF]
-            focus:ring-offset-2 focus:ring-offset-[#E0E5EC]
-            transition-all duration-200
-          "
-        />
-        {rightEl && (
-          <span className="absolute right-4 top-1/2 -translate-y-1/2">{rightEl}</span>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// ─── Main Component ───────────────────────────────────────────────────────────
 export default function AuthPage() {
   const [isLogin,    setIsLogin]    = useState(true);
   const [email,      setEmail]      = useState("");
@@ -107,176 +66,144 @@ export default function AuthPage() {
   const switchMode = () => { setIsLogin(v => !v); setError(""); setSuccess(""); };
 
   return (
-    <div className="min-h-screen bg-[#E0E5EC] flex items-center justify-center p-4 font-sans relative overflow-hidden">
-
-      {/* Ambient blobs — same style as rest of app */}
-      <div className="absolute top-[-8%] left-[-6%] w-[420px] h-[420px] rounded-full soft-extruded opacity-30 pointer-events-none" />
-      <div className="absolute bottom-[-8%] right-[-6%] w-[380px] h-[380px] rounded-full soft-inset opacity-20 pointer-events-none" />
-
-      {/* ── Card ─────────────────────────────────────────────────────── */}
-      <div className="w-full max-w-[920px] soft-extruded rounded-[40px] overflow-hidden flex flex-col md:flex-row relative z-10">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 font-sans">
+      <div className="w-full max-w-[1000px] bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row border border-slate-200">
 
         {/* ── LEFT — Brand Panel ──────────────────────────────────────── */}
-        <div className="md:w-[42%] bg-[#6C63FF] relative flex flex-col justify-between p-10 overflow-hidden">
-
-          {/* Decorative circles */}
-          <div className="absolute top-[-60px] right-[-60px] w-64 h-64 rounded-full bg-white/10 pointer-events-none" />
-          <div className="absolute bottom-[-80px] left-[-40px] w-72 h-72 rounded-full bg-white/5 pointer-events-none" />
-          <div className="absolute top-[40%] left-[60%] w-32 h-32 rounded-full bg-white/8 pointer-events-none" />
-
+        <div className="md:w-[45%] bg-primary-900 relative flex flex-col justify-between p-10 lg:p-12 overflow-hidden">
           {/* Logo */}
           <div className="relative z-10">
-            <div className="flex items-center gap-3 mb-12">
-              <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-sm">
+            <div className="flex items-center gap-3 mb-16">
+              <div className="w-10 h-10 rounded-lg bg-primary-600 flex items-center justify-center shadow-sm">
                 <Zap size={20} className="text-white" />
               </div>
-              <span className="text-white font-extrabold text-xl tracking-tight">
-                Marketing<span className="opacity-70">OS</span>
+              <span className="text-white font-bold text-xl tracking-tight">
+                Fasto<span className="text-primary-400">Click</span>
               </span>
             </div>
 
-            <h2 className="text-3xl font-extrabold text-white leading-tight tracking-tight mb-4">
-              Your AI-powered<br />marketing hub.
+            <h2 className="text-3xl lg:text-4xl font-bold text-white leading-tight tracking-tight mb-6">
+              The professional<br />marketing hub.
             </h2>
-            <p className="text-white/60 text-sm leading-relaxed">
-              Automate strategy, run agentic campaigns, and gain real-time insights — all in one workspace.
+            <p className="text-primary-100 text-base leading-relaxed">
+              Automate strategy, run agentic campaigns, and gain real-time insights — all in one enterprise workspace.
             </p>
           </div>
 
           {/* Features */}
-          <div className="relative z-10 space-y-4">
+          <div className="relative z-10 space-y-5 mt-12">
             {FEATURES.map(({ icon: Icon, label }) => (
-              <div key={label} className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
-                  <Icon size={16} className="text-white" />
+              <div key={label} className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-lg bg-primary-800/50 border border-primary-700 flex items-center justify-center flex-shrink-0">
+                  <Icon size={18} className="text-primary-300" />
                 </div>
-                <span className="text-white/80 text-sm font-semibold">{label}</span>
+                <span className="text-white text-sm font-medium">{label}</span>
               </div>
             ))}
           </div>
 
-          {/* Bottom badge */}
-          <div className="relative z-10">
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-              <div className="w-2 h-2 rounded-full bg-green-300 animate-pulse" />
-              <span className="text-white/70 text-xs font-medium">AI agents active 24/7</span>
-            </div>
-          </div>
+          {/* Background decoration */}
+          <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-primary-800/50 blur-3xl" />
+          <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-primary-800/50 blur-3xl" />
         </div>
 
         {/* ── RIGHT — Form Panel ──────────────────────────────────────── */}
-        <div className="flex-1 flex flex-col justify-center p-10 bg-[#E0E5EC]">
+        <div className="flex-1 flex flex-col justify-center p-10 lg:p-16 bg-white relative">
 
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-2xl font-extrabold text-[#3D4852] tracking-tight">
-              {isLogin ? "Welcome back 👋" : "Get started free"}
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+              {isLogin ? "Welcome back" : "Create your account"}
             </h1>
-            <p className="text-[#6B7280] text-sm font-medium mt-1">
+            <p className="text-slate-500 text-sm mt-2">
               {isLogin
-                ? "Sign in to continue to your workspace."
-                : "Create your account and workspace in seconds."}
+                ? "Enter your credentials to access your workspace."
+                : "Join FastoClick to start managing your marketing campaigns."}
             </p>
-          </div>
-
-          {/* Tab Toggle */}
-          <div className="flex soft-inset rounded-2xl p-1.5 gap-1.5 mb-7">
-            {[{ label: "Sign In", val: true }, { label: "Sign Up", val: false }].map(({ label, val }) => (
-              <button
-                key={label}
-                type="button"
-                onClick={() => { setIsLogin(val); setError(""); setSuccess(""); }}
-                className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 ${
-                  isLogin === val
-                    ? "soft-extruded-sm text-[#6C63FF]"
-                    : "text-[#A0AEC0] hover:text-[#6B7280]"
-                }`}
-              >
-                {label}
-              </button>
-            ))}
           </div>
 
           {/* Alerts */}
           {error && (
-            <div className="flex items-center gap-3 soft-inset px-4 py-3 rounded-2xl mb-5 text-sm font-semibold text-red-500">
-              <AlertCircle size={16} className="flex-shrink-0" />
+            <div className="flex items-center gap-2 p-4 bg-red-50 border border-red-200 rounded-md mb-6 text-sm text-danger">
+              <AlertCircle size={16} className="shrink-0" />
               {error}
             </div>
           )}
           {success && (
-            <div className="flex items-center gap-3 soft-inset px-4 py-3 rounded-2xl mb-5 text-sm font-semibold text-teal-600">
-              <CheckCircle2 size={16} className="flex-shrink-0" />
+            <div className="flex items-center gap-2 p-4 bg-green-50 border border-green-200 rounded-md mb-6 text-sm text-success">
+              <CheckCircle2 size={16} className="shrink-0" />
               {success}
             </div>
           )}
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
 
             {/* Signup-only fields */}
             {!isLogin && (
-              <>
-                <NeoInput
-                  id="tenantName" label="Workspace / Company Name"
-                  value={tenantName} onChange={setTenantName}
-                  placeholder="Acme Corp" icon={Building2} required
+              <div className="space-y-5">
+                <Input
+                  id="tenantName" label="Workspace Name"
+                  value={tenantName} onChange={e => setTenantName(e.target.value)}
+                  placeholder="Acme Corp" required
                 />
-                <NeoInput
+                <Input
                   id="email" label="Email Address" type="email"
-                  value={email} onChange={setEmail}
-                  placeholder="you@example.com" icon={Mail} required
+                  value={email} onChange={e => setEmail(e.target.value)}
+                  placeholder="you@example.com" required
                 />
-              </>
+              </div>
             )}
 
-            <NeoInput
+            <Input
               id="username" label="Username"
-              value={username} onChange={setUsername}
-              placeholder="username123" icon={User} required
+              value={username} onChange={e => setUsername(e.target.value)}
+              placeholder="username" required
             />
 
-            <NeoInput
-              id="password" label="Password"
-              type={showPass ? "text" : "password"}
-              value={password} onChange={setPassword}
-              placeholder="••••••••" icon={Lock} required
-              rightEl={
-                <button
-                  type="button"
-                  onClick={() => setShowPass(v => !v)}
-                  className="text-[#A0AEC0] hover:text-[#6B7280] transition-colors focus:outline-none"
-                  tabIndex={-1}
-                >
-                  {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
-                </button>
-              }
-            />
+            <div className="relative">
+              <Input
+                id="password" label="Password"
+                type={showPass ? "text" : "password"}
+                value={password} onChange={e => setPassword(e.target.value)}
+                placeholder="••••••••" required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPass(v => !v)}
+                className="absolute right-3 top-8 text-slate-400 hover:text-slate-600 transition-colors focus:outline-none"
+                tabIndex={-1}
+              >
+                {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
 
             {/* Submit */}
-            <button
+            <Button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 py-3.5 soft-btn-primary rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              fullWidth
+              size="lg"
+              className="mt-6"
             >
               {loading
-                ? <><Loader2 size={16} className="animate-spin" />Processing…</>
-                : <>{isLogin ? "Sign In" : "Create Account"}<ArrowRight size={16} /></>
+                ? <><Loader2 size={18} className="animate-spin mr-2" />Processing...</>
+                : <>{isLogin ? "Sign In" : "Create Account"}</>
               }
-            </button>
+            </Button>
           </form>
 
           {/* Switch mode */}
-          <p className="text-center text-sm text-[#6B7280] font-medium mt-6">
+          <div className="mt-8 text-center text-sm text-slate-500 border-t border-slate-100 pt-8">
             {isLogin ? "Don't have an account? " : "Already have an account? "}
             <button
               type="button"
               onClick={switchMode}
-              className="text-[#6C63FF] font-bold hover:underline focus:outline-none transition-colors"
+              className="text-primary-600 font-medium hover:text-primary-700 transition-colors"
             >
               {isLogin ? "Sign up free" : "Sign in"}
             </button>
-          </p>
+          </div>
         </div>
       </div>
     </div>

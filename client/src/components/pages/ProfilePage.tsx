@@ -164,20 +164,20 @@ export default function ProfilePage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#E0E5EC] flex items-center justify-center">
-                <div className="animate-spin h-10 w-10 border-4 border-[#6C63FF] border-t-transparent rounded-full"></div>
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+                <div className="animate-spin h-10 w-10 border-4 border-primary-600 border-t-transparent rounded-full"></div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#E0E5EC] text-[#3D4852] font-sans flex flex-col relative pb-12">
+        <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col relative pb-12">
             <NavigationBar />
 
             {/* Background design accents */}
-            <div className="absolute top-20 left-10 w-80 h-80 rounded-full soft-inset pointer-events-none opacity-20 flex items-center justify-center">
-                <div className="w-56 h-56 rounded-full soft-extruded flex items-center justify-center">
-                    <div className="w-28 h-28 rounded-full soft-inset"></div>
+            <div className="absolute top-20 left-10 w-80 h-80 rounded-full bg-slate-50 border border-slate-200 rounded-xl pointer-events-none opacity-20 flex items-center justify-center">
+                <div className="w-56 h-56 rounded-full bg-white border border-slate-200 shadow-sm rounded-xl flex items-center justify-center">
+                    <div className="w-28 h-28 rounded-full bg-slate-50 border border-slate-200 rounded-xl"></div>
                 </div>
             </div>
 
@@ -186,7 +186,7 @@ export default function ProfilePage() {
                 <div className="flex flex-col gap-4 mb-8">
                     <Link 
                         to="/dashboard" 
-                        className="flex items-center gap-2 text-xs font-bold text-[#6B7280] hover:text-[#6C63FF] transition-all soft-btn w-fit px-4 py-2.5 rounded-xl"
+                        className="flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-primary-600 transition-all inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 w-fit px-4 py-2.5 rounded-xl"
                     >
                         <ArrowLeft size={14} />
                         Back to Dashboard
@@ -194,25 +194,25 @@ export default function ProfilePage() {
                     <div>
                         <h1 className="text-3xl font-extrabold tracking-tight flex items-center gap-2">
                             Profile Settings
-                            <Sparkles size={20} className="text-[#6C63FF]" />
+                            <Sparkles size={20} className="text-primary-600" />
                         </h1>
-                        <p className="text-sm text-[#6B7280] font-medium mt-1">Configure your default timezone and professional profile details</p>
+                        <p className="text-sm text-slate-500 font-medium mt-1">Configure your default timezone and professional profile details</p>
                     </div>
                 </div>
 
                 {/* Main Settings Card */}
-                <div className="soft-extruded rounded-[36px] p-8 md:p-12">
+                <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[36px] p-8 md:p-12">
                     <form onSubmit={handleSave} className="space-y-8">
                         
                         {/* Status Banners */}
                         {successMsg && (
-                            <div className="soft-inset bg-emerald-50 text-emerald-600 p-4 rounded-2xl flex items-center gap-3 text-xs font-bold border border-emerald-100 animate-in fade-in duration-300">
+                            <div className="bg-slate-50 border border-slate-200 rounded-xl bg-emerald-50 text-emerald-600 p-4 rounded-2xl flex items-center gap-3 text-xs font-bold border border-emerald-100 animate-in fade-in duration-300">
                                 <Check size={18} className="shrink-0" />
                                 <span>{successMsg}</span>
                             </div>
                         )}
                         {errorMsg && (
-                            <div className="soft-inset bg-red-50 text-red-500 p-4 rounded-2xl flex items-center gap-3 text-xs font-bold border border-red-100 animate-in fade-in duration-300">
+                            <div className="bg-slate-50 border border-slate-200 rounded-xl bg-red-50 text-danger p-4 rounded-2xl flex items-center gap-3 text-xs font-bold border border-red-100 animate-in fade-in duration-300">
                                 <AlertCircle size={18} className="shrink-0" />
                                 <span>{errorMsg}</span>
                             </div>
@@ -222,7 +222,7 @@ export default function ProfilePage() {
                         <div className="flex flex-col items-center justify-center gap-4 py-4">
                             <div 
                                 onClick={triggerFileInput}
-                                className="group relative w-36 h-36 rounded-full soft-extruded flex items-center justify-center cursor-pointer overflow-hidden border-4 border-white/20 transition-all duration-300 hover:scale-[1.02]"
+                                className="group relative w-36 h-36 rounded-full bg-white border border-slate-200 shadow-sm rounded-xl flex items-center justify-center cursor-pointer overflow-hidden border-4 border-white/20 transition-all duration-300 hover:scale-[1.02]"
                                 title="Click to upload profile photo"
                             >
                                 {imagePreview ? (
@@ -232,7 +232,7 @@ export default function ProfilePage() {
                                         className="w-full h-full object-cover rounded-full"
                                     />
                                 ) : (
-                                    <div className="w-full h-full bg-[#E0E5EC] flex items-center justify-center font-black text-3xl text-[#6C63FF] tracking-widest soft-inset rounded-full">
+                                    <div className="w-full h-full bg-slate-50 flex items-center justify-center font-black text-3xl text-primary-600 tracking-widest bg-slate-50 border border-slate-200 rounded-xl rounded-full">
                                         {getUserInitials()}
                                     </div>
                                 )}
@@ -260,7 +260,7 @@ export default function ProfilePage() {
                             
                             {/* Username (Disabled) */}
                             <div className="flex flex-col gap-2">
-                                <label className="text-xs font-black uppercase tracking-wider text-[#6B7280] ml-1">Username</label>
+                                <label className="text-xs font-black uppercase tracking-wider text-slate-500 ml-1">Username</label>
                                 <div className="relative">
                                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B95A5]">
                                         <User size={16} />
@@ -269,14 +269,14 @@ export default function ProfilePage() {
                                         type="text" 
                                         value={user?.username || ""} 
                                         disabled
-                                        className="soft-input pl-12 bg-white/20 text-[#8B95A5] cursor-not-allowed select-none"
+                                        className="flex w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50 pl-12 bg-white/20 text-[#8B95A5] cursor-not-allowed select-none"
                                     />
                                 </div>
                             </div>
 
                             {/* Email Address (Disabled) */}
                             <div className="flex flex-col gap-2">
-                                <label className="text-xs font-black uppercase tracking-wider text-[#6B7280] ml-1">Email Address</label>
+                                <label className="text-xs font-black uppercase tracking-wider text-slate-500 ml-1">Email Address</label>
                                 <div className="relative">
                                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B95A5]">
                                         <Mail size={16} />
@@ -285,22 +285,22 @@ export default function ProfilePage() {
                                         type="email" 
                                         value={user?.email || ""} 
                                         disabled
-                                        className="soft-input pl-12 bg-white/20 text-[#8B95A5] cursor-not-allowed select-none"
+                                        className="flex w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50 pl-12 bg-white/20 text-[#8B95A5] cursor-not-allowed select-none"
                                     />
                                 </div>
                             </div>
                             
                             {/* Timezone (Selectable) */}
                             <div className="flex flex-col gap-2 md:col-span-2">
-                                <label className="text-xs font-black uppercase tracking-wider text-[#6B7280] ml-1">Default Post Timezone</label>
+                                <label className="text-xs font-black uppercase tracking-wider text-slate-500 ml-1">Default Post Timezone</label>
                                 <div className="relative">
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#6C63FF]">
+                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-primary-600">
                                         <Globe size={16} className="animate-spin duration-1000" style={{ animationDuration: "12s" }} />
                                     </span>
                                     <select 
                                         value={timezone}
                                         onChange={(e) => setTimezone(e.target.value)}
-                                        className="soft-input pl-12 pr-10 cursor-pointer focus:border-[#6C63FF]"
+                                        className="flex w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50 pl-12 pr-10 cursor-pointer focus:border-primary-600"
                                     >
                                         <option value="UTC">UTC (Coordinated Universal Time)</option>
                                         <option value="America/New_York">Eastern Time (New York, Miami, Toronto)</option>
@@ -327,16 +327,16 @@ export default function ProfilePage() {
                             <button
                                 type="submit"
                                 disabled={saving}
-                                className={`flex items-center gap-2 px-8 py-4 rounded-2xl font-bold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#6C63FF]
+                                className={`flex items-center gap-2 px-8 py-4 rounded-2xl font-bold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary-500
                                     ${saving 
-                                        ? "soft-inset text-[#6C63FF] cursor-not-allowed scale-[0.98]" 
-                                        : "soft-btn-primary hover:soft-inset active:scale-[0.99] text-white hover:text-[#6C63FF]"
+                                        ? "bg-slate-50 border border-slate-200 rounded-xl text-primary-600 cursor-not-allowed scale-[0.98]" 
+                                        : "inline-flex items-center justify-center font-medium bg-primary-600 text-white hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 hover:bg-slate-50 border border-slate-200 rounded-xl active:scale-[0.99] text-white hover:text-primary-600"
                                     }
                                 `}
                             >
                                 {saving ? (
                                     <>
-                                        <div className="animate-spin h-4 w-4 border-2 border-[#6C63FF] border-t-transparent rounded-full mr-1"></div>
+                                        <div className="animate-spin h-4 w-4 border-2 border-primary-600 border-t-transparent rounded-full mr-1"></div>
                                         Saving Changes...
                                     </>
                                 ) : (

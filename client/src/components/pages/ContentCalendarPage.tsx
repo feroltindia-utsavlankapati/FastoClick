@@ -161,14 +161,14 @@ export default function ContentCalendarPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#E0E5EC] flex items-center justify-center">
-                <div className="animate-spin h-10 w-10 border-4 border-[#6C63FF] border-t-transparent rounded-full"></div>
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+                <div className="animate-spin h-10 w-10 border-4 border-primary-600 border-t-transparent rounded-full"></div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#E0E5EC] text-[#3D4852] font-sans flex flex-col">
+        <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col">
             <NavigationBar />
 
             <main className="flex-1 max-w-7xl mx-auto w-full p-6 md:p-10">
@@ -176,16 +176,16 @@ export default function ContentCalendarPage() {
                 <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                     <div>
                         <h1 className="text-4xl font-extrabold tracking-tight flex items-center gap-3">
-                            <span className="w-12 h-12 rounded-2xl soft-extruded flex items-center justify-center">
-                                <CalendarDays size={24} className="text-[#6C63FF]" />
+                            <span className="w-12 h-12 rounded-2xl bg-white border border-slate-200 shadow-sm rounded-xl flex items-center justify-center">
+                                <CalendarDays size={24} className="text-primary-600" />
                             </span>
                             Content Calendar
                         </h1>
-                        <p className="text-[#6B7280] mt-2 font-medium">Visualize your scheduled posts across all platforms</p>
+                        <p className="text-slate-500 mt-2 font-medium">Visualize your scheduled posts across all platforms</p>
                     </div>
                     <button
                         onClick={() => navigate("/social")}
-                        className="px-5 py-2.5 soft-btn-primary rounded-2xl text-sm font-bold flex items-center gap-2"
+                        className="px-5 py-2.5 inline-flex items-center justify-center font-medium bg-primary-600 text-white hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-2xl text-sm font-bold flex items-center gap-2"
                     >
                         <Plus size={16} /> New Post
                     </button>
@@ -194,19 +194,19 @@ export default function ContentCalendarPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                     {/* Calendar */}
                     <div className="lg:col-span-3">
-                        <div className="soft-extruded rounded-[32px] p-6">
+                        <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[32px] p-6">
                             {/* Month Navigation */}
                             <div className="flex items-center justify-between mb-6">
-                                <button onClick={prevMonth} className="p-3 soft-btn rounded-2xl">
+                                <button onClick={prevMonth} className="p-3 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-2xl">
                                     <ChevronLeft size={20} />
                                 </button>
                                 <div className="text-center">
                                     <h2 className="text-2xl font-extrabold">{MONTHS[currentMonth]} {currentYear}</h2>
-                                    <button onClick={goToToday} className="text-xs text-[#6C63FF] font-bold hover:underline mt-1">
+                                    <button onClick={goToToday} className="text-xs text-primary-600 font-bold hover:underline mt-1">
                                         Today
                                     </button>
                                 </div>
-                                <button onClick={nextMonth} className="p-3 soft-btn rounded-2xl">
+                                <button onClick={nextMonth} className="p-3 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-2xl">
                                     <ChevronRight size={20} />
                                 </button>
                             </div>
@@ -214,7 +214,7 @@ export default function ContentCalendarPage() {
                             {/* Day Headers */}
                             <div className="grid grid-cols-7 gap-2 mb-2">
                                 {DAYS.map(day => (
-                                    <div key={day} className="text-center text-xs font-bold text-[#6B7280] py-2">
+                                    <div key={day} className="text-center text-xs font-bold text-slate-500 py-2">
                                         {day}
                                     </div>
                                 ))}
@@ -235,9 +235,9 @@ export default function ContentCalendarPage() {
                                         <div
                                             key={dateStr}
                                             onClick={() => setSelectedDate(dateStr === selectedDate ? null : dateStr)}
-                                            className={`soft-calendar-cell ${isToday ? "today" : ""} ${isSelected ? "soft-inset" : ""}`}
+                                            className={`bg-white border border-slate-200 hover:border-primary-500 transition-colors ${isToday ? "today" : ""} ${isSelected ? "bg-slate-50 border border-slate-200 rounded-xl" : ""}`}
                                         >
-                                            <div className={`text-xs font-bold mb-1 ${isToday ? "text-[#6C63FF]" : "text-[#6B7280]"}`}>
+                                            <div className={`text-xs font-bold mb-1 ${isToday ? "text-primary-600" : "text-slate-500"}`}>
                                                 {day}
                                             </div>
                                             {dayPosts.length > 0 && (
@@ -251,7 +251,7 @@ export default function ContentCalendarPage() {
                                                         ></div>
                                                     ))}
                                                     {dayPosts.length > 3 && (
-                                                        <span className="text-[8px] font-bold text-[#6B7280]">+{dayPosts.length - 3}</span>
+                                                        <span className="text-[8px] font-bold text-slate-500">+{dayPosts.length - 3}</span>
                                                     )}
                                                 </div>
                                             )}
@@ -264,7 +264,7 @@ export default function ContentCalendarPage() {
                         {/* Legend */}
                         <div className="flex items-center gap-4 mt-4 flex-wrap">
                             {Object.entries(STATUS_COLORS).map(([status, color]) => (
-                                <div key={status} className="flex items-center gap-1.5 text-xs text-[#6B7280]">
+                                <div key={status} className="flex items-center gap-1.5 text-xs text-slate-500">
                                     <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }}></div>
                                     {status.charAt(0).toUpperCase() + status.slice(1).replace("_", " ")}
                                 </div>
@@ -274,9 +274,9 @@ export default function ContentCalendarPage() {
 
                     {/* Side Panel — Selected Day */}
                     <div>
-                        <div className="soft-extruded rounded-[28px] p-6 sticky top-28">
+                        <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6 sticky top-28">
                             <h3 className="font-bold mb-4 flex items-center gap-2">
-                                <Clock size={16} className="text-[#6C63FF]" />
+                                <Clock size={16} className="text-primary-600" />
                                 {selectedDate
                                     ? new Date(selectedDate + "T00:00:00").toLocaleDateString(undefined, {
                                         weekday: "long", month: "long", day: "numeric",
@@ -292,7 +292,7 @@ export default function ContentCalendarPage() {
                                     <p className="text-sm text-[#9CA3AF] mb-4">No posts scheduled for this day</p>
                                     <button
                                         onClick={() => navigate("/social")}
-                                        className="px-4 py-2 soft-btn-primary rounded-xl text-xs font-bold"
+                                        className="px-4 py-2 inline-flex items-center justify-center font-medium bg-primary-600 text-white hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl text-xs font-bold"
                                     >
                                         <Plus size={12} className="inline mr-1" /> Add Post
                                     </button>
@@ -300,7 +300,7 @@ export default function ContentCalendarPage() {
                             ) : (
                                 <div className="space-y-3">
                                     {selectedPosts.map((post: any) => (
-                                        <div key={post.id} className="soft-inset rounded-xl p-3">
+                                        <div key={post.id} className="bg-slate-50 border border-slate-200 rounded-xl rounded-xl p-3">
                                             <p className="text-xs font-bold mb-1 line-clamp-2">{post.caption || "Untitled"}</p>
                                             <div className="flex items-center justify-between">
                                                 <div className="flex gap-1">

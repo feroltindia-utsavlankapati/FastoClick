@@ -195,19 +195,19 @@ export default function PlansPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#E0E5EC] text-[#3D4852] font-sans flex flex-col">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col">
       <NavigationBar />
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-10">
         {/* Header */}
         <header className="mb-10">
           <div className="flex items-center gap-4 mb-2">
-            <div className="w-12 h-12 rounded-2xl soft-inset flex items-center justify-center">
-              <FileText size={24} className="text-[#6C63FF]" />
+            <div className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-center">
+              <FileText size={24} className="text-primary-600" />
             </div>
             <div>
               <h1 className="text-4xl font-extrabold tracking-tight leading-tight">Strategy Plans</h1>
-              <p className="text-[#6B7280] font-medium text-sm mt-0.5">
+              <p className="text-slate-500 font-medium text-sm mt-0.5">
                 All generated marketing plans — view details or permanently delete.
               </p>
             </div>
@@ -217,13 +217,13 @@ export default function PlansPage() {
         {/* Content */}
         {loading ? (
           <div className="flex justify-center items-center h-48">
-            <Loader2 size={36} className="animate-spin text-[#6C63FF]" />
+            <Loader2 size={36} className="animate-spin text-primary-600" />
           </div>
         ) : plans.length === 0 ? (
-          <div className="soft-inset rounded-[32px] p-16 text-center">
-            <FileText size={48} className="mx-auto text-[#A0AEC0] mb-4" />
-            <p className="text-[#6B7280] font-bold text-lg">No strategy plans yet.</p>
-            <p className="text-[#A0AEC0] text-sm mt-1">Run a strategy agent to generate and save your first plan.</p>
+          <div className="bg-slate-50 border border-slate-200 rounded-xl rounded-[32px] p-16 text-center">
+            <FileText size={48} className="mx-auto text-slate-400 mb-4" />
+            <p className="text-slate-500 font-bold text-lg">No strategy plans yet.</p>
+            <p className="text-slate-400 text-sm mt-1">Run a strategy agent to generate and save your first plan.</p>
           </div>
         ) : (
           <div className="space-y-5">
@@ -235,13 +235,13 @@ export default function PlansPage() {
               return (
                 <div
                   key={plan.id}
-                  className="soft-extruded rounded-[28px] overflow-hidden transition-all duration-300"
+                  className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] overflow-hidden transition-all duration-300"
                 >
                   {/* ── Row Header ── */}
                   <div className="flex items-center gap-4 px-6 py-5">
                     {/* Company icon */}
-                    <div className="w-12 h-12 rounded-xl soft-inset flex items-center justify-center flex-shrink-0">
-                      <Building2 size={20} className="text-[#6C63FF]" />
+                    <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <Building2 size={20} className="text-primary-600" />
                     </div>
 
                     {/* Info */}
@@ -250,24 +250,24 @@ export default function PlansPage() {
                         <h3 className="font-extrabold text-lg leading-tight">
                           {plan.company_name || "Unknown Company"}
                         </h3>
-                        <span className="px-3 py-1 soft-inset-sm rounded-full text-xs font-bold text-[#6C63FF]">
+                        <span className="px-3 py-1 bg-slate-50 border border-slate-200 shadow-inner rounded-md rounded-full text-xs font-bold text-primary-600">
                           {plan.industry || "General"}
                         </span>
                       </div>
-                      <p className="text-[#6B7280] text-sm mt-0.5 truncate font-medium">
+                      <p className="text-slate-500 text-sm mt-0.5 truncate font-medium">
                         "{plan.user_prompt || "No prompt"}"
                       </p>
                     </div>
 
                     {/* Meta badges */}
-                    <div className="hidden md:flex items-center gap-3 flex-shrink-0 text-xs font-bold text-[#6B7280]">
-                      <span className="px-3 py-1.5 soft-inset-sm rounded-full">
+                    <div className="hidden md:flex items-center gap-3 flex-shrink-0 text-xs font-bold text-slate-500">
+                      <span className="px-3 py-1.5 bg-slate-50 border border-slate-200 shadow-inner rounded-md rounded-full">
                         {plan.plan?.campaign_plans?.phases?.length ?? 0} phases
                       </span>
-                      <span className="px-3 py-1.5 soft-inset-sm rounded-full">
+                      <span className="px-3 py-1.5 bg-slate-50 border border-slate-200 shadow-inner rounded-md rounded-full">
                         {plan.plan?.campaign_plans?.channels?.length ?? 0} channels
                       </span>
-                      <span className="px-3 py-1.5 soft-inset-sm rounded-full text-[#A0AEC0]">
+                      <span className="px-3 py-1.5 bg-slate-50 border border-slate-200 shadow-inner rounded-md rounded-full text-slate-400">
                         {fmt(plan.created_at)}
                       </span>
                     </div>
@@ -289,7 +289,7 @@ export default function PlansPage() {
                           </button>
                           <button
                             onClick={() => setConfirmDeleteId(null)}
-                            className="px-3 py-1.5 soft-btn rounded-xl text-xs font-bold"
+                            className="px-3 py-1.5 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl text-xs font-bold"
                           >
                             Cancel
                           </button>
@@ -297,7 +297,7 @@ export default function PlansPage() {
                       ) : (
                         <button
                           onClick={() => setConfirmDeleteId(plan.id)}
-                          className="w-9 h-9 flex items-center justify-center soft-btn rounded-xl text-[#E53E3E] hover:bg-red-50 transition-all"
+                          className="w-9 h-9 flex items-center justify-center inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl text-[#E53E3E] hover:bg-red-50 transition-all"
                           title="Delete plan"
                         >
                           <Trash2 size={16} />
@@ -306,11 +306,11 @@ export default function PlansPage() {
 
                       <button
                         onClick={() => toggleExpand(plan.id)}
-                        className="w-9 h-9 flex items-center justify-center soft-btn rounded-xl transition-all"
+                        className="w-9 h-9 flex items-center justify-center inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl transition-all"
                         title={isExpanded ? "Collapse" : "Expand"}
                       >
                         {isExpanded
-                          ? <ChevronUp size={16} className="text-[#6C63FF]" />
+                          ? <ChevronUp size={16} className="text-primary-600" />
                           : <ChevronDown size={16} />
                         }
                       </button>
@@ -329,8 +329,8 @@ export default function PlansPage() {
                               onClick={() => setActiveTab(key)}
                               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
                                 activeTab === key
-                                  ? "soft-btn-primary"
-                                  : "soft-btn"
+                                  ? "inline-flex items-center justify-center font-medium bg-primary-600 text-white hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50"
+                                  : "inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50"
                               }`}
                             >
                               <Icon size={14} />
@@ -353,7 +353,7 @@ export default function PlansPage() {
                               <button
                                 onClick={() => { setEditingPlanId(null); setEditingPlanData(null); }}
                                 disabled={saving}
-                                className="flex items-center gap-1.5 px-4 py-2 soft-btn text-gray-500 rounded-xl text-xs font-bold transition-all disabled:opacity-50"
+                                className="flex items-center gap-1.5 px-4 py-2 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 text-gray-500 rounded-xl text-xs font-bold transition-all disabled:opacity-50"
                               >
                                 Cancel
                               </button>
@@ -361,7 +361,7 @@ export default function PlansPage() {
                           ) : (
                             <button
                               onClick={() => startEditing(plan)}
-                              className="flex items-center gap-1.5 px-4 py-2 soft-btn text-[#6C63FF] rounded-xl text-xs font-bold transition-all"
+                              className="flex items-center gap-1.5 px-4 py-2 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 text-primary-600 rounded-xl text-xs font-bold transition-all"
                             >
                               <Edit2 size={13} />
                               Edit Plan
@@ -375,8 +375,8 @@ export default function PlansPage() {
                         editingPlanId === plan.id && editingPlanData ? (
                           <div className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div className="soft-inset rounded-2xl p-5">
-                                <div className="text-xs font-extrabold text-[#6B7280] uppercase tracking-wider mb-2">Business Goal</div>
+                              <div className="bg-slate-50 border border-slate-200 rounded-xl rounded-2xl p-5">
+                                <div className="text-xs font-extrabold text-slate-500 uppercase tracking-wider mb-2">Business Goal</div>
                                 <textarea
                                   value={editingPlanData.strategy?.business_goal || ""}
                                   onChange={(e) => setEditingPlanData({
@@ -386,12 +386,12 @@ export default function PlansPage() {
                                       business_goal: e.target.value
                                     }
                                   })}
-                                  className="w-full bg-transparent focus:outline-none border-b border-[#c0c7d3] focus:border-[#6C63FF] py-1 text-sm font-medium leading-relaxed resize-none"
+                                  className="w-full bg-transparent focus:outline-none border-b border-[#c0c7d3] focus:border-primary-600 py-1 text-sm font-medium leading-relaxed resize-none"
                                   rows={2}
                                 />
                               </div>
-                              <div className="soft-inset rounded-2xl p-5">
-                                <div className="text-xs font-extrabold text-[#6B7280] uppercase tracking-wider mb-2">Marketing Goal</div>
+                              <div className="bg-slate-50 border border-slate-200 rounded-xl rounded-2xl p-5">
+                                <div className="text-xs font-extrabold text-slate-500 uppercase tracking-wider mb-2">Marketing Goal</div>
                                 <textarea
                                   value={editingPlanData.strategy?.marketing_goal || ""}
                                   onChange={(e) => setEditingPlanData({
@@ -401,17 +401,17 @@ export default function PlansPage() {
                                       marketing_goal: e.target.value
                                     }
                                   })}
-                                  className="w-full bg-transparent focus:outline-none border-b border-[#c0c7d3] focus:border-[#6C63FF] py-1 text-sm font-medium leading-relaxed resize-none"
+                                  className="w-full bg-transparent focus:outline-none border-b border-[#c0c7d3] focus:border-primary-600 py-1 text-sm font-medium leading-relaxed resize-none"
                                   rows={2}
                                 />
                               </div>
                             </div>
-                            <div className="soft-inset rounded-2xl p-5">
-                              <div className="text-xs font-extrabold text-[#6B7280] uppercase tracking-wider mb-3">Core Strategy</div>
+                            <div className="bg-slate-50 border border-slate-200 rounded-xl rounded-2xl p-5">
+                              <div className="text-xs font-extrabold text-slate-500 uppercase tracking-wider mb-3">Core Strategy</div>
                               <div className="space-y-3">
                                 {(editingPlanData.strategy?.core_strategy || []).map((item, i) => (
                                   <div key={i} className="flex items-center gap-3">
-                                    <span className="w-6 h-6 rounded-lg soft-inset-sm flex items-center justify-center text-[#6C63FF] text-xs font-extrabold flex-shrink-0">
+                                    <span className="w-6 h-6 rounded-lg bg-slate-50 border border-slate-200 shadow-inner rounded-md flex items-center justify-center text-primary-600 text-xs font-extrabold flex-shrink-0">
                                       {i + 1}
                                     </span>
                                     <input
@@ -428,7 +428,7 @@ export default function PlansPage() {
                                           }
                                         });
                                       }}
-                                      className="flex-1 bg-transparent focus:outline-none border-b border-[#c0c7d3] focus:border-[#6C63FF] py-0.5 text-sm font-medium"
+                                      className="flex-1 bg-transparent focus:outline-none border-b border-[#c0c7d3] focus:border-primary-600 py-0.5 text-sm font-medium"
                                     />
                                     <button
                                       onClick={() => {
@@ -459,7 +459,7 @@ export default function PlansPage() {
                                       }
                                     });
                                   }}
-                                  className="mt-2 text-xs font-bold text-[#6C63FF] hover:underline flex items-center gap-1"
+                                  className="mt-2 text-xs font-bold text-primary-600 hover:underline flex items-center gap-1"
                                 >
                                   <Plus size={12} /> Add Strategy
                                 </button>
@@ -469,25 +469,25 @@ export default function PlansPage() {
                         ) : (
                           <div className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div className="soft-inset rounded-2xl p-5">
-                                <div className="text-xs font-extrabold text-[#6B7280] uppercase tracking-wider mb-2">Business Goal</div>
+                              <div className="bg-slate-50 border border-slate-200 rounded-xl rounded-2xl p-5">
+                                <div className="text-xs font-extrabold text-slate-500 uppercase tracking-wider mb-2">Business Goal</div>
                                 <p className="text-sm font-medium leading-relaxed">
                                   {plan.plan?.strategy?.business_goal || "—"}
                                 </p>
                               </div>
-                              <div className="soft-inset rounded-2xl p-5">
-                                <div className="text-xs font-extrabold text-[#6B7280] uppercase tracking-wider mb-2">Marketing Goal</div>
+                              <div className="bg-slate-50 border border-slate-200 rounded-xl rounded-2xl p-5">
+                                <div className="text-xs font-extrabold text-slate-500 uppercase tracking-wider mb-2">Marketing Goal</div>
                                 <p className="text-sm font-medium leading-relaxed">
                                   {plan.plan?.strategy?.marketing_goal || "—"}
                                 </p>
                               </div>
                             </div>
-                            <div className="soft-inset rounded-2xl p-5">
-                              <div className="text-xs font-extrabold text-[#6B7280] uppercase tracking-wider mb-3">Core Strategy</div>
+                            <div className="bg-slate-50 border border-slate-200 rounded-xl rounded-2xl p-5">
+                              <div className="text-xs font-extrabold text-slate-500 uppercase tracking-wider mb-3">Core Strategy</div>
                               <ul className="space-y-2">
                                 {(plan.plan?.strategy?.core_strategy || []).map((item, i) => (
                                   <li key={i} className="flex items-start gap-3 text-sm font-medium">
-                                    <span className="w-6 h-6 rounded-lg soft-inset-sm flex items-center justify-center text-[#6C63FF] text-xs font-extrabold flex-shrink-0 mt-0.5">
+                                    <span className="w-6 h-6 rounded-lg bg-slate-50 border border-slate-200 shadow-inner rounded-md flex items-center justify-center text-primary-600 text-xs font-extrabold flex-shrink-0 mt-0.5">
                                       {i + 1}
                                     </span>
                                     {item}
@@ -506,10 +506,10 @@ export default function PlansPage() {
                             <table className="w-full text-sm">
                               <thead>
                                 <tr className="text-left">
-                                  <th className="pb-3 pr-4 text-xs font-extrabold text-[#6B7280] uppercase tracking-wider">Phase</th>
-                                  <th className="pb-3 pr-4 text-xs font-extrabold text-[#6B7280] uppercase tracking-wider w-36">Duration</th>
-                                  <th className="pb-3 text-xs font-extrabold text-[#6B7280] uppercase tracking-wider">Tasks</th>
-                                  <th className="pb-3 text-xs font-extrabold text-[#6B7280] uppercase tracking-wider w-16 text-center">Action</th>
+                                  <th className="pb-3 pr-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Phase</th>
+                                  <th className="pb-3 pr-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider w-36">Duration</th>
+                                  <th className="pb-3 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Tasks</th>
+                                  <th className="pb-3 text-xs font-extrabold text-slate-500 uppercase tracking-wider w-16 text-center">Action</th>
                                 </tr>
                               </thead>
                               <tbody className="divide-y divide-[#d0d7e3]">
@@ -530,7 +530,7 @@ export default function PlansPage() {
                                             }
                                           });
                                         }}
-                                        className="w-full bg-transparent focus:outline-none border-b border-[#c0c7d3] focus:border-[#6C63FF] py-0.5 font-bold"
+                                        className="w-full bg-transparent focus:outline-none border-b border-[#c0c7d3] focus:border-primary-600 py-0.5 font-bold"
                                       />
                                     </td>
                                     <td className="py-3 pr-4">
@@ -548,14 +548,14 @@ export default function PlansPage() {
                                             }
                                           });
                                         }}
-                                        className="w-full bg-transparent focus:outline-none border-b border-[#c0c7d3] focus:border-[#6C63FF] py-0.5 text-xs text-[#6C63FF] font-bold"
+                                        className="w-full bg-transparent focus:outline-none border-b border-[#c0c7d3] focus:border-primary-600 py-0.5 text-xs text-primary-600 font-bold"
                                       />
                                     </td>
                                     <td className="py-3">
                                       <div className="space-y-2">
                                         {phase.tasks.map((task, j) => (
                                           <div key={j} className="flex items-center gap-2">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-[#6C63FF] flex-shrink-0" />
+                                            <span className="w-1.5 h-1.5 rounded-full bg-primary-600 flex-shrink-0" />
                                             <input
                                               type="text"
                                               value={task}
@@ -572,7 +572,7 @@ export default function PlansPage() {
                                                   }
                                                 });
                                               }}
-                                              className="flex-1 bg-transparent focus:outline-none border-b border-[#c0c7d3] focus:border-[#6C63FF] py-0.5 text-xs text-[#6B7280] font-medium"
+                                              className="flex-1 bg-transparent focus:outline-none border-b border-[#c0c7d3] focus:border-primary-600 py-0.5 text-xs text-slate-500 font-medium"
                                             />
                                             <button
                                               onClick={() => {
@@ -607,7 +607,7 @@ export default function PlansPage() {
                                               }
                                             });
                                           }}
-                                          className="text-[11px] font-bold text-[#6C63FF] hover:underline flex items-center gap-1 mt-1"
+                                          className="text-[11px] font-bold text-primary-600 hover:underline flex items-center gap-1 mt-1"
                                         >
                                           <Plus size={10} /> Add Task
                                         </button>
@@ -649,7 +649,7 @@ export default function PlansPage() {
                                   }
                                 });
                               }}
-                              className="mt-3 text-xs font-bold text-[#6C63FF] hover:underline flex items-center gap-1"
+                              className="mt-3 text-xs font-bold text-primary-600 hover:underline flex items-center gap-1"
                             >
                               <Plus size={12} /> Add Phase
                             </button>
@@ -659,9 +659,9 @@ export default function PlansPage() {
                             <table className="w-full text-sm">
                               <thead>
                                 <tr className="text-left">
-                                  <th className="pb-3 pr-4 text-xs font-extrabold text-[#6B7280] uppercase tracking-wider">Phase</th>
-                                  <th className="pb-3 pr-4 text-xs font-extrabold text-[#6B7280] uppercase tracking-wider w-28">Duration</th>
-                                  <th className="pb-3 text-xs font-extrabold text-[#6B7280] uppercase tracking-wider">Tasks</th>
+                                  <th className="pb-3 pr-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Phase</th>
+                                  <th className="pb-3 pr-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider w-28">Duration</th>
+                                  <th className="pb-3 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Tasks</th>
                                 </tr>
                               </thead>
                               <tbody className="divide-y divide-[#d0d7e3]">
@@ -669,15 +669,15 @@ export default function PlansPage() {
                                   <tr key={i} className="align-top">
                                     <td className="py-3 pr-4 font-bold">{phase.phase}</td>
                                     <td className="py-3 pr-4">
-                                      <span className="px-2 py-1 soft-inset-sm rounded-lg text-[#6C63FF] font-bold text-xs whitespace-nowrap">
+                                      <span className="px-2 py-1 bg-slate-50 border border-slate-200 shadow-inner rounded-md rounded-lg text-primary-600 font-bold text-xs whitespace-nowrap">
                                         {phase.duration}
                                       </span>
                                     </td>
                                     <td className="py-3">
                                       <ul className="space-y-1">
                                         {phase.tasks.map((t, j) => (
-                                          <li key={j} className="flex items-start gap-2 text-[#6B7280]">
-                                            <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#6C63FF] flex-shrink-0" />
+                                          <li key={j} className="flex items-start gap-2 text-slate-500">
+                                            <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary-600 flex-shrink-0" />
                                             {t}
                                           </li>
                                         ))}
@@ -698,10 +698,10 @@ export default function PlansPage() {
                             <table className="w-full text-sm">
                               <thead>
                                 <tr className="text-left">
-                                  <th className="pb-3 pr-4 text-xs font-extrabold text-[#6B7280] uppercase tracking-wider w-40">Channel</th>
-                                  <th className="pb-3 pr-4 text-xs font-extrabold text-[#6B7280] uppercase tracking-wider">Objective</th>
-                                  <th className="pb-3 pr-4 text-xs font-extrabold text-[#6B7280] uppercase tracking-wider">KPI</th>
-                                  <th className="pb-3 text-xs font-extrabold text-[#6B7280] uppercase tracking-wider w-16 text-center">Action</th>
+                                  <th className="pb-3 pr-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider w-40">Channel</th>
+                                  <th className="pb-3 pr-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Objective</th>
+                                  <th className="pb-3 pr-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider">KPI</th>
+                                  <th className="pb-3 text-xs font-extrabold text-slate-500 uppercase tracking-wider w-16 text-center">Action</th>
                                 </tr>
                               </thead>
                               <tbody className="divide-y divide-[#d0d7e3]">
@@ -722,7 +722,7 @@ export default function PlansPage() {
                                             }
                                           });
                                         }}
-                                        className="w-full bg-transparent focus:outline-none border-b border-[#c0c7d3] focus:border-[#6C63FF] py-0.5 text-xs text-[#6C63FF] font-bold"
+                                        className="w-full bg-transparent focus:outline-none border-b border-[#c0c7d3] focus:border-primary-600 py-0.5 text-xs text-primary-600 font-bold"
                                       />
                                     </td>
                                     <td className="py-3 pr-4">
@@ -740,7 +740,7 @@ export default function PlansPage() {
                                             }
                                           });
                                         }}
-                                        className="w-full bg-transparent focus:outline-none border-b border-[#c0c7d3] focus:border-[#6C63FF] py-0.5 text-xs text-[#6B7280] font-medium"
+                                        className="w-full bg-transparent focus:outline-none border-b border-[#c0c7d3] focus:border-primary-600 py-0.5 text-xs text-slate-500 font-medium"
                                       />
                                     </td>
                                     <td className="py-3 pr-4">
@@ -758,7 +758,7 @@ export default function PlansPage() {
                                             }
                                           });
                                         }}
-                                        className="w-full bg-transparent focus:outline-none border-b border-[#c0c7d3] focus:border-[#6C63FF] py-0.5 text-xs text-[#38B2AC] font-semibold"
+                                        className="w-full bg-transparent focus:outline-none border-b border-[#c0c7d3] focus:border-primary-600 py-0.5 text-xs text-[#38B2AC] font-semibold"
                                       />
                                     </td>
                                     <td className="py-3 text-center">
@@ -797,7 +797,7 @@ export default function PlansPage() {
                                   }
                                 });
                               }}
-                              className="mt-3 text-xs font-bold text-[#6C63FF] hover:underline flex items-center gap-1"
+                              className="mt-3 text-xs font-bold text-primary-600 hover:underline flex items-center gap-1"
                             >
                               <Plus size={12} /> Add Channel
                             </button>
@@ -807,20 +807,20 @@ export default function PlansPage() {
                             <table className="w-full text-sm">
                               <thead>
                                 <tr className="text-left">
-                                  <th className="pb-3 pr-4 text-xs font-extrabold text-[#6B7280] uppercase tracking-wider">Channel</th>
-                                  <th className="pb-3 pr-4 text-xs font-extrabold text-[#6B7280] uppercase tracking-wider">Objective</th>
-                                  <th className="pb-3 text-xs font-extrabold text-[#6B7280] uppercase tracking-wider">KPI</th>
+                                  <th className="pb-3 pr-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Channel</th>
+                                  <th className="pb-3 pr-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Objective</th>
+                                  <th className="pb-3 text-xs font-extrabold text-slate-500 uppercase tracking-wider">KPI</th>
                                 </tr>
                               </thead>
                               <tbody className="divide-y divide-[#d0d7e3]">
                                 {(plan.plan?.campaign_plans?.channels || []).map((ch, i) => (
                                   <tr key={i} className="align-top">
                                     <td className="py-3 pr-4">
-                                      <span className="font-bold px-2 py-1 soft-inset-sm rounded-lg text-[#6C63FF] text-xs whitespace-nowrap">
+                                      <span className="font-bold px-2 py-1 bg-slate-50 border border-slate-200 shadow-inner rounded-md rounded-lg text-primary-600 text-xs whitespace-nowrap">
                                         {ch.channel}
                                       </span>
                                     </td>
-                                    <td className="py-3 pr-4 text-[#6B7280] font-medium">{ch.objective}</td>
+                                    <td className="py-3 pr-4 text-slate-500 font-medium">{ch.objective}</td>
                                     <td className="py-3 font-medium text-[#38B2AC]">{ch.kpi}</td>
                                   </tr>
                                 ))}
@@ -837,11 +837,11 @@ export default function PlansPage() {
                             <table className="w-full text-sm">
                               <thead>
                                 <tr className="text-left">
-                                  <th className="pb-3 pr-4 text-xs font-extrabold text-[#6B7280] uppercase tracking-wider w-24">Week</th>
-                                  <th className="pb-3 pr-4 text-xs font-extrabold text-[#6B7280] uppercase tracking-wider">Activity</th>
-                                  <th className="pb-3 pr-4 text-xs font-extrabold text-[#6B7280] uppercase tracking-wider">Owner</th>
-                                  <th className="pb-3 pr-4 text-xs font-extrabold text-[#6B7280] uppercase tracking-wider w-32">Status</th>
-                                  <th className="pb-3 text-xs font-extrabold text-[#6B7280] uppercase tracking-wider w-16 text-center">Action</th>
+                                  <th className="pb-3 pr-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider w-24">Week</th>
+                                  <th className="pb-3 pr-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Activity</th>
+                                  <th className="pb-3 pr-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Owner</th>
+                                  <th className="pb-3 pr-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider w-32">Status</th>
+                                  <th className="pb-3 text-xs font-extrabold text-slate-500 uppercase tracking-wider w-16 text-center">Action</th>
                                 </tr>
                               </thead>
                               <tbody className="divide-y divide-[#d0d7e3]">
@@ -862,7 +862,7 @@ export default function PlansPage() {
                                             }
                                           });
                                         }}
-                                        className="w-full bg-transparent focus:outline-none border-b border-[#c0c7d3] focus:border-[#6C63FF] py-0.5 text-xs text-[#6C63FF] font-bold"
+                                        className="w-full bg-transparent focus:outline-none border-b border-[#c0c7d3] focus:border-primary-600 py-0.5 text-xs text-primary-600 font-bold"
                                       />
                                     </td>
                                     <td className="py-3 pr-4">
@@ -880,7 +880,7 @@ export default function PlansPage() {
                                             }
                                           });
                                         }}
-                                        className="w-full bg-transparent focus:outline-none border-b border-[#c0c7d3] focus:border-[#6C63FF] py-0.5 text-xs text-[#3D4852] font-medium"
+                                        className="w-full bg-transparent focus:outline-none border-b border-[#c0c7d3] focus:border-primary-600 py-0.5 text-xs text-slate-900 font-medium"
                                       />
                                     </td>
                                     <td className="py-3 pr-4">
@@ -898,7 +898,7 @@ export default function PlansPage() {
                                             }
                                           });
                                         }}
-                                        className="w-full bg-transparent focus:outline-none border-b border-[#c0c7d3] focus:border-[#6C63FF] py-0.5 text-xs text-[#6B7280] font-medium"
+                                        className="w-full bg-transparent focus:outline-none border-b border-[#c0c7d3] focus:border-primary-600 py-0.5 text-xs text-slate-500 font-medium"
                                       />
                                     </td>
                                     <td className="py-3 pr-4">
@@ -915,7 +915,7 @@ export default function PlansPage() {
                                             }
                                           });
                                         }}
-                                        className="w-full bg-[#E0E5EC] soft-inset-sm rounded-lg px-2 py-1 text-xs font-bold text-[#6B7280] focus:outline-none"
+                                        className="w-full bg-slate-50 bg-slate-50 border border-slate-200 shadow-inner rounded-md rounded-lg px-2 py-1 text-xs font-bold text-slate-500 focus:outline-none"
                                       >
                                         <option value="Pending">Pending</option>
                                         <option value="In Progress">In Progress</option>
@@ -958,7 +958,7 @@ export default function PlansPage() {
                                   }
                                 });
                               }}
-                              className="mt-3 text-xs font-bold text-[#6C63FF] hover:underline flex items-center gap-1"
+                              className="mt-3 text-xs font-bold text-primary-600 hover:underline flex items-center gap-1"
                             >
                               <Plus size={12} /> Add Timeline Item
                             </button>
@@ -968,25 +968,25 @@ export default function PlansPage() {
                             <table className="w-full text-sm">
                               <thead>
                                 <tr className="text-left">
-                                  <th className="pb-3 pr-4 text-xs font-extrabold text-[#6B7280] uppercase tracking-wider w-20">Week</th>
-                                  <th className="pb-3 pr-4 text-xs font-extrabold text-[#6B7280] uppercase tracking-wider">Activity</th>
-                                  <th className="pb-3 pr-4 text-xs font-extrabold text-[#6B7280] uppercase tracking-wider">Owner</th>
-                                  <th className="pb-3 text-xs font-extrabold text-[#6B7280] uppercase tracking-wider">Status</th>
+                                  <th className="pb-3 pr-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider w-20">Week</th>
+                                  <th className="pb-3 pr-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Activity</th>
+                                  <th className="pb-3 pr-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Owner</th>
+                                  <th className="pb-3 text-xs font-extrabold text-slate-500 uppercase tracking-wider">Status</th>
                                 </tr>
                               </thead>
                               <tbody className="divide-y divide-[#d0d7e3]">
                                 {(plan.plan?.campaign_plans?.execution_plan || []).map((item, i) => (
                                   <tr key={i} className="align-top">
                                     <td className="py-3 pr-4">
-                                      <span className="font-extrabold text-[#6C63FF]">{item.week}</span>
+                                      <span className="font-extrabold text-primary-600">{item.week}</span>
                                     </td>
-                                    <td className="py-3 pr-4 font-medium text-[#3D4852]">{item.activity}</td>
-                                    <td className="py-3 pr-4 text-[#6B7280] font-medium">{item.owner}</td>
+                                    <td className="py-3 pr-4 font-medium text-slate-900">{item.activity}</td>
+                                    <td className="py-3 pr-4 text-slate-500 font-medium">{item.owner}</td>
                                     <td className="py-3">
                                       <span className={`px-2 py-1 rounded-lg text-xs font-bold ${
                                         item.status === "Done"
                                           ? "bg-green-100 text-green-700"
-                                          : "soft-inset-sm text-[#6B7280]"
+                                          : "bg-slate-50 border border-slate-200 shadow-inner rounded-md text-slate-500"
                                       }`}>
                                         {item.status}
                                       </span>
@@ -1002,11 +1002,11 @@ export default function PlansPage() {
                       {/* AI Refinement Panel (Only show when not manually editing content) */}
                       {editingPlanId !== plan.id && (
                         <div className="mt-8 border-t border-[#d0d7e3] pt-6">
-                          <div className="soft-extruded-sm rounded-2xl p-5 bg-[#E0E5EC]">
-                            <h4 className="font-extrabold text-sm mb-2 text-[#6C63FF] flex items-center gap-2">
+                          <div className="bg-white border border-slate-200 shadow-sm rounded-lg rounded-2xl p-5 bg-slate-50">
+                            <h4 className="font-extrabold text-sm mb-2 text-primary-600 flex items-center gap-2">
                               <Sparkles size={16} /> Refine Strategy Plan with AI
                             </h4>
-                            <p className="text-xs text-[#6B7280] font-medium mb-3">
+                            <p className="text-xs text-slate-500 font-medium mb-3">
                               Provide your specific queries, preferences, or requested changes. The AI will intelligently modify and regenerate the plan according to your feedback.
                             </p>
                             <div className="flex flex-col gap-3">
@@ -1015,14 +1015,14 @@ export default function PlansPage() {
                                 onChange={(e) => setRefinementFeedback(e.target.value)}
                                 placeholder="e.g. Focus more on digital marketing channels rather than physical events, or make the duration of Phase 1 to be 3 weeks..."
                                 rows={3}
-                                className="w-full soft-inset bg-transparent rounded-xl p-3 text-xs font-medium text-[#3D4852] focus:outline-none focus:ring-2 focus:ring-[#6C63FF] focus:ring-offset-2 focus:ring-offset-[#E0E5EC] transition-all resize-none"
+                                className="w-full bg-slate-50 border border-slate-200 rounded-xl bg-transparent rounded-xl p-3 text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-[#E0E5EC] transition-all resize-none"
                                 disabled={refining}
                               />
                               <div className="flex justify-end gap-2">
                                 <button
                                   onClick={() => handleRefine(plan.id)}
                                   disabled={!refinementFeedback.trim() || refining}
-                                  className="soft-btn-primary rounded-xl px-5 py-2 text-xs font-bold flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                                  className="inline-flex items-center justify-center font-medium bg-primary-600 text-white hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl px-5 py-2 text-xs font-bold flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                   {refining ? (
                                     <>

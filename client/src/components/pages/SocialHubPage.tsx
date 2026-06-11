@@ -22,12 +22,12 @@ const PLATFORMS = [
 ];
 
 const STATUS_BADGES: Record<string, { class: string; label: string }> = {
-    draft: { class: "soft-badge soft-badge-gray", label: "Draft" },
-    scheduled: { class: "soft-badge soft-badge-blue", label: "Scheduled" },
-    publishing: { class: "soft-badge soft-badge-amber", label: "Publishing" },
-    published: { class: "soft-badge soft-badge-green", label: "Published" },
-    failed: { class: "soft-badge soft-badge-red", label: "Failed" },
-    retry_pending: { class: "soft-badge soft-badge-amber", label: "Retry Pending" },
+    draft: { class: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600", label: "Draft" },
+    scheduled: { class: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-info/10 text-info", label: "Scheduled" },
+    publishing: { class: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-warning/10 text-warning", label: "Publishing" },
+    published: { class: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success/10 text-success", label: "Published" },
+    failed: { class: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-danger/10 text-danger", label: "Failed" },
+    retry_pending: { class: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-warning/10 text-warning", label: "Retry Pending" },
 };
 
 function getHeaders() {
@@ -548,25 +548,25 @@ export default function SocialHubPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#E0E5EC] flex items-center justify-center">
-                <div className="animate-spin h-10 w-10 border-4 border-[#6C63FF] border-t-transparent rounded-full"></div>
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+                <div className="animate-spin h-10 w-10 border-4 border-primary-600 border-t-transparent rounded-full"></div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#E0E5EC] text-[#3D4852] font-sans overflow-hidden flex flex-col">
+        <div className="min-h-screen bg-slate-50 text-slate-900 font-sans overflow-hidden flex flex-col">
             <NavigationBar />
             <main className="flex-1 max-w-7xl mx-auto w-full p-6 md:p-10">
                 {/* Header */}
                 <header className="mb-8">
                     <h1 className="text-4xl font-extrabold tracking-tight flex items-center gap-3">
-                        <span className="w-12 h-12 rounded-2xl soft-extruded flex items-center justify-center">
-                            <Share2 size={24} className="text-[#6C63FF]" />
+                        <span className="w-12 h-12 rounded-2xl bg-white border border-slate-200 shadow-sm rounded-xl flex items-center justify-center">
+                            <Share2 size={24} className="text-primary-600" />
                         </span>
                         Social Hub
                     </h1>
-                    <p className="text-[#6B7280] mt-2 font-medium">
+                    <p className="text-slate-500 mt-2 font-medium">
                         Manage accounts, create posts, and track performance across all platforms
                     </p>
                 </header>
@@ -583,12 +583,12 @@ export default function SocialHubPage() {
                 )}
 
                 {/* Tabs */}
-                <div className="flex gap-2 mb-8 bg-[#E0E5EC] soft-extruded p-2 rounded-[20px] overflow-x-auto">
+                <div className="flex gap-2 mb-8 bg-slate-50 bg-white border border-slate-200 shadow-sm rounded-xl p-2 rounded-[20px] overflow-x-auto">
                     {tabs.map((tab, i) => (
                         <button
                             key={tab}
                             onClick={() => setActiveTab(i)}
-                            className={`soft-tab whitespace-nowrap ${activeTab === i ? "active" : ""}`}
+                            className={`px-4 py-2 font-medium text-slate-600 hover:text-slate-900 transition-colors rounded-md whitespace-nowrap ${activeTab === i ? "active" : ""}`}
                         >
                             {tab}
                         </button>
@@ -601,17 +601,17 @@ export default function SocialHubPage() {
                         {/* Active Connections */}
                         <div>
                             <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-                                <span className="w-2.5 h-6 rounded-full bg-[#6C63FF]"></span>
+                                <span className="w-2.5 h-6 rounded-full bg-primary-600"></span>
                                 Active Connections
                             </h2>
                             {accounts.length === 0 ? (
-                                <div className="soft-extruded rounded-[32px] p-10 text-center">
+                                <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[32px] p-10 text-center">
                                     <div className="flex justify-center gap-4 mb-4 opacity-50">
                                         {PLATFORMS.map(p => (
                                             <span key={p.key} className="text-2xl">{p.icon}</span>
                                         ))}
                                     </div>
-                                    <p className="text-[#6B7280] text-sm">No connected social media accounts yet.</p>
+                                    <p className="text-slate-500 text-sm">No connected social media accounts yet.</p>
                                     <p className="text-[#9CA3AF] text-xs mt-1">Connect your accounts using the panel below or configure settings first.</p>
                                 </div>
                             ) : (
@@ -620,16 +620,16 @@ export default function SocialHubPage() {
                                         const plat = PLATFORMS.find(p => p.key === acc.platform);
                                         const statusColor = acc.status === "active" ? "green" : acc.status === "expiring_soon" ? "amber" : "red";
                                         return (
-                                            <div key={acc.id} className="soft-extruded soft-extruded-hover rounded-[28px] p-6">
+                                            <div key={acc.id} className="bg-white border border-slate-200 shadow-sm rounded-xl hover:shadow-md transition-shadow rounded-[28px] p-6">
                                                 <div className="flex items-start justify-between mb-4">
                                                     <div className="flex items-center gap-3">
                                                         <span className="text-2xl" style={{ color: plat?.color }}>{plat?.icon || "🔗"}</span>
                                                         <div>
                                                             <div className="font-bold text-sm truncate max-w-[140px]">{acc.account_name || acc.platform_name}</div>
-                                                            <div className="text-xs text-[#6B7280] truncate max-w-[140px]">@{acc.account_handle || "—"}</div>
+                                                            <div className="text-xs text-slate-500 truncate max-w-[140px]">@{acc.account_handle || "—"}</div>
                                                         </div>
                                                     </div>
-                                                    <span className={`soft-badge soft-badge-${statusColor} capitalize text-[10px]`}>
+                                                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium-${statusColor} capitalize text-[10px]`}>
                                                         <span className={`w-1.5 h-1.5 rounded-full bg-current ${acc.status === "active" ? "animate-pulse" : ""}`}></span>
                                                         {acc.status}
                                                     </span>
@@ -642,7 +642,7 @@ export default function SocialHubPage() {
                                                 <div className="flex gap-2">
                                                     <button
                                                         onClick={() => handleDisconnect(acc.id)}
-                                                        className="flex-1 px-4 py-2 soft-btn rounded-xl text-xs font-bold text-red-500 hover:text-red-600 transition-colors"
+                                                        className="flex-1 px-4 py-2 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl text-xs font-bold text-danger hover:text-red-600 transition-colors"
                                                     >
                                                         <Trash2 size={13} className="inline mr-1" />Disconnect
                                                     </button>
@@ -655,12 +655,12 @@ export default function SocialHubPage() {
                         </div>
 
                         {/* Connection Center */}
-                        <div className="soft-extruded rounded-[32px] p-6 md:p-8">
+                        <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[32px] p-6 md:p-8">
                             <h2 className="text-lg font-bold mb-1 flex items-center gap-2">
-                                <Zap size={18} className="text-[#6C63FF]" />
+                                <Zap size={18} className="text-primary-600" />
                                 Connection Center
                             </h2>
-                            <p className="text-xs text-[#6B7280] mb-6">
+                            <p className="text-xs text-slate-500 mb-6">
                                 Link your social media profiles using your configured platform API credentials.
                             </p>
 
@@ -670,7 +670,7 @@ export default function SocialHubPage() {
                                     const isConnected = accounts.some(a => a.platform === plat.key);
 
                                     return (
-                                        <div key={plat.key} className="soft-inset rounded-2xl p-5 flex flex-col justify-between min-h-[140px]">
+                                        <div key={plat.key} className="bg-slate-50 border border-slate-200 rounded-xl rounded-2xl p-5 flex flex-col justify-between min-h-[140px]">
                                             <div className="flex items-start justify-between">
                                                 <div className="flex items-center gap-3">
                                                     <span className="text-3xl" style={{ color: plat.color }}>{plat.icon}</span>
@@ -682,7 +682,7 @@ export default function SocialHubPage() {
                                                     </div>
                                                 </div>
                                                 {isConnected && (
-                                                    <span className="soft-badge soft-badge-green text-[9px] px-2 py-0.5 font-bold">
+                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success/10 text-success text-[9px] px-2 py-0.5 font-bold">
                                                         CONNECTED
                                                     </span>
                                                 )}
@@ -692,14 +692,14 @@ export default function SocialHubPage() {
                                                 {hasCred ? (
                                                     <button
                                                         onClick={() => handleConnect(plat.key)}
-                                                        className="w-full py-2 soft-btn-primary rounded-xl text-xs font-bold transition-all hover:scale-[1.02] flex items-center justify-center gap-1.5"
+                                                        className="w-full py-2 inline-flex items-center justify-center font-medium bg-primary-600 text-white hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl text-xs font-bold transition-all hover:scale-[1.02] flex items-center justify-center gap-1.5"
                                                     >
                                                         <Zap size={12} /> {isConnected ? "Connect Another" : "Connect Account"}
                                                     </button>
                                                 ) : (
                                                     <button
                                                         onClick={() => setActiveTab(3)} // Switch to Settings/Credentials tab
-                                                        className="w-full py-2 soft-btn rounded-xl text-xs font-bold text-[#6B7280] hover:text-[#3D4852] flex items-center justify-center gap-1.5 transition-colors"
+                                                        className="w-full py-2 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-900 flex items-center justify-center gap-1.5 transition-colors"
                                                     >
                                                         Configure in Settings
                                                     </button>
@@ -710,7 +710,7 @@ export default function SocialHubPage() {
                                                             setManualPlatform(plat.key);
                                                             setShowManualMetaModal(true);
                                                         }}
-                                                        className="w-full py-2 soft-btn rounded-xl text-xs font-bold text-[#6C63FF] hover:text-[#5B52EE] flex items-center justify-center gap-1.5 transition-colors"
+                                                        className="w-full py-2 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl text-xs font-bold text-primary-600 hover:text-[#5B52EE] flex items-center justify-center gap-1.5 transition-colors"
                                                     >
                                                         <Shield size={12} /> Connect via Access Token
                                                     </button>
@@ -729,12 +729,12 @@ export default function SocialHubPage() {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <div className="lg:col-span-2 space-y-6">
                             {/* Caption */}
-                            <div className="soft-extruded rounded-[28px] p-6">
+                            <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6">
                                 <div className="flex items-center justify-between mb-3">
                                     <label className="font-bold text-sm">Caption</label>
                                     <div className="flex gap-2">
-                                        <button onClick={handleAICaption} className="px-3 py-1.5 soft-btn rounded-xl text-xs font-bold flex items-center gap-1.5">
-                                            <Zap size={12} className="text-[#6C63FF]" /> AI Enhance
+                                        <button onClick={handleAICaption} className="px-3 py-1.5 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl text-xs font-bold flex items-center gap-1.5">
+                                            <Zap size={12} className="text-primary-600" /> AI Enhance
                                         </button>
                                         <span className="text-xs text-[#9CA3AF] self-center">{caption.length} chars</span>
                                     </div>
@@ -743,13 +743,13 @@ export default function SocialHubPage() {
                                     value={caption}
                                     onChange={e => setCaption(e.target.value)}
                                     placeholder="Write your post caption..."
-                                    className="soft-input soft-textarea w-full"
+                                    className="flex w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50 min-h-[100px] w-full"
                                     rows={5}
                                 />
                             </div>
 
                             {/* Media upload and select area */}
-                            <div className="soft-extruded rounded-[28px] p-6">
+                            <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6">
                                 <div className="flex items-center justify-between mb-3">
                                     <label className="font-bold text-sm">Media Content (Photo/Video)</label>
                                     <button
@@ -758,7 +758,7 @@ export default function SocialHubPage() {
                                             setShowLibraryModal(true);
                                             loadLibraryMedia(tenantId);
                                         }}
-                                        className="px-3 py-1.5 soft-btn rounded-xl text-xs font-bold flex items-center gap-1.5"
+                                        className="px-3 py-1.5 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl text-xs font-bold flex items-center gap-1.5"
                                     >
                                         Choose from Library
                                     </button>
@@ -766,7 +766,7 @@ export default function SocialHubPage() {
 
                                 {/* Drag & Drop Area */}
                                 <div
-                                    className={`soft-dropzone mb-4 relative ${dragActive ? "active" : ""}`}
+                                    className={`border-2 border-dashed border-slate-300 hover:border-primary-500 bg-slate-50 transition-colors mb-4 relative ${dragActive ? "active" : ""}`}
                                     onDragEnter={handleDrag}
                                     onDragLeave={handleDrag}
                                     onDragOver={handleDrag}
@@ -784,12 +784,12 @@ export default function SocialHubPage() {
                                     />
                                     {uploading ? (
                                         <div className="flex items-center justify-center gap-3 py-4">
-                                            <div className="animate-spin h-6 w-6 border-3 border-[#6C63FF] border-t-transparent rounded-full"></div>
-                                            <span className="font-bold text-[#6C63FF]">Uploading...</span>
+                                            <div className="animate-spin h-6 w-6 border-3 border-primary-600 border-t-transparent rounded-full"></div>
+                                            <span className="font-bold text-primary-600">Uploading...</span>
                                         </div>
                                     ) : (
                                         <div className="py-4 text-center">
-                                            <Upload size={28} className="mx-auto text-[#6C63FF] mb-2" />
+                                            <Upload size={28} className="mx-auto text-primary-600 mb-2" />
                                             <p className="font-bold text-xs mb-1">
                                                 {dragActive ? "Drop files here" : "Drag & drop files here"}
                                             </p>
@@ -806,7 +806,7 @@ export default function SocialHubPage() {
                                         {attachedMedia.map(item => {
                                             const isImg = item.mime_type?.startsWith("image/") || item.has_thumbnail;
                                             return (
-                                                <div key={item.id} className="relative aspect-square rounded-xl overflow-hidden soft-inset bg-[#E0E5EC] group border border-white/40">
+                                                <div key={item.id} className="relative aspect-square rounded-xl overflow-hidden bg-slate-50 border border-slate-200 rounded-xl bg-slate-50 group border border-white/40">
                                                     {isImg ? (
                                                         <img
                                                             src={`${API}/social/media/thumbnail/${item.id}`}
@@ -815,7 +815,7 @@ export default function SocialHubPage() {
                                                         />
                                                     ) : (
                                                         <div className="w-full h-full flex items-center justify-center">
-                                                            <span className="text-[10px] font-bold text-[#6C63FF] uppercase bg-purple-100 px-2 py-1 rounded">VIDEO</span>
+                                                            <span className="text-[10px] font-bold text-primary-600 uppercase bg-purple-100 px-2 py-1 rounded">VIDEO</span>
                                                         </div>
                                                     )}
                                                     <button
@@ -840,11 +840,11 @@ export default function SocialHubPage() {
 
                             {/* Hashtags & Mentions */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="soft-extruded rounded-[28px] p-6">
+                                <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6">
                                     <div className="flex items-center justify-between mb-3">
                                         <label className="font-bold text-sm">Hashtags</label>
-                                        <button onClick={handleAIHashtags} className="px-3 py-1.5 soft-btn rounded-xl text-xs font-bold flex items-center gap-1.5">
-                                            <Zap size={12} className="text-[#6C63FF]" /> Suggest
+                                        <button onClick={handleAIHashtags} className="px-3 py-1.5 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl text-xs font-bold flex items-center gap-1.5">
+                                            <Zap size={12} className="text-primary-600" /> Suggest
                                         </button>
                                     </div>
                                     <input
@@ -852,47 +852,47 @@ export default function SocialHubPage() {
                                         value={hashtags}
                                         onChange={e => setHashtags(e.target.value)}
                                         placeholder="#marketing #digital"
-                                        className="soft-input"
+                                        className="flex w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50"
                                     />
                                 </div>
-                                <div className="soft-extruded rounded-[28px] p-6">
+                                <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6">
                                     <label className="font-bold text-sm mb-3 block">Mentions</label>
                                     <input
                                         type="text"
                                         value={mentions}
                                         onChange={e => setMentions(e.target.value)}
                                         placeholder="@company @partner"
-                                        className="soft-input"
+                                        className="flex w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50"
                                     />
                                 </div>
                             </div>
 
                             {/* Link */}
-                            <div className="soft-extruded rounded-[28px] p-6">
+                            <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6">
                                 <label className="font-bold text-sm mb-3 block">Link URL</label>
                                 <input
                                     type="url"
                                     value={linkUrl}
                                     onChange={e => setLinkUrl(e.target.value)}
                                     placeholder="https://yoursite.com/page"
-                                    className="soft-input"
+                                    className="flex w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50"
                                 />
                             </div>
 
                             {/* Schedule */}
-                            <div className="soft-extruded rounded-[28px] p-6">
+                            <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6">
                                 <label className="font-bold text-sm mb-3 block">Schedule</label>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <input
                                         type="datetime-local"
                                         value={scheduledAt}
                                         onChange={e => setScheduledAt(e.target.value)}
-                                        className="soft-input"
+                                        className="flex w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50"
                                     />
                                     <select
                                         value={postTimezone}
                                         onChange={e => setPostTimezone(e.target.value)}
-                                        className="soft-input"
+                                        className="flex w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50"
                                     >
                                         <option value="UTC">UTC</option>
                                         <option value="America/New_York">Eastern</option>
@@ -907,7 +907,7 @@ export default function SocialHubPage() {
                         {/* Right Side — Account Selector & Actions */}
                         <div className="space-y-6">
                             {/* Platform Selector */}
-                            <div className="soft-extruded rounded-[28px] p-6">
+                            <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6">
                                 <label className="font-bold text-sm mb-4 block">Publish To</label>
                                 {accounts.length === 0 ? (
                                     <p className="text-sm text-[#9CA3AF]">No connected accounts. Connect accounts first.</p>
@@ -920,7 +920,7 @@ export default function SocialHubPage() {
                                                 <label
                                                     key={acc.id}
                                                     className={`flex items-center gap-3 p-3 rounded-2xl cursor-pointer transition-all ${
-                                                        isSelected ? "soft-inset" : "soft-extruded-sm hover:soft-extruded"
+                                                        isSelected ? "bg-slate-50 border border-slate-200 rounded-xl" : "bg-white border border-slate-200 shadow-sm rounded-lg hover:bg-white border border-slate-200 shadow-sm rounded-xl"
                                                     }`}
                                                 >
                                                     <input
@@ -933,7 +933,7 @@ export default function SocialHubPage() {
                                                                     : [...prev, acc.id]
                                                             );
                                                         }}
-                                                        className="soft-checkbox"
+                                                        className="w-4 h-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500"
                                                     />
                                                     <span className="text-lg">{plat?.icon || "🔗"}</span>
                                                     <div className="flex-1 min-w-0">
@@ -949,9 +949,9 @@ export default function SocialHubPage() {
 
                             {/* Link Existing Post IDs Input Section */}
                             {selectedAccounts.length > 0 && (
-                                <div className="soft-extruded rounded-[28px] p-6">
+                                <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6">
                                     <label className="font-bold text-sm mb-2 block flex items-center gap-2">
-                                        <Shield size={16} className="text-[#6C63FF]" />
+                                        <Shield size={16} className="text-primary-600" />
                                         Link Existing Post IDs
                                     </label>
                                     <p className="text-[10px] text-[#9CA3AF] mb-4 leading-relaxed">
@@ -976,7 +976,7 @@ export default function SocialHubPage() {
                                                             [platKey || ""]: e.target.value
                                                         }))}
                                                         placeholder={`e.g. ${(platKey === "facebook" || platKey === "meta") ? "123456_7890" : "18029348123"}`}
-                                                        className="soft-input text-xs"
+                                                        className="flex w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50 text-xs"
                                                     />
                                                 </div>
                                             );
@@ -989,13 +989,13 @@ export default function SocialHubPage() {
                             <div className="space-y-3">
                                 <button
                                     onClick={() => handleCreatePost("draft")}
-                                    className="w-full px-6 py-3.5 soft-btn rounded-2xl font-bold text-sm"
+                                    className="w-full px-6 py-3.5 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-2xl font-bold text-sm"
                                 >
                                     Save Draft
                                 </button>
                                 <button
                                     onClick={() => handleCreatePost("scheduled")}
-                                    className="w-full px-6 py-3.5 soft-btn-primary rounded-2xl font-bold text-sm flex items-center justify-center gap-2"
+                                    className="w-full px-6 py-3.5 inline-flex items-center justify-center font-medium bg-primary-600 text-white hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-2xl font-bold text-sm flex items-center justify-center gap-2"
                                     disabled={!scheduledAt}
                                 >
                                     <Clock size={16} /> Schedule Post
@@ -1025,7 +1025,7 @@ export default function SocialHubPage() {
                                 <button
                                     key={f}
                                     onClick={() => setPostFilter(f)}
-                                    className={`soft-tab text-xs ${postFilter === f ? "active" : ""}`}
+                                    className={`px-4 py-2 font-medium text-slate-600 hover:text-slate-900 transition-colors rounded-md text-xs ${postFilter === f ? "active" : ""}`}
                                 >
                                     {f.charAt(0).toUpperCase() + f.slice(1)}
                                 </button>
@@ -1033,10 +1033,10 @@ export default function SocialHubPage() {
                         </div>
 
                         {filteredPosts.length === 0 ? (
-                            <div className="soft-extruded rounded-[32px] p-12 text-center">
+                            <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[32px] p-12 text-center">
                                 <Clock size={48} className="mx-auto text-[#9CA3AF] mb-4" />
                                 <h3 className="text-xl font-bold mb-2">No Posts Found</h3>
-                                <p className="text-[#6B7280]">Create your first post to see it here.</p>
+                                <p className="text-slate-500">Create your first post to see it here.</p>
                             </div>
                         ) : (
                             <div className="space-y-4">
@@ -1044,14 +1044,14 @@ export default function SocialHubPage() {
                                     const badge = STATUS_BADGES[post.status] || STATUS_BADGES.draft;
                                     const isExpanded = expandedPost === post.id;
                                     return (
-                                        <div key={post.id} className="soft-extruded rounded-[24px] p-6 transition-all">
+                                        <div key={post.id} className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[24px] p-6 transition-all">
                                             <div className="flex items-start justify-between">
                                                 <div className="flex-1 min-w-0 mr-4">
                                                     <p className="font-bold text-sm mb-2 line-clamp-2">{post.caption || "Untitled post"}</p>
                                                     <div className="flex items-center gap-3 flex-wrap">
                                                         <span className={badge.class}>{badge.label}</span>
                                                         {post.platforms?.map((p: any, i: number) => (
-                                                            <span key={i} className="text-xs text-[#6B7280]">
+                                                            <span key={i} className="text-xs text-slate-500">
                                                                 {PLATFORMS.find(pp => pp.key === p.platform)?.icon} {p.platform_name}
                                                             </span>
                                                         ))}
@@ -1066,19 +1066,19 @@ export default function SocialHubPage() {
 
                                                 <div className="flex items-center gap-2">
                                                     {(post.status === "draft" || post.status === "scheduled") && (
-                                                        <button onClick={() => handlePublishNow(post.id)} className="p-2 soft-btn rounded-xl" title="Publish Now">
-                                                            <Send size={16} className="text-[#6C63FF]" />
+                                                        <button onClick={() => handlePublishNow(post.id)} className="p-2 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl" title="Publish Now">
+                                                            <Send size={16} className="text-primary-600" />
                                                         </button>
                                                     )}
                                                     {post.status === "failed" && (
-                                                        <button onClick={() => handleRetryPost(post.id)} className="p-2 soft-btn rounded-xl" title="Retry">
+                                                        <button onClick={() => handleRetryPost(post.id)} className="p-2 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl" title="Retry">
                                                             <RefreshCw size={16} className="text-[#D97706]" />
                                                         </button>
                                                     )}
-                                                    <button onClick={() => handleDeletePost(post.id)} className="p-2 soft-btn rounded-xl" title="Delete">
+                                                    <button onClick={() => handleDeletePost(post.id)} className="p-2 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl" title="Delete">
                                                         <Trash2 size={16} className="text-red-400" />
                                                     </button>
-                                                    <button onClick={() => setExpandedPost(isExpanded ? null : post.id)} className="p-2 soft-btn rounded-xl">
+                                                    <button onClick={() => setExpandedPost(isExpanded ? null : post.id)} className="p-2 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl">
                                                         {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                                                     </button>
                                                 </div>
@@ -1087,12 +1087,12 @@ export default function SocialHubPage() {
                                             {isExpanded && (
                                                 <div className="mt-4 pt-4 border-t border-white/30">
                                                     {post.hashtags && (
-                                                        <p className="text-xs text-[#6C63FF] mb-2">{post.hashtags}</p>
+                                                        <p className="text-xs text-primary-600 mb-2">{post.hashtags}</p>
                                                     )}
                                                     {post.media_ids && post.media_ids.length > 0 && (
                                                         <div className="mb-3 flex flex-wrap gap-2">
                                                             {post.media_ids.map((mediaId: string) => (
-                                                                <div key={mediaId} className="w-16 h-16 rounded-xl overflow-hidden soft-inset bg-[#E0E5EC] border border-white/40">
+                                                                <div key={mediaId} className="w-16 h-16 rounded-xl overflow-hidden bg-slate-50 border border-slate-200 rounded-xl bg-slate-50 border border-white/40">
                                                                     <img
                                                                         src={`${API}/social/media/thumbnail/${mediaId}`}
                                                                         alt="Post media"
@@ -1108,8 +1108,8 @@ export default function SocialHubPage() {
                                                     )}
                                                     {post.platform_post_ids && Object.keys(post.platform_post_ids).length > 0 && (
                                                         <div className="mb-4">
-                                                            <div className="font-bold text-xs text-[#6B7280] mb-2 flex items-center gap-1.5">
-                                                                <Shield size={12} className="text-[#6C63FF]" />
+                                                            <div className="font-bold text-xs text-slate-500 mb-2 flex items-center gap-1.5">
+                                                                <Shield size={12} className="text-primary-600" />
                                                                 Linked Platform Post IDs
                                                             </div>
                                                             <div className="flex flex-wrap gap-2">
@@ -1118,7 +1118,7 @@ export default function SocialHubPage() {
                                                                     return (
                                                                         <div
                                                                             key={platform}
-                                                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl soft-inset text-xs font-mono text-[#4B5563]"
+                                                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono text-[#4B5563]"
                                                                             title="Click to copy Post ID"
                                                                             onClick={(e) => {
                                                                                 e.stopPropagation();
@@ -1128,7 +1128,7 @@ export default function SocialHubPage() {
                                                                             style={{ cursor: "pointer" }}
                                                                         >
                                                                             <span style={{ color: plat?.color }}>{plat?.icon || "🔗"}</span>
-                                                                            <span className="font-bold uppercase text-[10px] text-[#6B7280]">{plat?.name || platform}:</span>
+                                                                            <span className="font-bold uppercase text-[10px] text-slate-500">{plat?.name || platform}:</span>
                                                                             <span className="select-all font-semibold">{postId as string}</span>
                                                                         </div>
                                                                     );
@@ -1138,18 +1138,18 @@ export default function SocialHubPage() {
                                                     )}
                                                     {post.publish_log?.length > 0 && (
                                                         <div className="mt-3">
-                                                            <div className="font-bold text-xs text-[#6B7280] mb-2">Publish Log</div>
-                                                            <div className="soft-inset rounded-xl p-3 space-y-2 max-h-40 overflow-y-auto">
+                                                            <div className="font-bold text-xs text-slate-500 mb-2">Publish Log</div>
+                                                            <div className="bg-slate-50 border border-slate-200 rounded-xl rounded-xl p-3 space-y-2 max-h-40 overflow-y-auto">
                                                                 {post.publish_log.map((log: any, i: number) => (
                                                                     <div key={i} className="text-xs flex items-start gap-2">
                                                                         {log.success ? (
-                                                                            <Check size={12} className="text-green-500 mt-0.5" />
+                                                                            <Check size={12} className="text-success mt-0.5" />
                                                                         ) : (
-                                                                            <X size={12} className="text-red-500 mt-0.5" />
+                                                                            <X size={12} className="text-danger mt-0.5" />
                                                                         )}
                                                                         <div>
                                                                             <span className="font-bold">{log.platform || "—"}</span>
-                                                                            {log.error && <span className="text-red-500 ml-2">{log.error}</span>}
+                                                                            {log.error && <span className="text-danger ml-2">{log.error}</span>}
                                                                             <span className="text-[#9CA3AF] ml-2">{log.timestamp ? formatInUserTimezone(log.timestamp, "time") : ""}</span>
                                                                         </div>
                                                                     </div>
@@ -1170,11 +1170,11 @@ export default function SocialHubPage() {
                 {/* ═══ TAB 3: SETTINGS (CREDENTIALS) ═══ */}
                 {activeTab === 3 && (
                     <div>
-                        <div className="soft-extruded rounded-[24px] p-4 mb-6 flex items-start gap-3">
+                        <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[24px] p-4 mb-6 flex items-start gap-3">
                             <Shield size={20} className="text-[#D97706] mt-0.5" />
                             <div className="text-sm">
                                 <strong className="text-[#D97706]">Security Notice:</strong>{" "}
-                                <span className="text-[#6B7280]">
+                                <span className="text-slate-500">
                                     API credentials are encrypted at rest. Never share your client secrets. Register your apps on each platform's developer portal first.
                                 </span>
                             </div>
@@ -1187,7 +1187,7 @@ export default function SocialHubPage() {
                                 const form = credForms[plat.key] || {};
 
                                 return (
-                                    <div key={plat.key} className="soft-extruded rounded-[24px] overflow-hidden">
+                                    <div key={plat.key} className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[24px] overflow-hidden">
                                         <button
                                             onClick={() => setExpandedPlatform(isExpanded ? null : plat.key)}
                                             className="w-full flex items-center justify-between p-5 text-left"
@@ -1200,7 +1200,7 @@ export default function SocialHubPage() {
                                                         {existing ? (
                                                             <span className="flex items-center gap-1">
                                                                 {existing.is_validated ? (
-                                                                    <><Check size={12} className="text-green-500" /> Validated</>
+                                                                    <><Check size={12} className="text-success" /> Validated</>
                                                                 ) : (
                                                                     <><AlertCircle size={12} className="text-amber-500" /> Not validated</>
                                                                 )}
@@ -1215,56 +1215,56 @@ export default function SocialHubPage() {
                                         {isExpanded && (
                                             <div className="px-5 pb-5 space-y-4 border-t border-white/20 pt-4">
                                                 <div>
-                                                    <label className="font-bold text-xs text-[#6B7280] mb-2 block">App ID</label>
+                                                    <label className="font-bold text-xs text-slate-500 mb-2 block">App ID</label>
                                                     <input
                                                         type="text"
                                                         value={form.app_id ?? existing?.app_id ?? ""}
                                                         onChange={e => setCredForms(prev => ({ ...prev, [plat.key]: { ...prev[plat.key], app_id: e.target.value } }))}
                                                         placeholder="Your app ID"
-                                                        className="soft-input"
+                                                        className="flex w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50"
                                                     />
                                                 </div>
                                                 <div>
-                                                    <label className="font-bold text-xs text-[#6B7280] mb-2 block">Client ID</label>
+                                                    <label className="font-bold text-xs text-slate-500 mb-2 block">Client ID</label>
                                                     <input
                                                         type="text"
                                                         value={form.client_id ?? ""}
                                                         onChange={e => setCredForms(prev => ({ ...prev, [plat.key]: { ...prev[plat.key], client_id: e.target.value } }))}
                                                         placeholder={existing?.client_id || "Enter client ID"}
-                                                        className="soft-input"
+                                                        className="flex w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50"
                                                     />
                                                 </div>
                                                 <div>
-                                                    <label className="font-bold text-xs text-[#6B7280] mb-2 block">Client Secret</label>
+                                                    <label className="font-bold text-xs text-slate-500 mb-2 block">Client Secret</label>
                                                     <div className="relative">
                                                         <input
                                                             type={showSecrets[plat.key] ? "text" : "password"}
                                                             value={form.client_secret ?? ""}
                                                             onChange={e => setCredForms(prev => ({ ...prev, [plat.key]: { ...prev[plat.key], client_secret: e.target.value } }))}
                                                             placeholder={existing?.client_secret ? "••••••••" : "Enter client secret"}
-                                                            className="soft-input pr-12"
+                                                            className="flex w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50 pr-12"
                                                         />
                                                         <button
                                                             type="button"
                                                             onClick={() => setShowSecrets(prev => ({ ...prev, [plat.key]: !prev[plat.key] }))}
-                                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#3D4852]"
+                                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-slate-900"
                                                         >
                                                             {showSecrets[plat.key] ? <EyeOff size={16} /> : <Eye size={16} />}
                                                         </button>
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <label className="font-bold text-xs text-[#6B7280] mb-2 block">Redirect URI</label>
+                                                    <label className="font-bold text-xs text-slate-500 mb-2 block">Redirect URI</label>
                                                     <input
                                                         type="url"
                                                         value={form.redirect_uri ?? existing?.redirect_uri ?? ""}
                                                         onChange={e => setCredForms(prev => ({ ...prev, [plat.key]: { ...prev[plat.key], redirect_uri: e.target.value } }))}
                                                         placeholder="https://yourapp.com/callback"
-                                                        className="soft-input"
+                                                        className="flex w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50"
                                                     />
                                                 </div>
                                                 <div>
-                                                    <label className="font-bold text-xs text-[#6B7280] mb-2 block flex items-center justify-between">
+                                                    <label className="font-bold text-xs text-slate-500 mb-2 block flex items-center justify-between">
                                                         <span>Scopes (Optional)</span>
                                                         <span className="text-[10px] text-[#9CA3AF] font-normal">Comma-separated</span>
                                                     </label>
@@ -1282,13 +1282,13 @@ export default function SocialHubPage() {
                                                             }
                                                         }))}
                                                         placeholder="Custom OAuth scopes"
-                                                        className="soft-input"
+                                                        className="flex w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50"
                                                     />
                                                 </div>
 
                                                 {(plat.key === "facebook" || plat.key === "instagram" || plat.key === "meta") && (
                                                     <div>
-                                                        <label className="font-bold text-xs text-[#6B7280] mb-2 block flex items-center justify-between">
+                                                        <label className="font-bold text-xs text-slate-500 mb-2 block flex items-center justify-between">
                                                             <span>Configuration ID</span>
                                                             <span className="text-[10px] text-[#10B981] font-semibold">config_id from Meta Portal</span>
                                                         </label>
@@ -1306,7 +1306,7 @@ export default function SocialHubPage() {
                                                                 }
                                                             }))}
                                                             placeholder="e.g. 1234567890123"
-                                                            className="soft-input"
+                                                            className="flex w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50"
                                                         />
                                                     </div>
                                                 )}
@@ -1314,7 +1314,7 @@ export default function SocialHubPage() {
                                                 <div className="flex gap-3 pt-2">
                                                     <button
                                                         onClick={() => handleSaveCred(plat.key)}
-                                                        className="px-5 py-2.5 soft-btn-primary rounded-xl text-sm font-bold"
+                                                        className="px-5 py-2.5 inline-flex items-center justify-center font-medium bg-primary-600 text-white hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl text-sm font-bold"
                                                     >
                                                         Save Credentials
                                                     </button>
@@ -1332,7 +1332,7 @@ export default function SocialHubPage() {
                                                                     await loadCredentials(tenantId);
                                                                 } catch { showMsg("Validation failed", "error"); }
                                                             }}
-                                                            className="px-5 py-2.5 soft-btn rounded-xl text-sm font-bold"
+                                                            className="px-5 py-2.5 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl text-sm font-bold"
                                                         >
                                                             Validate
                                                         </button>
@@ -1351,19 +1351,19 @@ export default function SocialHubPage() {
             {/* Modal to choose from Media Library */}
             {showLibraryModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/35 backdrop-blur-sm animate-fade-in">
-                    <div className="bg-[#E0E5EC] rounded-[32px] w-full max-w-3xl max-h-[85vh] flex flex-col p-6 md:p-8 soft-extruded overflow-hidden relative">
+                    <div className="bg-slate-50 rounded-[32px] w-full max-w-3xl max-h-[85vh] flex flex-col p-6 md:p-8 bg-white border border-slate-200 shadow-sm rounded-xl overflow-hidden relative">
                         {/* Modal Header */}
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-xl font-bold flex items-center gap-2">
-                                <span className="w-8 h-8 rounded-lg soft-extruded flex items-center justify-center">
-                                    <Upload size={16} className="text-[#6C63FF]" />
+                                <span className="w-8 h-8 rounded-lg bg-white border border-slate-200 shadow-sm rounded-xl flex items-center justify-center">
+                                    <Upload size={16} className="text-primary-600" />
                                 </span>
                                 Choose from Media Library
                             </h3>
                             <button
                                 type="button"
                                 onClick={() => setShowLibraryModal(false)}
-                                className="p-2 soft-btn rounded-xl text-[#3D4852]"
+                                className="p-2 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl text-slate-900"
                             >
                                 <X size={16} />
                             </button>
@@ -1372,7 +1372,7 @@ export default function SocialHubPage() {
                         {/* Modal Body / Media List */}
                         <div className="flex-1 overflow-y-auto mb-6 pr-2">
                             {libraryMedia.length === 0 ? (
-                                <div className="text-center py-12 soft-inset rounded-2xl">
+                                <div className="text-center py-12 bg-slate-50 border border-slate-200 rounded-xl rounded-2xl">
                                     <p className="text-sm text-[#9CA3AF]">No media files in library yet.</p>
                                     <p className="text-xs text-[#9CA3AF] mt-1">Upload files to library to see them here.</p>
                                 </div>
@@ -1392,7 +1392,7 @@ export default function SocialHubPage() {
                                                     }
                                                 }}
                                                 className={`relative aspect-square rounded-2xl overflow-hidden cursor-pointer transition-all border-2 ${
-                                                    isAlreadyAttached ? "border-[#6C63FF] scale-95 shadow-inner" : "border-transparent soft-extruded hover:scale-105"
+                                                    isAlreadyAttached ? "border-primary-600 scale-95 shadow-inner" : "border-transparent bg-white border border-slate-200 shadow-sm rounded-xl hover:scale-105"
                                                 }`}
                                             >
                                                 {isImg ? (
@@ -1404,13 +1404,13 @@ export default function SocialHubPage() {
                                                     />
                                                 ) : (
                                                     <div className="w-full h-full flex items-center justify-center bg-[#d3d8df]">
-                                                        <span className="text-[10px] font-bold text-[#6C63FF] bg-purple-100 px-2 py-1 rounded">VIDEO</span>
+                                                        <span className="text-[10px] font-bold text-primary-600 bg-purple-100 px-2 py-1 rounded">VIDEO</span>
                                                     </div>
                                                 )}
 
                                                 {/* Selection badge */}
                                                 {isAlreadyAttached && (
-                                                    <div className="absolute top-2 right-2 bg-[#6C63FF] text-white p-1 rounded-full shadow-md z-10">
+                                                    <div className="absolute top-2 right-2 bg-primary-600 text-white p-1 rounded-full shadow-md z-10">
                                                         <Check size={12} />
                                                     </div>
                                                 )}
@@ -1430,7 +1430,7 @@ export default function SocialHubPage() {
                             <button
                                 type="button"
                                 onClick={() => setShowLibraryModal(false)}
-                                className="px-6 py-2.5 soft-btn-primary rounded-xl text-sm font-bold"
+                                className="px-6 py-2.5 inline-flex items-center justify-center font-medium bg-primary-600 text-white hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl text-sm font-bold"
                             >
                                 Done Selecting ({attachedMedia.length})
                             </button>
@@ -1442,19 +1442,19 @@ export default function SocialHubPage() {
             {/* Modal for Meta Manual Token */}
             {showManualMetaModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/35 backdrop-blur-sm animate-fade-in">
-                    <div className="bg-[#E0E5EC] rounded-[32px] w-full max-w-lg flex flex-col p-6 md:p-8 soft-extruded overflow-hidden relative">
+                    <div className="bg-slate-50 rounded-[32px] w-full max-w-lg flex flex-col p-6 md:p-8 bg-white border border-slate-200 shadow-sm rounded-xl overflow-hidden relative">
                          {/* Modal Header */}
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-xl font-bold flex items-center gap-2">
-                                <span className="w-8 h-8 rounded-lg soft-extruded flex items-center justify-center">
-                                    <Shield size={16} className="text-[#6C63FF]" />
+                                <span className="w-8 h-8 rounded-lg bg-white border border-slate-200 shadow-sm rounded-xl flex items-center justify-center">
+                                    <Shield size={16} className="text-primary-600" />
                                 </span>
                                 Connect {manualPlatform === "instagram" ? "Instagram" : "Facebook"} manually
                             </h3>
                             <button
                                 type="button"
                                 onClick={() => setShowManualMetaModal(false)}
-                                className="p-2 soft-btn rounded-xl text-[#3D4852]"
+                                className="p-2 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl text-slate-900"
                             >
                                 <X size={16} />
                             </button>
@@ -1462,11 +1462,11 @@ export default function SocialHubPage() {
 
                         {/* Modal Body */}
                         <div className="space-y-4">
-                            <p className="text-xs text-[#6B7280] leading-relaxed">
+                            <p className="text-xs text-slate-500 leading-relaxed">
                                 Paste your Meta User or Page Access Token from Graph API Explorer or your app credentials. FastoClick will fetch the associated {manualPlatform === "instagram" ? "Instagram account" : "Facebook page"} and connect it.
                             </p>
                             <div>
-                                <label className="font-bold text-xs text-[#6B7280] mb-2 block flex items-center justify-between">
+                                <label className="font-bold text-xs text-slate-500 mb-2 block flex items-center justify-between">
                                     <span>Access Token</span>
                                     <span className="text-[10px] text-[#9CA3AF] font-normal">User or Page token</span>
                                 </label>
@@ -1475,7 +1475,7 @@ export default function SocialHubPage() {
                                     value={manualMetaToken}
                                     onChange={e => setManualMetaToken(e.target.value)}
                                     placeholder="EAABw..."
-                                    className="soft-input font-mono text-xs p-3 w-full"
+                                    className="flex w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50 font-mono text-xs p-3 w-full"
                                 />
                             </div>
                         </div>
@@ -1485,7 +1485,7 @@ export default function SocialHubPage() {
                             <button
                                 type="button"
                                 onClick={() => setShowManualMetaModal(false)}
-                                className="px-5 py-2.5 soft-btn rounded-xl text-sm font-bold text-[#6B7280]"
+                                className="px-5 py-2.5 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl text-sm font-bold text-slate-500"
                             >
                                 Cancel
                             </button>
@@ -1493,7 +1493,7 @@ export default function SocialHubPage() {
                                 type="button"
                                 disabled={connectingManualMeta || !manualMetaToken.trim()}
                                 onClick={handleConnectManualMeta}
-                                className="px-5 py-2.5 soft-btn-primary rounded-xl text-sm font-bold disabled:opacity-50"
+                                className="px-5 py-2.5 inline-flex items-center justify-center font-medium bg-primary-600 text-white hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl text-sm font-bold disabled:opacity-50"
                             >
                                 {connectingManualMeta ? "Connecting..." : (manualPlatform === "instagram" ? "Connect Accounts" : "Connect Pages")}
                             </button>

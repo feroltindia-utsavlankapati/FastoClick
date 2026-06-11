@@ -85,19 +85,19 @@ export default function EmailTemplatesPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#E0E5EC] text-[#3D4852] font-sans flex flex-col">
+        <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col">
             <NavigationBar />
             
             <main className="flex-1 max-w-7xl mx-auto w-full p-6 md:p-10 relative z-10 flex flex-col gap-8">
                 <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
                         <h1 className="text-4xl font-extrabold tracking-tight flex items-center gap-3">
-                            <span className="w-12 h-12 rounded-2xl soft-inset flex items-center justify-center">
+                            <span className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-center">
                                 <PenTool size={24} className="text-[#EC4899]" />
                             </span>
                             Email Templates
                         </h1>
-                        <p className="text-[#6B7280] mt-2 font-medium">Design and manage your email campaigns templates.</p>
+                        <p className="text-slate-500 mt-2 font-medium">Design and manage your email campaigns templates.</p>
                     </div>
                     {!isEditing && (
                         <button 
@@ -105,7 +105,7 @@ export default function EmailTemplatesPage() {
                                 setCurrentTemplate({ name: "", subject: "", body_html: "", body_text: "" });
                                 setIsEditing(true);
                             }}
-                            className="px-6 py-3 rounded-2xl soft-btn-primary font-bold shadow-md flex items-center gap-2"
+                            className="px-6 py-3 rounded-2xl inline-flex items-center justify-center font-medium bg-primary-600 text-white hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 font-bold shadow-md flex items-center gap-2"
                         >
                             <Plus size={18} /> New Template
                         </button>
@@ -113,14 +113,14 @@ export default function EmailTemplatesPage() {
                 </header>
 
                 {isEditing ? (
-                    <div className="soft-extruded rounded-[32px] p-8 flex flex-col gap-6 animate-in slide-in-from-bottom-4 duration-300">
+                    <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[32px] p-8 flex flex-col gap-6 animate-in slide-in-from-bottom-4 duration-300">
                         <div className="flex justify-between items-center border-b border-white/20 pb-4">
                             <h2 className="text-xl font-bold flex items-center gap-2">
                                 <Edit3 size={20} className="text-[#EC4899]" /> {currentTemplate.id ? "Edit Template" : "Create Template"}
                             </h2>
                             <button 
                                 onClick={() => setIsEditing(false)}
-                                className="p-2 rounded-xl soft-btn text-[#6B7280] hover:text-red-500"
+                                className="p-2 rounded-xl inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 text-slate-500 hover:text-danger"
                             >
                                 <X size={20} />
                             </button>
@@ -128,22 +128,22 @@ export default function EmailTemplatesPage() {
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="flex flex-col gap-2">
-                                <label className="text-sm font-bold text-[#6B7280]">Template Name</label>
+                                <label className="text-sm font-bold text-slate-500">Template Name</label>
                                 <input 
                                     type="text" 
                                     value={currentTemplate.name}
                                     onChange={(e) => setCurrentTemplate({...currentTemplate, name: e.target.value})}
-                                    className="p-4 bg-transparent soft-inset rounded-2xl font-bold focus:outline-none focus:ring-2 focus:ring-[#EC4899]"
+                                    className="p-4 bg-transparent bg-slate-50 border border-slate-200 rounded-xl rounded-2xl font-bold focus:outline-none focus:ring-2 focus:ring-[#EC4899]"
                                     placeholder="e.g. Welcome Email"
                                 />
                             </div>
                             <div className="flex flex-col gap-2">
-                                <label className="text-sm font-bold text-[#6B7280]">Subject Line</label>
+                                <label className="text-sm font-bold text-slate-500">Subject Line</label>
                                 <input 
                                     type="text" 
                                     value={currentTemplate.subject}
                                     onChange={(e) => setCurrentTemplate({...currentTemplate, subject: e.target.value})}
-                                    className="p-4 bg-transparent soft-inset rounded-2xl font-bold focus:outline-none focus:ring-2 focus:ring-[#EC4899]"
+                                    className="p-4 bg-transparent bg-slate-50 border border-slate-200 rounded-xl rounded-2xl font-bold focus:outline-none focus:ring-2 focus:ring-[#EC4899]"
                                     placeholder="e.g. Welcome to {{company_name}}!"
                                 />
                             </div>
@@ -151,20 +151,20 @@ export default function EmailTemplatesPage() {
 
                         <div className="flex flex-col gap-2">
                             <div className="flex justify-between items-center">
-                                <label className="text-sm font-bold text-[#6B7280] flex justify-between w-full pr-4">
+                                <label className="text-sm font-bold text-slate-500 flex justify-between w-full pr-4">
                                     <span>HTML Body</span>
                                     <span className="font-normal text-xs">Available tags: {'{{first_name}}, {{last_name}}, {{email}}, {{company_name}}'}</span>
                                 </label>
-                                <div className="flex bg-[#E0E5EC] rounded-lg p-1 soft-inset w-fit">
+                                <div className="flex bg-slate-50 rounded-lg p-1 bg-slate-50 border border-slate-200 rounded-xl w-fit">
                                     <button
                                         onClick={() => setPreviewMode(false)}
-                                        className={`px-3 py-1.5 rounded-md text-xs font-bold flex items-center gap-1.5 transition-all ${!previewMode ? 'bg-white shadow-sm text-[#EC4899]' : 'text-[#6B7280] hover:text-[#3D4852]'}`}
+                                        className={`px-3 py-1.5 rounded-md text-xs font-bold flex items-center gap-1.5 transition-all ${!previewMode ? 'bg-white shadow-sm text-[#EC4899]' : 'text-slate-500 hover:text-slate-900'}`}
                                     >
                                         <Code size={14} /> Edit
                                     </button>
                                     <button
                                         onClick={() => setPreviewMode(true)}
-                                        className={`px-3 py-1.5 rounded-md text-xs font-bold flex items-center gap-1.5 transition-all ${previewMode ? 'bg-white shadow-sm text-[#EC4899]' : 'text-[#6B7280] hover:text-[#3D4852]'}`}
+                                        className={`px-3 py-1.5 rounded-md text-xs font-bold flex items-center gap-1.5 transition-all ${previewMode ? 'bg-white shadow-sm text-[#EC4899]' : 'text-slate-500 hover:text-slate-900'}`}
                                     >
                                         <Eye size={14} /> Preview
                                     </button>
@@ -177,7 +177,7 @@ export default function EmailTemplatesPage() {
                                         <div className="w-3 h-3 rounded-full bg-red-400"></div>
                                         <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
                                         <div className="w-3 h-3 rounded-full bg-green-400"></div>
-                                        <span className="text-xs text-[#6B7280] font-mono ml-2">Preview Window</span>
+                                        <span className="text-xs text-slate-500 font-mono ml-2">Preview Window</span>
                                     </div>
                                     <iframe 
                                         srcDoc={currentTemplate.body_html || "<div style='color: #9ca3af; font-family: sans-serif; text-align: center; margin-top: 2rem;'>No content</div>"} 
@@ -190,7 +190,7 @@ export default function EmailTemplatesPage() {
                                 <textarea 
                                     value={currentTemplate.body_html || ""}
                                     onChange={(e) => setCurrentTemplate({...currentTemplate, body_html: e.target.value})}
-                                    className="p-4 bg-transparent soft-inset rounded-2xl font-mono text-sm focus:outline-none focus:ring-2 focus:ring-[#EC4899] min-h-[400px]"
+                                    className="p-4 bg-transparent bg-slate-50 border border-slate-200 rounded-xl rounded-2xl font-mono text-sm focus:outline-none focus:ring-2 focus:ring-[#EC4899] min-h-[400px]"
                                     placeholder="<h1>Hello {{first_name}},</h1>..."
                                 />
                             )}
@@ -199,7 +199,7 @@ export default function EmailTemplatesPage() {
                         <div className="flex justify-end pt-4">
                             <button 
                                 onClick={handleSave}
-                                className="px-8 py-3 rounded-2xl soft-btn-primary font-bold shadow-md flex items-center gap-2"
+                                className="px-8 py-3 rounded-2xl inline-flex items-center justify-center font-medium bg-primary-600 text-white hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 font-bold shadow-md flex items-center gap-2"
                             >
                                 <Save size={18} /> Save Template
                             </button>
@@ -208,35 +208,35 @@ export default function EmailTemplatesPage() {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {loading ? (
-                            <div className="col-span-full py-20 text-center text-[#6B7280] font-bold">Loading templates...</div>
+                            <div className="col-span-full py-20 text-center text-slate-500 font-bold">Loading templates...</div>
                         ) : templates.length === 0 ? (
-                            <div className="col-span-full py-20 text-center text-[#6B7280] font-bold soft-inset rounded-[32px]">
+                            <div className="col-span-full py-20 text-center text-slate-500 font-bold bg-slate-50 border border-slate-200 rounded-xl rounded-[32px]">
                                 No templates found. Create your first one!
                             </div>
                         ) : (
                             templates.map(template => (
-                                <div key={template.id} className="soft-extruded rounded-[32px] p-6 flex flex-col justify-between group">
+                                <div key={template.id} className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[32px] p-6 flex flex-col justify-between group">
                                     <div>
                                         <div className="flex justify-between items-start mb-4">
-                                            <div className="w-10 h-10 rounded-2xl soft-inset flex items-center justify-center">
+                                            <div className="w-10 h-10 rounded-2xl bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-center">
                                                 <PenTool size={18} className="text-[#EC4899]" />
                                             </div>
                                             <button 
                                                 onClick={() => handleDelete(template.id)}
-                                                className="p-2 rounded-xl text-red-500 hover:soft-inset opacity-0 group-hover:opacity-100 transition-opacity"
+                                                className="p-2 rounded-xl text-danger hover:bg-slate-50 border border-slate-200 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"
                                             >
                                                 <Trash2 size={16} />
                                             </button>
                                         </div>
-                                        <h3 className="text-lg font-bold text-[#3D4852] mb-1 truncate">{template.name}</h3>
-                                        <p className="text-sm text-[#6B7280] truncate font-medium mb-4">Subj: {template.subject}</p>
+                                        <h3 className="text-lg font-bold text-slate-900 mb-1 truncate">{template.name}</h3>
+                                        <p className="text-sm text-slate-500 truncate font-medium mb-4">Subj: {template.subject}</p>
                                     </div>
                                     <button 
                                         onClick={() => {
                                             setCurrentTemplate(template);
                                             setIsEditing(true);
                                         }}
-                                        className="w-full py-2.5 rounded-xl soft-btn text-sm font-bold flex items-center justify-center gap-2 text-[#EC4899]"
+                                        className="w-full py-2.5 rounded-xl inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 text-sm font-bold flex items-center justify-center gap-2 text-[#EC4899]"
                                     >
                                         <Edit3 size={16} /> Edit
                                     </button>

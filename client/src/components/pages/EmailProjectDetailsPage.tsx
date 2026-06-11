@@ -234,18 +234,18 @@ export default function EmailProjectDetailsPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-[#E0E5EC] font-sans flex items-center justify-center text-[#6B7280]">
-                <Loader2 className="animate-spin text-[#6C63FF]" size={40} />
+            <div className="min-h-screen bg-slate-50 font-sans flex items-center justify-center text-slate-500">
+                <Loader2 className="animate-spin text-primary-600" size={40} />
             </div>
         );
     }
 
     if (!project) {
         return (
-            <div className="min-h-screen bg-[#E0E5EC] font-sans flex items-center justify-center text-[#3D4852]">
+            <div className="min-h-screen bg-slate-50 font-sans flex items-center justify-center text-slate-900">
                 <div className="text-center">
                     <h2 className="text-2xl font-black mb-2">Project Not Found</h2>
-                    <Link to={`/projects/${projectId}/email/dashboard`} className="text-[#6C63FF] hover:underline font-bold">Return to Dashboard</Link>
+                    <Link to={`/projects/${projectId}/email/dashboard`} className="text-primary-600 hover:underline font-bold">Return to Dashboard</Link>
                 </div>
             </div>
         );
@@ -256,31 +256,31 @@ export default function EmailProjectDetailsPage() {
                 {/* Header */}
                 <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                     <div className="flex items-center gap-4">
-                        <Link to={`/projects/${projectId}/email/dashboard`} className="w-10 h-10 rounded-2xl soft-btn flex items-center justify-center text-[#6B7280] hover:text-[#6C63FF] transition-all">
+                        <Link to={`/projects/${projectId}/email/dashboard`} className="w-10 h-10 rounded-2xl inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 flex items-center justify-center text-slate-500 hover:text-primary-600 transition-all">
                             <ArrowLeft size={20} />
                         </Link>
                         <div>
                             <h1 className="text-4xl font-extrabold tracking-tight flex items-center gap-3">
-                                <span className="w-12 h-12 rounded-2xl soft-extruded flex items-center justify-center">
-                                    <Target size={24} className="text-[#6C63FF]" />
+                                <span className="w-12 h-12 rounded-2xl bg-white border border-slate-200 shadow-sm rounded-xl flex items-center justify-center">
+                                    <Target size={24} className="text-primary-600" />
                                 </span>
                                 {project.name}
                             </h1>
-                            <p className="text-[#6B7280] mt-2 font-medium">{project.description || 'Manage campaigns, strategy, and analytics'}</p>
+                            <p className="text-slate-500 mt-2 font-medium">{project.description || 'Manage campaigns, strategy, and analytics'}</p>
                         </div>
                     </div>
                 </header>
 
                 {/* Premium Tab Navigation */}
-                <div className="flex flex-wrap items-center gap-2 mb-8 bg-[#E0E5EC]/50 soft-inset p-2 rounded-3xl w-max max-w-full">
+                <div className="flex flex-wrap items-center gap-2 mb-8 bg-slate-50/50 bg-slate-50 border border-slate-200 rounded-xl p-2 rounded-3xl w-max max-w-full">
                     {tabs.map((tab) => (
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
                             className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-all duration-300
                                 ${activeTab === tab.id 
-                                    ? 'soft-extruded text-[#6C63FF]' 
-                                    : 'text-[#6B7280] hover:text-[#3D4852] hover:soft-btn'
+                                    ? 'bg-white border border-slate-200 shadow-sm rounded-xl text-primary-600' 
+                                    : 'text-slate-500 hover:text-slate-900 hover:inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50'
                                 }
                             `}
                         >
@@ -291,18 +291,18 @@ export default function EmailProjectDetailsPage() {
                 </div>
                 
                 {/* Content Area */}
-                <div className="p-8 rounded-[32px] soft-extruded border border-white/50 backdrop-blur-md min-h-[400px]">
+                <div className="p-8 rounded-[32px] bg-white border border-slate-200 shadow-sm rounded-xl border border-white/50 backdrop-blur-md min-h-[400px]">
                     {activeTab === 'strategy' && (
                         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <div className="flex items-center justify-between mb-6">
                                 <div>
-                                    <h2 className="text-xl font-black text-[#3D4852]">Campaign Strategy</h2>
-                                    <p className="text-[#6B7280] font-medium text-sm">Define your project goals, target audience, and key performance indicators.</p>
+                                    <h2 className="text-xl font-black text-slate-900">Campaign Strategy</h2>
+                                    <p className="text-slate-500 font-medium text-sm">Define your project goals, target audience, and key performance indicators.</p>
                                 </div>
                                 <button 
                                     onClick={handleSaveStrategy}
                                     disabled={isSaving}
-                                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#6C63FF] text-white font-bold hover:bg-[#5A52D5] transition-colors shadow-lg disabled:opacity-50"
+                                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary-600 text-white font-bold hover:bg-[#5A52D5] transition-colors shadow-lg disabled:opacity-50"
                                 >
                                     {isSaving ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />}
                                     Save Strategy
@@ -311,29 +311,29 @@ export default function EmailProjectDetailsPage() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label className="font-bold text-[#3D4852] text-sm">Project Goals</label>
+                                    <label className="font-bold text-slate-900 text-sm">Project Goals</label>
                                     <textarea 
                                         value={project.goals || ''}
                                         onChange={(e) => setProject({...project, goals: e.target.value})}
-                                        className="w-full h-32 bg-[#E0E5EC] text-[#3D4852] p-4 rounded-2xl soft-inset border-none outline-none focus:ring-2 focus:ring-[#6C63FF]/50 transition-all resize-none placeholder:text-[#8B95A5]"
+                                        className="w-full h-32 bg-slate-50 text-slate-900 p-4 rounded-2xl bg-slate-50 border border-slate-200 rounded-xl border-none outline-none focus:ring-2 focus:ring-primary-500/50 transition-all resize-none placeholder:text-[#8B95A5]"
                                         placeholder="What are the primary objectives of this project?"
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="font-bold text-[#3D4852] text-sm">Target Audience</label>
+                                    <label className="font-bold text-slate-900 text-sm">Target Audience</label>
                                     <textarea 
                                         value={project.target_audience || ''}
                                         onChange={(e) => setProject({...project, target_audience: e.target.value})}
-                                        className="w-full h-32 bg-[#E0E5EC] text-[#3D4852] p-4 rounded-2xl soft-inset border-none outline-none focus:ring-2 focus:ring-[#6C63FF]/50 transition-all resize-none placeholder:text-[#8B95A5]"
+                                        className="w-full h-32 bg-slate-50 text-slate-900 p-4 rounded-2xl bg-slate-50 border border-slate-200 rounded-xl border-none outline-none focus:ring-2 focus:ring-primary-500/50 transition-all resize-none placeholder:text-[#8B95A5]"
                                         placeholder="Who are we trying to reach? (e.g., Existing customers, VIPs)"
                                     />
                                 </div>
                                 <div className="space-y-2 md:col-span-2">
-                                    <label className="font-bold text-[#3D4852] text-sm">Key Performance Indicators (KPIs)</label>
+                                    <label className="font-bold text-slate-900 text-sm">Key Performance Indicators (KPIs)</label>
                                     <textarea 
                                         value={project.kpis || ''}
                                         onChange={(e) => setProject({...project, kpis: e.target.value})}
-                                        className="w-full h-32 bg-[#E0E5EC] text-[#3D4852] p-4 rounded-2xl soft-inset border-none outline-none focus:ring-2 focus:ring-[#6C63FF]/50 transition-all resize-none placeholder:text-[#8B95A5]"
+                                        className="w-full h-32 bg-slate-50 text-slate-900 p-4 rounded-2xl bg-slate-50 border border-slate-200 rounded-xl border-none outline-none focus:ring-2 focus:ring-primary-500/50 transition-all resize-none placeholder:text-[#8B95A5]"
                                         placeholder="What metrics will define success? (e.g., 20% Open Rate, 5% CTR)"
                                     />
                                 </div>
@@ -345,12 +345,12 @@ export default function EmailProjectDetailsPage() {
                         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <div className="flex items-center justify-between mb-6">
                                 <div>
-                                    <h2 className="text-xl font-black text-[#3D4852]">Idea & Content Planning</h2>
-                                    <p className="text-[#6B7280] font-medium text-sm">Brainstorm email concepts and sequence planning.</p>
+                                    <h2 className="text-xl font-black text-slate-900">Idea & Content Planning</h2>
+                                    <p className="text-slate-500 font-medium text-sm">Brainstorm email concepts and sequence planning.</p>
                                 </div>
                                 <button 
                                     onClick={() => setIsIdeaModalOpen(true)}
-                                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl soft-btn-primary font-bold transition-colors"
+                                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl inline-flex items-center justify-center font-medium bg-primary-600 text-white hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 font-bold transition-colors"
                                 >
                                     <Plus size={16} /> New Idea
                                 </button>
@@ -358,18 +358,18 @@ export default function EmailProjectDetailsPage() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {ideas.length === 0 ? (
-                                    <div className="col-span-full py-10 text-center text-[#6B7280]">
+                                    <div className="col-span-full py-10 text-center text-slate-500">
                                         <Lightbulb size={40} className="mx-auto mb-4 opacity-50" />
                                         <p className="font-bold">No ideas yet. Start brainstorming!</p>
                                     </div>
                                 ) : (
                                     ideas.map(idea => (
-                                        <div key={idea.id} className="p-5 rounded-2xl bg-[#E0E5EC] soft-inset border border-white/30 hover:border-[#6C63FF]/30 transition-all group">
+                                        <div key={idea.id} className="p-5 rounded-2xl bg-slate-50 bg-slate-50 border border-slate-200 rounded-xl border border-white/30 hover:border-primary-600/30 transition-all group">
                                             <div className="flex items-center justify-between mb-2">
-                                                <h3 className="font-black text-[#3D4852] truncate pr-2">Idea Concept</h3>
-                                                <button className="text-[#6B7280] hover:text-[#6C63FF] opacity-0 group-hover:opacity-100 transition-opacity"><Edit2 size={14} /></button>
+                                                <h3 className="font-black text-slate-900 truncate pr-2">Idea Concept</h3>
+                                                <button className="text-slate-500 hover:text-primary-600 opacity-0 group-hover:opacity-100 transition-opacity"><Edit2 size={14} /></button>
                                             </div>
-                                            <p className="text-sm text-[#6B7280] line-clamp-3">{idea.concept}</p>
+                                            <p className="text-sm text-slate-500 line-clamp-3">{idea.concept}</p>
                                         </div>
                                     ))
                                 )}
@@ -381,12 +381,12 @@ export default function EmailProjectDetailsPage() {
                         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <div className="flex items-center justify-between mb-6">
                                 <div>
-                                    <h2 className="text-xl font-black text-[#3D4852]">Campaign Builder</h2>
-                                    <p className="text-[#6B7280] font-medium text-sm">Create, automate, and schedule your email sequences.</p>
+                                    <h2 className="text-xl font-black text-slate-900">Campaign Builder</h2>
+                                    <p className="text-slate-500 font-medium text-sm">Create, automate, and schedule your email sequences.</p>
                                 </div>
                                 <button 
                                     onClick={() => setIsCampaignModalOpen(true)}
-                                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl soft-btn-primary font-bold transition-colors"
+                                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl inline-flex items-center justify-center font-medium bg-primary-600 text-white hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 font-bold transition-colors"
                                 >
                                     <Plus size={16} /> Build Campaign
                                 </button>
@@ -394,19 +394,19 @@ export default function EmailProjectDetailsPage() {
 
                             <div className="grid grid-cols-1 gap-4">
                                 {campaigns.length === 0 ? (
-                                    <div className="py-10 text-center text-[#6B7280]">
+                                    <div className="py-10 text-center text-slate-500">
                                         <Mail size={40} className="mx-auto mb-4 opacity-50" />
                                         <p className="font-bold">No campaigns yet. Build your first one!</p>
                                     </div>
                                 ) : (
                                     campaigns.map(camp => (
-                                        <div key={camp.id} className="p-5 rounded-2xl bg-[#E0E5EC] soft-extruded flex items-center justify-between group">
+                                        <div key={camp.id} className="p-5 rounded-2xl bg-slate-50 bg-white border border-slate-200 shadow-sm rounded-xl flex items-center justify-between group">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-10 h-10 rounded-xl soft-inset flex items-center justify-center text-[#6C63FF]">
+                                                <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-center text-primary-600">
                                                     <Mail size={20} />
                                                 </div>
                                                 <div>
-                                                    <h3 className="font-black text-[#3D4852]">{camp.name}</h3>
+                                                    <h3 className="font-black text-slate-900">{camp.name}</h3>
                                                     <div className="flex items-center gap-2 mt-1">
                                                         <span className="text-xs font-bold px-2 py-0.5 rounded-lg bg-[#EAB308]/10 text-[#EAB308]">{camp.type}</span>
                                                         <span className="text-xs font-bold px-2 py-0.5 rounded-lg bg-[#10B981]/10 text-[#10B981]">{camp.status}</span>
@@ -415,11 +415,11 @@ export default function EmailProjectDetailsPage() {
                                             </div>
                                             <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 {/* Edit goes to template editor for that campaign's template */}
-                                                <button onClick={() => window.location.href = `/projects/${projectId}/email/templates`} className="w-8 h-8 rounded-lg soft-btn flex items-center justify-center text-[#6C63FF]" title="View Templates"><Edit2 size={16} /></button>
+                                                <button onClick={() => window.location.href = `/projects/${projectId}/email/templates`} className="w-8 h-8 rounded-lg inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 flex items-center justify-center text-primary-600" title="View Templates"><Edit2 size={16} /></button>
                                                 
                                                 {/* Cancel Campaign */}
                                                 {camp.status !== "cancelled" && camp.status !== "completed" && camp.status !== "failed" && (
-                                                    <button onClick={() => handleCancelCampaign(camp.id)} className="w-8 h-8 rounded-lg soft-btn flex items-center justify-center text-[#DC2626]" title="Cancel Campaign"><Ban size={16} /></button>
+                                                    <button onClick={() => handleCancelCampaign(camp.id)} className="w-8 h-8 rounded-lg inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 flex items-center justify-center text-[#DC2626]" title="Cancel Campaign"><Ban size={16} /></button>
                                                 )}
                                             </div>
                                         </div>
@@ -432,8 +432,8 @@ export default function EmailProjectDetailsPage() {
                     {activeTab === 'analytics' && (
                         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <h2 className="text-xl font-black mb-4">Project Analytics</h2>
-                            <p className="text-[#6B7280]">Track open rates, clicks, and conversions across all campaigns in this project.</p>
-                            <div className="mt-6 flex flex-col items-center justify-center py-10 text-[#6B7280]">
+                            <p className="text-slate-500">Track open rates, clicks, and conversions across all campaigns in this project.</p>
+                            <div className="mt-6 flex flex-col items-center justify-center py-10 text-slate-500">
                                 <Activity size={40} className="mb-4 opacity-50 text-[#10B981]" />
                                 <p className="font-bold">Analytics will populate once campaigns are active.</p>
                             </div>
@@ -444,16 +444,16 @@ export default function EmailProjectDetailsPage() {
             {/* Idea Modal */}
             {isIdeaModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#3D4852]/40 backdrop-blur-sm animate-in fade-in">
-                    <div className="bg-[#E0E5EC] p-8 rounded-[32px] max-w-md w-full shadow-2xl">
+                    <div className="bg-slate-50 p-8 rounded-[32px] max-w-md w-full shadow-2xl">
                         <h2 className="text-2xl font-black mb-4">New Idea</h2>
                         <form onSubmit={handleCreateIdea} className="flex flex-col gap-4">
                             <textarea 
                                 required value={newIdeaData.concept} onChange={e => setNewIdeaData({...newIdeaData, concept: e.target.value})}
-                                placeholder="Describe your idea or concept..." className="w-full bg-[#E0E5EC] p-3 rounded-xl soft-inset font-bold outline-none h-32 resize-none"
+                                placeholder="Describe your idea or concept..." className="w-full bg-slate-50 p-3 rounded-xl bg-slate-50 border border-slate-200 rounded-xl font-bold outline-none h-32 resize-none"
                             />
                             <div className="flex gap-3 mt-4">
-                                <button type="button" onClick={() => setIsIdeaModalOpen(false)} className="flex-1 p-3 rounded-xl soft-btn font-bold text-[#6B7280]">Cancel</button>
-                                <button type="submit" className="flex-1 p-3 rounded-xl soft-btn-primary font-bold">Save Idea</button>
+                                <button type="button" onClick={() => setIsIdeaModalOpen(false)} className="flex-1 p-3 rounded-xl inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 font-bold text-slate-500">Cancel</button>
+                                <button type="submit" className="flex-1 p-3 rounded-xl inline-flex items-center justify-center font-medium bg-primary-600 text-white hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 font-bold">Save Idea</button>
                             </div>
                         </form>
                     </div>
@@ -463,24 +463,24 @@ export default function EmailProjectDetailsPage() {
             {/* Campaign Modal */}
             {isCampaignModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#3D4852]/40 backdrop-blur-sm animate-in fade-in">
-                    <div className="bg-[#E0E5EC] p-8 rounded-[32px] max-w-md w-full shadow-2xl">
+                    <div className="bg-slate-50 p-8 rounded-[32px] max-w-md w-full shadow-2xl">
                         <h2 className="text-2xl font-black mb-4">Build Campaign</h2>
                         <form onSubmit={handleCreateCampaign} className="flex flex-col gap-4">
                             <input 
                                 value={newCampaignData.name} onChange={e => setNewCampaignData({...newCampaignData, name: e.target.value})}
-                                placeholder="Campaign Name" className="w-full bg-[#E0E5EC] p-3 rounded-xl soft-inset font-bold outline-none"
+                                placeholder="Campaign Name" className="w-full bg-slate-50 p-3 rounded-xl bg-slate-50 border border-slate-200 rounded-xl font-bold outline-none"
                             />
                             <select 
                                 value={newCampaignData.type} onChange={e => setNewCampaignData({...newCampaignData, type: e.target.value})}
-                                className="w-full bg-[#E0E5EC] p-3 rounded-xl soft-inset font-bold outline-none"
+                                className="w-full bg-slate-50 p-3 rounded-xl bg-slate-50 border border-slate-200 rounded-xl font-bold outline-none"
                             >
                                 <option value="One-off">One-off Blast</option>
                                 <option value="Automated Sequence">Automated Sequence</option>
                                 <option value="A/B Test">A/B Test</option>
                             </select>
                             <div className="flex gap-3 mt-4">
-                                <button type="button" onClick={() => setIsCampaignModalOpen(false)} className="flex-1 p-3 rounded-xl soft-btn font-bold">Cancel</button>
-                                <button type="button" onClick={handleCreateCampaign} className="flex-1 p-3 rounded-xl soft-btn-primary font-bold">Launch Builder</button>
+                                <button type="button" onClick={() => setIsCampaignModalOpen(false)} className="flex-1 p-3 rounded-xl inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 font-bold">Cancel</button>
+                                <button type="button" onClick={handleCreateCampaign} className="flex-1 p-3 rounded-xl inline-flex items-center justify-center font-medium bg-primary-600 text-white hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 font-bold">Launch Builder</button>
                             </div>
                         </form>
                     </div>

@@ -36,12 +36,12 @@ function formatNumber(n: number): string {
 function CustomTooltip({ active, payload, label }: any) {
     if (!active || !payload || !payload.length) return null;
     return (
-        <div className="soft-extruded rounded-xl p-3 text-xs" style={{ background: "#E0E5EC" }}>
+        <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-xl p-3 text-xs" style={{ background: "#E0E5EC" }}>
             <div className="font-bold mb-1">{label}</div>
             {payload.map((entry: any, i: number) => (
                 <div key={i} className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }}></div>
-                    <span className="text-[#6B7280]">{entry.name}:</span>
+                    <span className="text-slate-500">{entry.name}:</span>
                     <span className="font-bold">{formatNumber(entry.value)}</span>
                 </div>
             ))}
@@ -238,14 +238,14 @@ export default function SocialAnalyticsPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#E0E5EC] flex items-center justify-center">
-                <div className="animate-spin h-10 w-10 border-4 border-[#6C63FF] border-t-transparent rounded-full"></div>
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+                <div className="animate-spin h-10 w-10 border-4 border-primary-600 border-t-transparent rounded-full"></div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#E0E5EC] text-[#3D4852] font-sans flex flex-col">
+        <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col">
             <NavigationBar />
 
             <main className="flex-1 max-w-7xl mx-auto w-full p-6 md:p-10">
@@ -253,12 +253,12 @@ export default function SocialAnalyticsPage() {
                 <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                     <div>
                         <h1 className="text-4xl font-extrabold tracking-tight flex items-center gap-3">
-                            <span className="w-12 h-12 rounded-2xl soft-extruded flex items-center justify-center">
-                                <TrendingUp size={24} className="text-[#6C63FF]" />
+                            <span className="w-12 h-12 rounded-2xl bg-white border border-slate-200 shadow-sm rounded-xl flex items-center justify-center">
+                                <TrendingUp size={24} className="text-primary-600" />
                             </span>
                             Social Analytics
                         </h1>
-                        <p className="text-[#6B7280] mt-2 font-medium">
+                        <p className="text-slate-500 mt-2 font-medium">
                             Track performance across all your social platforms
                         </p>
                     </div>
@@ -267,7 +267,7 @@ export default function SocialAnalyticsPage() {
                             <button
                                 onClick={handleSync}
                                 disabled={syncing || flushing}
-                                className="px-4 py-2.5 soft-btn rounded-2xl text-sm font-bold flex items-center gap-2"
+                                className="px-4 py-2.5 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-2xl text-sm font-bold flex items-center gap-2"
                             >
                                 <RefreshCw size={15} className={syncing ? "animate-spin" : ""} />
                                 {syncing ? "Syncing..." : "Sync"}
@@ -288,7 +288,7 @@ export default function SocialAnalyticsPage() {
                             </button>
                         </div>
                         {syncError && (
-                            <p className="text-xs text-red-500 font-semibold">{syncError}</p>
+                            <p className="text-xs text-danger font-semibold">{syncError}</p>
                         )}
                     </div>
                 </header>
@@ -301,7 +301,7 @@ export default function SocialAnalyticsPage() {
                             <button
                                 key={r}
                                 onClick={() => handleDateRangeChange(r)}
-                                className={`soft-tab text-xs ${dateRange === r ? "active" : ""}`}
+                                className={`px-4 py-2 font-medium text-slate-600 hover:text-slate-900 transition-colors rounded-md text-xs ${dateRange === r ? "active" : ""}`}
                             >
                                 {r === "7d" ? "7 Days" : r === "30d" ? "30 Days" : r === "90d" ? "90 Days" : "1 Year"}
                             </button>
@@ -312,7 +312,7 @@ export default function SocialAnalyticsPage() {
                     <div className="flex gap-2 flex-wrap">
                         <button
                             onClick={() => handlePlatformChange("all")}
-                            className={`soft-tab text-xs ${platformFilter === "all" ? "active" : ""}`}
+                            className={`px-4 py-2 font-medium text-slate-600 hover:text-slate-900 transition-colors rounded-md text-xs ${platformFilter === "all" ? "active" : ""}`}
                         >
                             All Platforms
                         </button>
@@ -320,7 +320,7 @@ export default function SocialAnalyticsPage() {
                             <button
                                 key={p.key}
                                 onClick={() => handlePlatformChange(p.key)}
-                                className={`soft-tab text-xs ${platformFilter === p.key ? "active" : ""}`}
+                                className={`px-4 py-2 font-medium text-slate-600 hover:text-slate-900 transition-colors rounded-md text-xs ${platformFilter === p.key ? "active" : ""}`}
                             >
                                 {p.icon} {p.name}
                             </button>
@@ -331,10 +331,10 @@ export default function SocialAnalyticsPage() {
                 {/* Overview Cards */}
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
                     {statCards.map(card => (
-                        <div key={card.label} className="soft-extruded soft-extruded-hover rounded-[24px] p-5">
+                        <div key={card.label} className="bg-white border border-slate-200 shadow-sm rounded-xl hover:shadow-md transition-shadow rounded-[24px] p-5">
                             <div className="flex items-center gap-2 mb-2">
                                 <span style={{ color: card.color }}>{card.icon}</span>
-                                <span className="text-xs font-bold text-[#6B7280] uppercase tracking-wider">{card.label}</span>
+                                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">{card.label}</span>
                             </div>
                             <div className="text-2xl font-extrabold" style={{ color: card.color }}>
                                 {formatNumber(card.value)}
@@ -347,10 +347,10 @@ export default function SocialAnalyticsPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
                     {/* Left: Engagement Rate Card */}
                     <div className="lg:col-span-1 flex flex-col">
-                        <div className="soft-extruded rounded-[28px] p-6 flex-1 flex flex-col justify-between">
+                        <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6 flex-1 flex flex-col justify-between">
                             <div>
-                                <div className="text-xs font-extrabold text-[#6B7280] uppercase tracking-wider mb-2">Average Engagement Rate</div>
-                                <div className="text-5xl font-extrabold text-[#6C63FF] leading-none mb-4">
+                                <div className="text-xs font-extrabold text-slate-500 uppercase tracking-wider mb-2">Average Engagement Rate</div>
+                                <div className="text-5xl font-extrabold text-primary-600 leading-none mb-4">
                                     {(overview.avg_engagement_rate || 0).toFixed(2)}%
                                 </div>
                                 <p className="text-xs text-[#9CA3AF] font-medium leading-relaxed">
@@ -358,8 +358,8 @@ export default function SocialAnalyticsPage() {
                                 </p>
                             </div>
                             <div className="mt-6 flex items-center justify-between border-t border-[#A3B1C6]/30 pt-6">
-                                <span className="text-xs font-bold text-[#6B7280]">Status</span>
-                                <span className="px-3 py-1 text-[10px] font-bold text-[#059669] bg-[#D1FAE5] rounded-full soft-extruded flex items-center gap-1">
+                                <span className="text-xs font-bold text-slate-500">Status</span>
+                                <span className="px-3 py-1 text-[10px] font-bold text-[#059669] bg-[#D1FAE5] rounded-full bg-white border border-slate-200 shadow-sm rounded-xl flex items-center gap-1">
                                     Active
                                 </span>
                             </div>
@@ -367,9 +367,9 @@ export default function SocialAnalyticsPage() {
                     </div>
 
                     {/* Right: AI Performance Insights */}
-                    <div className="lg:col-span-2 soft-extruded rounded-[28px] p-6 flex flex-col">
+                    <div className="lg:col-span-2 bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6 flex flex-col">
                         <h3 className="font-extrabold text-lg mb-4 flex items-center gap-2">
-                            <span className="w-8 h-8 rounded-xl soft-inset flex items-center justify-center">
+                            <span className="w-8 h-8 rounded-xl bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-center">
                                 <Sparkles size={18} className="text-[#805AD5]" />
                             </span>
                             AI Performance Insights
@@ -378,7 +378,7 @@ export default function SocialAnalyticsPage() {
                         {loadingInsights ? (
                             <div className="space-y-4 flex-1 flex flex-col justify-center">
                                 {[1, 2, 3].map((n) => (
-                                    <div key={n} className="p-4 soft-inset rounded-2xl animate-pulse space-y-2">
+                                    <div key={n} className="p-4 bg-slate-50 border border-slate-200 rounded-xl rounded-2xl animate-pulse space-y-2">
                                         <div className="flex justify-between items-center">
                                             <div className="h-4 bg-[#A3B1C6]/40 rounded w-1/3"></div>
                                             <div className="h-4 bg-[#A3B1C6]/40 rounded w-16"></div>
@@ -395,7 +395,7 @@ export default function SocialAnalyticsPage() {
                         ) : (
                             <div className="space-y-4 flex-1">
                                 {insights.map((insight, idx) => (
-                                    <div key={idx} className="p-4 soft-inset rounded-2xl hover:scale-[1.01] transition-transform duration-300">
+                                    <div key={idx} className="p-4 bg-slate-50 border border-slate-200 rounded-xl rounded-2xl hover:scale-[1.01] transition-transform duration-300">
                                         <div className="flex items-start justify-between gap-3 mb-2">
                                             <h4 className="font-bold text-sm text-[#2D3748] flex items-center gap-1.5">
                                                 <Lightbulb size={14} className="text-[#D69E2E] flex-shrink-0" />
@@ -415,8 +415,8 @@ export default function SocialAnalyticsPage() {
                                             {insight.description}
                                         </p>
                                         {insight.action && (
-                                            <div className="flex items-center gap-2 p-2 rounded-xl bg-[#E0E5EC]/60 border border-[#A3B1C6]/20">
-                                                <span className="text-[10px] font-extrabold uppercase tracking-wide text-[#6C63FF] bg-[#EEF2F6] px-1.5 py-0.5 rounded-md">
+                                            <div className="flex items-center gap-2 p-2 rounded-xl bg-slate-50/60 border border-[#A3B1C6]/20">
+                                                <span className="text-[10px] font-extrabold uppercase tracking-wide text-primary-600 bg-[#EEF2F6] px-1.5 py-0.5 rounded-md">
                                                     Action
                                                 </span>
                                                 <span className="text-[10px] text-[#4A5568] font-semibold">{insight.action}</span>
@@ -432,7 +432,7 @@ export default function SocialAnalyticsPage() {
                 {/* Charts */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                     {/* Engagement Over Time */}
-                    <div className="soft-extruded rounded-[28px] p-6">
+                    <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6">
                         <h3 className="font-bold mb-6">Engagement Over Time</h3>
                         {timeline.length === 0 ? (
                             <div className="h-60 flex items-center justify-center text-[#9CA3AF] text-sm">
@@ -482,7 +482,7 @@ export default function SocialAnalyticsPage() {
                     </div>
 
                     {/* Performance by Platform */}
-                    <div className="soft-extruded rounded-[28px] p-6">
+                    <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6">
                         <h3 className="font-bold mb-6">Performance by Platform</h3>
                         {platformBarData.length === 0 ? (
                             <div className="h-60 flex items-center justify-center text-[#9CA3AF] text-sm">
@@ -506,9 +506,9 @@ export default function SocialAnalyticsPage() {
                 </div>
 
                 {/* Top Posts */}
-                <div className="soft-extruded rounded-[28px] p-6">
+                <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6">
                     <h3 className="font-bold mb-6 flex items-center gap-2">
-                        <span className="w-8 h-8 rounded-xl soft-inset flex items-center justify-center">
+                        <span className="w-8 h-8 rounded-xl bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-center">
                             <ArrowUpRight size={16} className="text-[#059669]" />
                         </span>
                         Top Performing Posts
@@ -521,8 +521,8 @@ export default function SocialAnalyticsPage() {
                     ) : (
                         <div className="space-y-3">
                             {topPosts.map((post, i) => (
-                                <div key={post.post_id} className="flex items-center gap-4 p-4 soft-inset rounded-2xl">
-                                    <div className="w-8 h-8 rounded-xl soft-extruded flex items-center justify-center text-sm font-extrabold text-[#6C63FF]">
+                                <div key={post.post_id} className="flex items-center gap-4 p-4 bg-slate-50 border border-slate-200 rounded-xl rounded-2xl">
+                                    <div className="w-8 h-8 rounded-xl bg-white border border-slate-200 shadow-sm rounded-xl flex items-center justify-center text-sm font-extrabold text-primary-600">
                                         {i + 1}
                                     </div>
                                     <div className="flex-1 min-w-0">
@@ -542,7 +542,7 @@ export default function SocialAnalyticsPage() {
                                     </div>
                                     <div className="flex items-center gap-4 text-xs">
                                         <div className="text-center">
-                                            <div className="font-extrabold text-[#6C63FF]">{formatNumber(post.total_engagement)}</div>
+                                            <div className="font-extrabold text-primary-600">{formatNumber(post.total_engagement)}</div>
                                             <div className="text-[#9CA3AF]">Engagement</div>
                                         </div>
                                         <div className="text-center">
