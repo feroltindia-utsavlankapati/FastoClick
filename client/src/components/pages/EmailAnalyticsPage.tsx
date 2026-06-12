@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Activity, Mail, MousePointerClick, CheckCircle, XCircle, TrendingUp, AlertTriangle } from "lucide-react";
-import NavigationBar from "../UI/NavigationBar";
 
 interface Campaign {
     id: string;
@@ -37,7 +36,8 @@ export default function EmailAnalyticsPage() {
     const fetchCampaigns = async () => {
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch("http://localhost:8000/email/campaigns/", {
+            const projectId = localStorage.getItem("active_project_id") || "";
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_API}/email/campaigns/?project_id=${projectId}`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             if (res.ok) {
@@ -57,7 +57,8 @@ export default function EmailAnalyticsPage() {
     const fetchAnalytics = async (id: string) => {
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch(`http://localhost:8000/email/campaigns/${id}/analytics`, {
+            const projectId = localStorage.getItem("active_project_id") || "";
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_API}/email/campaigns/${id}/analytics?project_id=${projectId}`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             if (res.ok) {
@@ -75,8 +76,7 @@ export default function EmailAnalyticsPage() {
 
     return (
         <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col">
-            <NavigationBar />
-            
+                        
             <main className="flex-1 max-w-7xl mx-auto w-full p-6 md:p-10 relative z-10 flex flex-col gap-8">
                 <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>

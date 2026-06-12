@@ -1,22 +1,23 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import NavigationBar from "../UI/NavigationBar";
 import { TrendingUp, Eye, Heart, MessageCircle, Share, MousePointerClick, RefreshCw, ArrowUpRight, Sparkles, Lightbulb } from "lucide-react";
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
     ResponsiveContainer, Legend, Area, AreaChart,
 } from "recharts";
 
-const API = "http://localhost:8000";
+const API = `${import.meta.env.VITE_BACKEND_API}`;
+
+import { FaFacebook, FaInstagram, FaTwitter, FaLinkedin, FaYoutube, FaTiktok, FaPinterest } from "react-icons/fa";
 
 const PLATFORMS = [
-    { key: "facebook", name: "Facebook", icon: "📘", color: "#1877F2" },
-    { key: "instagram", name: "Instagram", icon: "📸", color: "#E1306C" },
-    { key: "twitter", name: "X / Twitter", icon: "𝕏", color: "#14171A" },
-    { key: "linkedin", name: "LinkedIn", icon: "💼", color: "#0A66C2" },
-    { key: "youtube", name: "YouTube", icon: "▶️", color: "#FF0000" },
-    { key: "tiktok", name: "TikTok", icon: "🎵", color: "#00F2EA" },
-    { key: "pinterest", name: "Pinterest", icon: "📌", color: "#E60023" },
+    { key: "facebook", name: "Facebook", icon: <FaFacebook />, color: "#1877F2" },
+    { key: "instagram", name: "Instagram", icon: <FaInstagram />, color: "#E1306C" },
+    { key: "twitter", name: "X / Twitter", icon: <FaTwitter />, color: "#000000" },
+    { key: "linkedin", name: "LinkedIn", icon: <FaLinkedin />, color: "#0A66C2" },
+    { key: "youtube", name: "YouTube", icon: <FaYoutube />, color: "#FF0000" },
+    { key: "tiktok", name: "TikTok", icon: <FaTiktok />, color: "#00F2EA" },
+    { key: "pinterest", name: "Pinterest", icon: <FaPinterest />, color: "#E60023" },
 ];
 
 function getHeaders() {
@@ -36,7 +37,7 @@ function formatNumber(n: number): string {
 function CustomTooltip({ active, payload, label }: any) {
     if (!active || !payload || !payload.length) return null;
     return (
-        <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-xl p-3 text-xs" style={{ background: "#E0E5EC" }}>
+        <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-3 text-xs" style={{ background: "#E0E5EC" }}>
             <div className="font-bold mb-1">{label}</div>
             {payload.map((entry: any, i: number) => (
                 <div key={i} className="flex items-center gap-2">
@@ -119,8 +120,10 @@ export default function SocialAnalyticsPage() {
     async function loadInsights(tid: string, range: string) {
         if (!tid) return;
         setLoadingInsights(true);
+        const activeProjectId = localStorage.getItem("active_project_id");
+        const query = activeProjectId ? `&project_id=${activeProjectId}` : "";
         try {
-            const res = await fetch(`${API}/social/analytics/insights/${tid}?date_range=${range}`, {
+            const res = await fetch(`${API}/social/analytics/insights/${tid}?date_range=${range}${query}`, {
                 headers: getHeaders(),
             });
             const json = await res.json();
@@ -136,10 +139,12 @@ export default function SocialAnalyticsPage() {
 
     async function loadAnalytics(tid: string, range: string, platform: string) {
         if (!tid) return;
+        const activeProjectId = localStorage.getItem("active_project_id");
+        const query = activeProjectId ? `&project_id=${activeProjectId}` : "";
         try {
             const url = platform && platform !== "all"
-                ? `${API}/social/analytics/${tid}?date_range=${range}&platform=${platform}`
-                : `${API}/social/analytics/${tid}?date_range=${range}`;
+                ? `${API}/social/analytics/${tid}?date_range=${range}&platform=${platform}${query}`
+                : `${API}/social/analytics/${tid}?date_range=${range}${query}`;
             const res = await fetch(url, { headers: getHeaders() });
             const json = await res.json();
             if (json.success) {
@@ -152,8 +157,10 @@ export default function SocialAnalyticsPage() {
 
     async function loadTopPosts(tid: string, range: string) {
         if (!tid) return;
+        const activeProjectId = localStorage.getItem("active_project_id");
+        const query = activeProjectId ? `&project_id=${activeProjectId}` : "";
         try {
-            const res = await fetch(`${API}/social/analytics/top-posts/${tid}?date_range=${range}`, {
+            const res = await fetch(`${API}/social/analytics/top-posts/${tid}?date_range=${range}${query}`, {
                 headers: getHeaders(),
             });
             const json = await res.json();
@@ -246,14 +253,13 @@ export default function SocialAnalyticsPage() {
 
     return (
         <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col">
-            <NavigationBar />
-
+            
             <main className="flex-1 max-w-7xl mx-auto w-full p-6 md:p-10">
                 {/* Header */}
                 <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                     <div>
                         <h1 className="text-4xl font-extrabold tracking-tight flex items-center gap-3">
-                            <span className="w-12 h-12 rounded-2xl bg-white border border-slate-200 shadow-sm rounded-xl flex items-center justify-center">
+                            <span className="w-12 h-12 rounded-xl bg-white border border-slate-200 shadow-sm rounded-xl flex items-center justify-center">
                                 <TrendingUp size={24} className="text-primary-600" />
                             </span>
                             Social Analytics
@@ -267,7 +273,7 @@ export default function SocialAnalyticsPage() {
                             <button
                                 onClick={handleSync}
                                 disabled={syncing || flushing}
-                                className="px-4 py-2.5 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-2xl text-sm font-bold flex items-center gap-2"
+                                className="px-4 py-2.5 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl text-sm font-bold flex items-center gap-2"
                             >
                                 <RefreshCw size={15} className={syncing ? "animate-spin" : ""} />
                                 {syncing ? "Syncing..." : "Sync"}
@@ -275,12 +281,7 @@ export default function SocialAnalyticsPage() {
                             <button
                                 onClick={handleFlushSync}
                                 disabled={syncing || flushing}
-                                className="px-4 py-2.5 rounded-2xl text-sm font-bold flex items-center gap-2"
-                                style={{
-                                    background: flushing ? "#d1d5db" : "linear-gradient(135deg, #6C63FF, #8B84FF)",
-                                    color: "white",
-                                    boxShadow: "4px 4px 8px rgba(108,99,255,0.25), -2px -2px 6px rgba(255,255,255,0.4)",
-                                }}
+                                className="px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 bg-slate-800 text-white hover:bg-slate-900 transition-colors disabled:bg-slate-300 disabled:text-slate-500 shadow-sm"
                                 title="Delete stale analytics and re-fetch fresh data from platforms"
                             >
                                 <RefreshCw size={15} className={flushing ? "animate-spin" : ""} />
@@ -331,7 +332,7 @@ export default function SocialAnalyticsPage() {
                 {/* Overview Cards */}
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
                     {statCards.map(card => (
-                        <div key={card.label} className="bg-white border border-slate-200 shadow-sm rounded-xl hover:shadow-md transition-shadow rounded-[24px] p-5">
+                        <div key={card.label} className="bg-white border border-slate-200 shadow-sm rounded-xl hover:shadow-md transition-shadow rounded-xl p-5">
                             <div className="flex items-center gap-2 mb-2">
                                 <span style={{ color: card.color }}>{card.icon}</span>
                                 <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">{card.label}</span>
@@ -347,19 +348,19 @@ export default function SocialAnalyticsPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
                     {/* Left: Engagement Rate Card */}
                     <div className="lg:col-span-1 flex flex-col">
-                        <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6 flex-1 flex flex-col justify-between">
+                        <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-6 flex-1 flex flex-col justify-between">
                             <div>
-                                <div className="text-xs font-extrabold text-slate-500 uppercase tracking-wider mb-2">Average Engagement Rate</div>
-                                <div className="text-5xl font-extrabold text-primary-600 leading-none mb-4">
+                                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Average Engagement Rate</div>
+                                <div className="text-4xl font-extrabold text-primary-600 mb-2">
                                     {(overview.avg_engagement_rate || 0).toFixed(2)}%
                                 </div>
-                                <p className="text-xs text-[#9CA3AF] font-medium leading-relaxed">
+                                <p className="text-sm text-slate-500 font-medium leading-relaxed">
                                     This represents the average engagement level across all active posts on Facebook, Instagram, X/Twitter, LinkedIn, and other channels.
                                 </p>
                             </div>
-                            <div className="mt-6 flex items-center justify-between border-t border-[#A3B1C6]/30 pt-6">
+                            <div className="mt-6 flex items-center justify-between border-t border-slate-200 pt-6">
                                 <span className="text-xs font-bold text-slate-500">Status</span>
-                                <span className="px-3 py-1 text-[10px] font-bold text-[#059669] bg-[#D1FAE5] rounded-full bg-white border border-slate-200 shadow-sm rounded-xl flex items-center gap-1">
+                                <span className="px-2.5 py-1 text-[10px] font-bold text-success bg-success/10 rounded-full flex items-center gap-1">
                                     Active
                                 </span>
                             </div>
@@ -367,7 +368,7 @@ export default function SocialAnalyticsPage() {
                     </div>
 
                     {/* Right: AI Performance Insights */}
-                    <div className="lg:col-span-2 bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6 flex flex-col">
+                    <div className="lg:col-span-2 bg-white border border-slate-200 shadow-sm rounded-xl p-6 flex flex-col">
                         <h3 className="font-extrabold text-lg mb-4 flex items-center gap-2">
                             <span className="w-8 h-8 rounded-xl bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-center">
                                 <Sparkles size={18} className="text-[#805AD5]" />
@@ -378,7 +379,7 @@ export default function SocialAnalyticsPage() {
                         {loadingInsights ? (
                             <div className="space-y-4 flex-1 flex flex-col justify-center">
                                 {[1, 2, 3].map((n) => (
-                                    <div key={n} className="p-4 bg-slate-50 border border-slate-200 rounded-xl rounded-2xl animate-pulse space-y-2">
+                                    <div key={n} className="p-4 bg-slate-50 border border-slate-200 rounded-xl animate-pulse space-y-2">
                                         <div className="flex justify-between items-center">
                                             <div className="h-4 bg-[#A3B1C6]/40 rounded w-1/3"></div>
                                             <div className="h-4 bg-[#A3B1C6]/40 rounded w-16"></div>
@@ -395,7 +396,7 @@ export default function SocialAnalyticsPage() {
                         ) : (
                             <div className="space-y-4 flex-1">
                                 {insights.map((insight, idx) => (
-                                    <div key={idx} className="p-4 bg-slate-50 border border-slate-200 rounded-xl rounded-2xl hover:scale-[1.01] transition-transform duration-300">
+                                    <div key={idx} className="p-4 bg-slate-50 border border-slate-200 rounded-xl hover:scale-[1.01] transition-transform duration-300">
                                         <div className="flex items-start justify-between gap-3 mb-2">
                                             <h4 className="font-bold text-sm text-[#2D3748] flex items-center gap-1.5">
                                                 <Lightbulb size={14} className="text-[#D69E2E] flex-shrink-0" />
@@ -432,7 +433,7 @@ export default function SocialAnalyticsPage() {
                 {/* Charts */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                     {/* Engagement Over Time */}
-                    <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6">
+                    <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-6">
                         <h3 className="font-bold mb-6">Engagement Over Time</h3>
                         {timeline.length === 0 ? (
                             <div className="h-60 flex items-center justify-center text-[#9CA3AF] text-sm">
@@ -482,7 +483,7 @@ export default function SocialAnalyticsPage() {
                     </div>
 
                     {/* Performance by Platform */}
-                    <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6">
+                    <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-6">
                         <h3 className="font-bold mb-6">Performance by Platform</h3>
                         {platformBarData.length === 0 ? (
                             <div className="h-60 flex items-center justify-center text-[#9CA3AF] text-sm">
@@ -506,7 +507,7 @@ export default function SocialAnalyticsPage() {
                 </div>
 
                 {/* Top Posts */}
-                <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6">
+                <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-6">
                     <h3 className="font-bold mb-6 flex items-center gap-2">
                         <span className="w-8 h-8 rounded-xl bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-center">
                             <ArrowUpRight size={16} className="text-[#059669]" />
@@ -521,7 +522,7 @@ export default function SocialAnalyticsPage() {
                     ) : (
                         <div className="space-y-3">
                             {topPosts.map((post, i) => (
-                                <div key={post.post_id} className="flex items-center gap-4 p-4 bg-slate-50 border border-slate-200 rounded-xl rounded-2xl">
+                                <div key={post.post_id} className="flex items-center gap-4 p-4 bg-slate-50 border border-slate-200 rounded-xl">
                                     <div className="w-8 h-8 rounded-xl bg-white border border-slate-200 shadow-sm rounded-xl flex items-center justify-center text-sm font-extrabold text-primary-600">
                                         {i + 1}
                                     </div>

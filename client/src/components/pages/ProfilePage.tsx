@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import NavigationBar from "../UI/NavigationBar";
 import { User, Mail, Globe, Camera, Save, ArrowLeft, Check, AlertCircle, Sparkles } from "lucide-react";
 
 interface UserProfile {
@@ -34,7 +33,7 @@ export default function ProfilePage() {
             }
 
             try {
-                const response = await fetch("http://localhost:8000/tenant/dashboard", {
+                const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/tenant/dashboard`, {
                     headers: {
                         "Authorization": `Bearer ${token}`
                     }
@@ -120,7 +119,7 @@ export default function ProfilePage() {
                 formData.append("profile_image", profileImageFile);
             }
 
-            const response = await fetch("http://localhost:8000/tenant/profile", {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/tenant/profile`, {
                 method: "PUT",
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -172,8 +171,7 @@ export default function ProfilePage() {
 
     return (
         <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col relative pb-12">
-            <NavigationBar />
-
+            
             {/* Background design accents */}
             <div className="absolute top-20 left-10 w-80 h-80 rounded-full bg-slate-50 border border-slate-200 rounded-xl pointer-events-none opacity-20 flex items-center justify-center">
                 <div className="w-56 h-56 rounded-full bg-white border border-slate-200 shadow-sm rounded-xl flex items-center justify-center">

@@ -14,6 +14,7 @@ async def list_agents():
 async def execute_agent(
     agent_id: str,
     task_data: dict,
+    project_id: Optional[str] = None,
     tenant: TenantContext = Depends(get_current_tenant)
 ):
     """Execute a specific agent with the authenticated tenant's context."""
@@ -29,6 +30,7 @@ async def execute_agent(
         from services.agent_orchestrator.agents.base_agent import AgentTask, AgentContext
         initial_state = {
             "tenant_id":         tenant_id,
+            "project_id":        project_id,
             "task":              AgentTask(description=task_data.get("description", "Default task"), data=task_data),
             "context":           AgentContext(summary=""),
             "plan":              [],

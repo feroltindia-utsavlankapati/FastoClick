@@ -22,12 +22,15 @@ class PlanUpdateRequest(BaseModel):
 
 @router.get("/plans")
 async def list_plans(
+    project_id: Optional[str] = None,
     product_id: Optional[str] = None,
     tenant: TenantContext = Depends(get_current_tenant)
 ):
     """Return all saved strategy plans for the authenticated tenant, newest first."""
     async with async_session_maker() as session:
         query = select(StrategyPlan).where(StrategyPlan.tenant_id == tenant.id)
+        if project_id:
+            query = query.where(StrategyPlan.project_id == project_id)
         if product_id:
             query = query.where(StrategyPlan.product_id == product_id)
         query = query.order_by(StrategyPlan.created_at.desc())

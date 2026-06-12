@@ -9,7 +9,7 @@ from fastapi.responses import FileResponse
 import os
 
 router = APIRouter(tags=["Dashboard"])
-
+backend_api = os.getenv("API_BASE_URL")
 @router.get("/dashboard", response_model=APIResponse[dict])
 async def get_dashboard(
     tenant_ctx: TenantContext = Depends(get_current_tenant)
@@ -83,7 +83,7 @@ async def update_profile(
                 f.write(bytes_content)
             
             # Save the URL in the database
-            user.profile_image_url = f"http://localhost:8000/tenant/profile/image/{filename}"
+            user.profile_image_url = f"{backend_api}/tenant/profile/image/{filename}"
             
         await db.commit()
         await db.refresh(user)

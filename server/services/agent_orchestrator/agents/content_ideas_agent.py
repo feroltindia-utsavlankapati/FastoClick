@@ -337,6 +337,7 @@ class ContentIdeasAgent(BaseMarketingAgent):
             async with async_session_maker() as session:
                 record = ContentIdeasResult(
                     tenant_id=tenant_id,
+                    project_id=state.get("project_id"),
                     product_id=state["extra_data"].get("product_id"),
                     plan_id=plan_id,
                     plan_name=final_output["plan_name"],

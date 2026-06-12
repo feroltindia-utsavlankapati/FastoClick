@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import NavigationBar from "../UI/NavigationBar";
 import {
   FileText, Trash2, ChevronDown, ChevronUp,
   Building2, Target, LayoutList, Radio, Calendar,
@@ -78,7 +77,7 @@ export default function PlansPage() {
     setSaving(true);
     try {
       const res = await fetch(
-        `http://localhost:8000/agent/plans/${planId}`,
+        `${import.meta.env.VITE_BACKEND_API}/agent/plans/${planId}`,
         {
           method: "PUT",
           headers: {
@@ -109,7 +108,7 @@ export default function PlansPage() {
     setRefining(true);
     try {
       const res = await fetch(
-        `http://localhost:8000/agent/plans/${planId}/refine`,
+        `${import.meta.env.VITE_BACKEND_API}/agent/plans/${planId}/refine`,
         {
           method: "POST",
           headers: {
@@ -138,8 +137,13 @@ export default function PlansPage() {
     if (!token) { navigate("/auth"); return; }
     setLoading(true);
     try {
+      const projectId = localStorage.getItem("active_project_id") || "";
+      const url = projectId 
+          ? `${import.meta.env.VITE_BACKEND_API}/agent/plans?project_id=${projectId}`
+          : `${import.meta.env.VITE_BACKEND_API}/agent/plans`;
+          
       const res = await fetch(
-        `http://localhost:8000/agent/plans`,
+        url,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const data = await res.json();
@@ -158,7 +162,7 @@ export default function PlansPage() {
     setDeletingId(planId);
     try {
       const res = await fetch(
-        `http://localhost:8000/agent/plans/${planId}`,
+        `${import.meta.env.VITE_BACKEND_API}/agent/plans/${planId}`,
         { method: "DELETE", headers: { Authorization: `Bearer ${token}` } }
       );
       if (res.ok) {
@@ -196,8 +200,7 @@ export default function PlansPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col">
-      <NavigationBar />
-
+      
       <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-10">
         {/* Header */}
         <header className="mb-10">

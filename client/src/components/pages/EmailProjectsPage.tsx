@@ -26,7 +26,7 @@ export default function EmailProjectsPage() {
         setIsLoading(true);
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch("http://localhost:8000/email/projects/", {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/email/projects/`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             if (response.ok) {
@@ -47,7 +47,7 @@ export default function EmailProjectsPage() {
         setIsSubmitting(true);
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch("http://localhost:8000/email/projects/", {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/email/projects/`, {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`,

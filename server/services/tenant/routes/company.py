@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 class CompanyContextUpdate(BaseModel):
     tenant_id: str
+    project_id: Optional[str] = None
     link: Optional[str] = None
     focus: Optional[str] = None
     product_details: Optional[str] = None
@@ -26,6 +27,7 @@ class CompanyContextUpdate(BaseModel):
 
 class CompanyProductCreate(BaseModel):
     tenant_id: str
+    project_id: Optional[str] = None
     name: str
     type: str  # 'product' or 'service'
     description: Optional[str] = None
@@ -39,17 +41,20 @@ class CompanyProductUpdate(BaseModel):
     target_audience: Optional[str] = None
     features: Optional[str] = None
 
-async def background_scrape_and_update(tenant_id: str, url: str):
+async def background_scrape_and_update(tenant_id: str, project_id: Optional[str], url: str):
     from shared.utils.scraper import run_scraper_pipeline
     try:
         logger.info(f"Background scrape triggered for tenant {tenant_id} and link {url}")
         details = await run_scraper_pipeline(tenant_id, url)
         
         async with async_session_maker() as session:
-            result = await session.execute(select(CompanyContext).where(CompanyContext.tenant_id == tenant_id))
+            stmt = select(CompanyContext).where(CompanyContext.tenant_id == tenant_id)
+            if project_id:
+                stmt = stmt.where(CompanyContext.project_id == project_id)
+            result = await session.execute(stmt)
             context = result.scalars().first()
             if not context:
-                context = CompanyContext(tenant_id=tenant_id)
+                context = CompanyContext(tenant_id=tenant_id, project_id=project_id)
                 session.add(context)
                 
             context.company_details = json.dumps(details)
@@ -74,9 +79,12 @@ async def background_scrape_and_update(tenant_id: str, url: str):
         logger.error(f"Error in background_scrape_and_update for tenant {tenant_id}: {str(e)}")
 
 @router.get("/context/{tenant_id}")
-async def get_company_context(tenant_id: str):
+async def get_company_context(tenant_id: str, project_id: Optional[str] = None):
     async with async_session_maker() as session:
-        result = await session.execute(select(CompanyContext).where(CompanyContext.tenant_id == tenant_id))
+        stmt = select(CompanyContext).where(CompanyContext.tenant_id == tenant_id)
+        if project_id:
+            stmt = stmt.where(CompanyContext.project_id == project_id)
+        result = await session.execute(stmt)
         context = result.scalars().first()
         if not context:
             return {"success": True, "data": None}
@@ -96,13 +104,16 @@ async def get_company_context(tenant_id: str):
 @router.post("/context")
 async def update_company_context(data: CompanyContextUpdate, background_tasks: BackgroundTasks):
     async with async_session_maker() as session:
-        result = await session.execute(select(CompanyContext).where(CompanyContext.tenant_id == data.tenant_id))
+        stmt = select(CompanyContext).where(CompanyContext.tenant_id == data.tenant_id)
+        if data.project_id:
+            stmt = stmt.where(CompanyContext.project_id == data.project_id)
+        result = await session.execute(stmt)
         context = result.scalars().first()
         
         old_link = context.link if context else None
         
         if not context:
-            context = CompanyContext(tenant_id=data.tenant_id)
+            context = CompanyContext(tenant_id=data.tenant_id, project_id=data.project_id)
             session.add(context)
             
         if data.link is not None: context.link = data.link
@@ -115,13 +126,14 @@ async def update_company_context(data: CompanyContextUpdate, background_tasks: B
         
         # Trigger background scraping if link has been added or updated
         if data.link and data.link.strip() != "" and data.link != old_link:
-            background_tasks.add_task(background_scrape_and_update, data.tenant_id, data.link.strip())
+            background_tasks.add_task(background_scrape_and_update, data.tenant_id, data.project_id, data.link.strip())
             
         return {"success": True, "message": "Company context updated"}
 
 @router.post("/upload")
 async def upload_company_document(
     tenant_id: str = Form(...),
+    project_id: Optional[str] = Form(None),
     file: UploadFile = File(...)
 ):
     if not file.filename.endswith('.pdf'):
@@ -138,11 +150,14 @@ async def upload_company_document(
             
         # Store in DB
         async with async_session_maker() as session:
-            result = await session.execute(select(CompanyContext).where(CompanyContext.tenant_id == tenant_id))
+            stmt = select(CompanyContext).where(CompanyContext.tenant_id == tenant_id)
+            if project_id:
+                stmt = stmt.where(CompanyContext.project_id == project_id)
+            result = await session.execute(stmt)
             context = result.scalars().first()
             
             if not context:
-                context = CompanyContext(tenant_id=tenant_id)
+                context = CompanyContext(tenant_id=tenant_id, project_id=project_id)
                 session.add(context)
                 
             # Append text
@@ -161,11 +176,13 @@ async def upload_company_document(
 # =========================
 
 @router.get("/products/{tenant_id}")
-async def list_products(tenant_id: str):
+async def list_products(tenant_id: str, project_id: Optional[str] = None):
     async with async_session_maker() as session:
-        result = await session.execute(
-            select(CompanyProduct).where(CompanyProduct.tenant_id == tenant_id).order_by(CompanyProduct.created_at.desc())
-        )
+        stmt = select(CompanyProduct).where(CompanyProduct.tenant_id == tenant_id)
+        if project_id:
+            stmt = stmt.where(CompanyProduct.project_id == project_id)
+        stmt = stmt.order_by(CompanyProduct.created_at.desc())
+        result = await session.execute(stmt)
         products = result.scalars().all()
         return {
             "success": True,
@@ -189,6 +206,7 @@ async def create_product(data: CompanyProductCreate):
     async with async_session_maker() as session:
         product = CompanyProduct(
             tenant_id=data.tenant_id,
+            project_id=data.project_id,
             name=data.name,
             type=data.type,
             description=data.description,

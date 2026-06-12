@@ -22,12 +22,15 @@ class ContentIdeasUpdateRequest(BaseModel):
 
 @router.get("/content-ideas")
 async def list_content_ideas(
+    project_id: Optional[str] = None,
     product_id: Optional[str] = None,
     tenant: TenantContext = Depends(get_current_tenant)
 ):
     """Return all content idea results for the authenticated tenant, newest first."""
     async with async_session_maker() as session:
         query = select(ContentIdeasResult).where(ContentIdeasResult.tenant_id == tenant.id)
+        if project_id:
+            query = query.where(ContentIdeasResult.project_id == project_id)
         if product_id:
             query = query.where(ContentIdeasResult.product_id == product_id)
         query = query.order_by(ContentIdeasResult.created_at.desc())

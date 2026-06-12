@@ -28,7 +28,7 @@ export default function EmailCalendarPage() {
     const fetchCampaigns = async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch(`http://localhost:8000/email/campaigns/project/${projectId}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/email/campaigns/project/${projectId}`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             if (response.ok) {

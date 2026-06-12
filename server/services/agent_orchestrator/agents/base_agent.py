@@ -16,6 +16,7 @@ class AgentContext(BaseModel):
 
 class AgentState(TypedDict):
     tenant_id: str
+    project_id: Optional[str]
     task: AgentTask
     context: AgentContext
     plan: List[str]

@@ -408,6 +408,7 @@ class StrategyAgent(BaseMarketingAgent):
             async with async_session_maker() as session:
                 db_plan = StrategyPlan(
                     tenant_id=state["tenant_id"],
+                    project_id=state.get("project_id"),
                     product_id=state["extra_data"].get("product_id"),
                     company_name=strategy["company_name"],
                     industry=strategy["industry"],

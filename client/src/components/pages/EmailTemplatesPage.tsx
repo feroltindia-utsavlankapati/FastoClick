@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { PenTool, Plus, Trash2, Edit3, Save, X, Eye, Code } from "lucide-react";
-import NavigationBar from "../UI/NavigationBar";
 
 interface Template {
     id: string;
@@ -28,7 +27,8 @@ export default function EmailTemplatesPage() {
         setLoading(true);
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch("http://localhost:8000/email/templates/", {
+            const projectId = localStorage.getItem("active_project_id") || "";
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_API}/email/templates/?project_id=${projectId}`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             if (res.ok) {
@@ -49,13 +49,14 @@ export default function EmailTemplatesPage() {
         }
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch("http://localhost:8000/email/templates/", {
+            const projectId = localStorage.getItem("active_project_id") || "";
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_API}/email/templates/`, {
                 method: "POST",
                 headers: { 
                     "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(currentTemplate)
+                body: JSON.stringify({ project_id: projectId, ...currentTemplate })
             });
             if (res.ok) {
                 setIsEditing(false);
@@ -72,7 +73,7 @@ export default function EmailTemplatesPage() {
         if (!confirm("Delete this template?")) return;
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch(`http://localhost:8000/email/templates/${id}`, {
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_API}/email/templates/${id}`, {
                 method: "DELETE",
                 headers: { "Authorization": `Bearer ${token}` }
             });
@@ -86,8 +87,7 @@ export default function EmailTemplatesPage() {
 
     return (
         <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col">
-            <NavigationBar />
-            
+                        
             <main className="flex-1 max-w-7xl mx-auto w-full p-6 md:p-10 relative z-10 flex flex-col gap-8">
                 <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>

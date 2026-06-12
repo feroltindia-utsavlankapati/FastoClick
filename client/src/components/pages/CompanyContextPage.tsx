@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import NavigationBar from "../UI/NavigationBar";
 import { FileText, UploadCloud, Brain, AlertCircle, Plus, Sparkles } from "lucide-react";
 
 export default function CompanyContextPage() {
@@ -41,8 +40,10 @@ export default function CompanyContextPage() {
             return;
         }
         
+        const projectId = localStorage.getItem("active_project_id") || "";
+        
         try {
-            const res = await fetch(`http://localhost:8000/tenant/company/context/${tenantId}`, {
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_API}/tenant/company/context/${tenantId}?project_id=${projectId}`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             const data = await res.json();
@@ -64,8 +65,9 @@ export default function CompanyContextPage() {
     const fetchProducts = async () => {
         const token = localStorage.getItem("token");
         if (!token) return;
+        const projectId = localStorage.getItem("active_project_id") || "";
         try {
-            const res = await fetch(`http://localhost:8000/tenant/company/products/${tenantId}`, {
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_API}/tenant/company/products/${tenantId}?project_id=${projectId}`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             const data = await res.json();
@@ -90,14 +92,15 @@ export default function CompanyContextPage() {
     const handleSaveDetails = async () => {
         setSaving(true);
         const token = localStorage.getItem("token");
+        const projectId = localStorage.getItem("active_project_id") || "";
         try {
-            const res = await fetch("http://localhost:8000/tenant/company/context", {
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_API}/tenant/company/context`, {
                 method: "POST",
                 headers: { 
                     "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ tenant_id: tenantId, ...formData })
+                body: JSON.stringify({ tenant_id: tenantId, project_id: projectId, ...formData })
             });
             if (res.ok) {
                 alert("Details saved successfully! If you updated the website link, scraping has started in the background.");
@@ -125,12 +128,16 @@ export default function CompanyContextPage() {
 
         setUploading(true);
         const token = localStorage.getItem("token");
+        const projectId = localStorage.getItem("active_project_id") || "";
         const formDataPayload = new FormData();
         formDataPayload.append("tenant_id", tenantId);
+        if (projectId) {
+            formDataPayload.append("project_id", projectId);
+        }
         formDataPayload.append("file", file);
 
         try {
-            const res = await fetch("http://localhost:8000/tenant/company/upload", {
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_API}/tenant/company/upload`, {
                 method: "POST",
                 headers: { "Authorization": `Bearer ${token}` },
                 body: formDataPayload
@@ -160,10 +167,11 @@ export default function CompanyContextPage() {
         const token = localStorage.getItem("token");
         const isEdit = !!editingProduct?.id;
         const url = isEdit 
-            ? `http://localhost:8000/tenant/company/products/${editingProduct.id}`
-            : "http://localhost:8000/tenant/company/products";
+            ? `${import.meta.env.VITE_BACKEND_API}/tenant/company/products/${editingProduct.id}`
+            : "${import.meta.env.VITE_BACKEND_API}/tenant/company/products";
         const method = isEdit ? "PUT" : "POST";
 
+        const projectId = localStorage.getItem("active_project_id") || "";
         try {
             const res = await fetch(url, {
                 method,
@@ -173,6 +181,7 @@ export default function CompanyContextPage() {
                 },
                 body: JSON.stringify({
                     tenant_id: tenantId,
+                    project_id: projectId,
                     ...productForm
                 })
             });
@@ -196,7 +205,7 @@ export default function CompanyContextPage() {
         if (!window.confirm("Are you sure you want to permanently delete this product/service?")) return;
         const token = localStorage.getItem("token");
         try {
-            const res = await fetch(`http://localhost:8000/tenant/company/products/${id}`, {
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_API}/tenant/company/products/${id}`, {
                 method: "DELETE",
                 headers: { "Authorization": `Bearer ${token}` }
             });
@@ -215,8 +224,7 @@ export default function CompanyContextPage() {
 
     return (
         <div className="min-h-screen bg-slate-50 text-slate-900 font-sans overflow-y-auto flex flex-col relative">
-            <NavigationBar />
-            
+                        
             {/* Visual Decoration */}
             <div className="absolute bottom-10 left-10 w-96 h-96 rounded-full bg-slate-50 border border-slate-200 rounded-xl pointer-events-none opacity-20 flex items-center justify-center">
                 <div className="w-64 h-64 rounded-full bg-white border border-slate-200 shadow-sm rounded-xl"></div>

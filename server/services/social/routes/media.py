@@ -31,6 +31,7 @@ def ensure_dirs():
 @router.get("/media/{tenant_id}")
 async def list_media(
     tenant_id: str,
+    project_id: str = None,
     media_type: str = None,
     tenant: TenantContext = Depends(get_current_tenant)
 ):
@@ -39,7 +40,10 @@ async def list_media(
         async with async_session_maker() as session:
             query = select(MediaAsset).where(
                 MediaAsset.tenant_id == tenant_id
-            ).order_by(desc(MediaAsset.created_at))
+            )
+            if project_id:
+                query = query.where(MediaAsset.project_id == project_id)
+            query = query.order_by(desc(MediaAsset.created_at))
 
             result = await session.execute(query)
             assets = result.scalars().all()
@@ -75,6 +79,7 @@ async def list_media(
 async def upload_media(
     file: UploadFile = File(...),
     tenant_id: str = Form(...),
+    project_id: str = Form(None),
     tenant: TenantContext = Depends(get_current_tenant)
 ):
     """Upload a media file (image or video)."""
@@ -133,6 +138,7 @@ async def upload_media(
         async with async_session_maker() as session:
             asset = MediaAsset(
                 tenant_id=tenant_id,
+                project_id=project_id,
                 filename=unique_name,
                 original_filename=file.filename,
                 mime_type=content_type,

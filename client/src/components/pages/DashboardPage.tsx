@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import NavigationBar from "../UI/NavigationBar";
 import { User, Building2 } from "lucide-react";
 import Card from "../UI/Card";
 import Button from "../UI/Button";
@@ -13,6 +12,7 @@ interface DashboardData {
 
 export default function DashboardPage() {
     const [data, setData] = useState<DashboardData | null>(null);
+    const [activeWorkspaceName, setActiveWorkspaceName] = useState<string>("Loading...");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const navigate = useNavigate();
@@ -26,7 +26,7 @@ export default function DashboardPage() {
             }
 
             try {
-                const response = await fetch("http://localhost:8000/tenant/dashboard", {
+                const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/tenant/dashboard`, {
                     headers: {
                         "Authorization": `Bearer ${token}`
                     }
@@ -39,6 +39,27 @@ export default function DashboardPage() {
                 }
                 
                 setData(json.data);
+
+                // Fetch active project/workspace name
+                const activeProjectId = localStorage.getItem("active_project_id");
+                if (activeProjectId) {
+                    try {
+                        const projResponse = await fetch(`${import.meta.env.VITE_BACKEND_API}/tenant/projects/${activeProjectId}`, {
+                            headers: { "Authorization": `Bearer ${token}` }
+                        });
+                        if (projResponse.ok) {
+                            const projData = await projResponse.json();
+                            setActiveWorkspaceName(projData.name);
+                        } else {
+                            setActiveWorkspaceName("Unknown Workspace");
+                        }
+                    } catch (e) {
+                        setActiveWorkspaceName("Unknown Workspace");
+                    }
+                } else {
+                    setActiveWorkspaceName("No Workspace Selected");
+                }
+
             } catch (err: any) {
                 setError(err.message);
                 if (err.message.includes("token")) {
@@ -82,15 +103,14 @@ export default function DashboardPage() {
 
     return (
         <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col relative">
-            <NavigationBar />
-            
+                        
             <main className="flex-1 max-w-6xl mx-auto w-full p-4 md:p-8 relative z-10">
                 {/* Header */}
                 <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">Welcome back, {data?.user.username}</h1>
                         <p className="text-slate-500 mt-1">
-                            Managing workspace: <span className="font-semibold text-slate-900">{data?.tenant.name}</span>
+                            Active Workspace: <span className="font-semibold text-slate-900">{activeWorkspaceName}</span>
                         </p>
                     </div>
                 </header>

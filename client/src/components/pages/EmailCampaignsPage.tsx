@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Mail, Plus, Play, Calendar, Users, X, Ban } from "lucide-react";
-import NavigationBar from "../UI/NavigationBar";
 
 interface Campaign {
     id: string;
@@ -46,10 +45,11 @@ export default function EmailCampaignsPage() {
             const token = localStorage.getItem("token");
             const headers = { "Authorization": `Bearer ${token}` };
             
+            const projectId = localStorage.getItem("active_project_id") || "";
             const [campRes, tempRes, contRes] = await Promise.all([
-                fetch("http://localhost:8000/email/campaigns/", { headers }),
-                fetch("http://localhost:8000/email/templates/", { headers }),
-                fetch("http://localhost:8000/email/contacts/", { headers })
+                fetch(`${import.meta.env.VITE_BACKEND_API}/email/campaigns/?project_id=${projectId}`, { headers }),
+                fetch(`${import.meta.env.VITE_BACKEND_API}/email/templates/?project_id=${projectId}`, { headers }),
+                fetch(`${import.meta.env.VITE_BACKEND_API}/email/contacts/?project_id=${projectId}`, { headers })
             ]);
             
             if (campRes.ok) setCampaigns(await campRes.json());
@@ -71,12 +71,14 @@ export default function EmailCampaignsPage() {
         
         try {
             const token = localStorage.getItem("token");
+            const projectId = localStorage.getItem("active_project_id") || "";
             const payload = {
                 ...newCampaign,
+                project_id: projectId,
                 scheduled_at: newCampaign.scheduled_at ? new Date(newCampaign.scheduled_at).toISOString() : null
             };
             
-            const res = await fetch("http://localhost:8000/email/campaigns/", {
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_API}/email/campaigns/`, {
                 method: "POST",
                 headers: { 
                     "Authorization": `Bearer ${token}`,
@@ -101,7 +103,7 @@ export default function EmailCampaignsPage() {
         
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch(`http://localhost:8000/email/campaigns/${id}/cancel`, {
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_API}/email/campaigns/${id}/cancel`, {
                 method: "PUT",
                 headers: { "Authorization": `Bearer ${token}` }
             });
@@ -128,8 +130,7 @@ export default function EmailCampaignsPage() {
 
     return (
         <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col">
-            <NavigationBar />
-            
+                        
             <main className="flex-1 max-w-7xl mx-auto w-full p-6 md:p-10 relative z-10 flex flex-col gap-8">
                 <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>

@@ -34,6 +34,7 @@ def _parse_date_range(range_str: str):
 @router.get("/analytics/{tenant_id}")
 async def get_aggregated_analytics(
     tenant_id: str,
+    project_id: str = Query(None, description="Filter by project"),
     date_range: str = Query("30d", description="7d, 30d, 90d, 1y"),
     platform: str = Query(None, description="Filter by platform"),
     tenant: TenantContext = Depends(get_current_tenant),
@@ -48,10 +49,11 @@ async def get_aggregated_analytics(
                 PostAnalytics.synced_at <= end_date,
             )
 
-            # Filter by posts belonging to this tenant
-            post_result = await session.execute(
-                select(ScheduledPost.id).where(ScheduledPost.tenant_id == tenant_id)
-            )
+            # Filter by posts belonging to this tenant and project
+            post_query = select(ScheduledPost.id).where(ScheduledPost.tenant_id == tenant_id)
+            if project_id:
+                post_query = post_query.where(ScheduledPost.project_id == project_id)
+            post_result = await session.execute(post_query)
             tenant_post_ids = [r[0] for r in post_result.fetchall()]
 
             if not tenant_post_ids:
@@ -230,6 +232,7 @@ async def get_post_analytics(
 async def get_platform_analytics(
     tenant_id: str,
     platform: str,
+    project_id: str = Query(None),
     date_range: str = Query("30d"),
     tenant: TenantContext = Depends(get_current_tenant),
 ):
@@ -238,9 +241,10 @@ async def get_platform_analytics(
         start_date, end_date = _parse_date_range(date_range)
 
         async with async_session_maker() as session:
-            post_result = await session.execute(
-                select(ScheduledPost.id).where(ScheduledPost.tenant_id == tenant_id)
-            )
+            post_query = select(ScheduledPost.id).where(ScheduledPost.tenant_id == tenant_id)
+            if project_id:
+                post_query = post_query.where(ScheduledPost.project_id == project_id)
+            post_result = await session.execute(post_query)
             tenant_post_ids = [r[0] for r in post_result.fetchall()]
 
             if not tenant_post_ids:
@@ -337,6 +341,7 @@ async def flush_and_resync(
 @router.get("/analytics/top-posts/{tenant_id}")
 async def get_top_posts(
     tenant_id: str,
+    project_id: str = Query(None),
     date_range: str = Query("30d"),
     limit: int = Query(10, ge=1, le=50),
     tenant: TenantContext = Depends(get_current_tenant),
@@ -356,12 +361,13 @@ async def get_top_posts(
         start_date, end_date = _parse_date_range(date_range)
 
         async with async_session_maker() as session:
-            post_result = await session.execute(
-                select(ScheduledPost).where(
-                    ScheduledPost.tenant_id == tenant_id,
-                    ScheduledPost.status == "published",
-                )
+            post_query = select(ScheduledPost).where(
+                ScheduledPost.tenant_id == tenant_id,
+                ScheduledPost.status == "published",
             )
+            if project_id:
+                post_query = post_query.where(ScheduledPost.project_id == project_id)
+            post_result = await session.execute(post_query)
             posts = {p.id: p for p in post_result.scalars().all()}
 
             if not posts:
@@ -450,6 +456,7 @@ async def get_top_posts(
 @router.get("/analytics/insights/{tenant_id}")
 async def get_analytics_insights(
     tenant_id: str,
+    project_id: str = Query(None),
     date_range: str = Query("30d"),
     tenant: TenantContext = Depends(get_current_tenant),
 ):
@@ -459,12 +466,12 @@ async def get_analytics_insights(
 
         # 1. Fetch overview statistics
         overview_response = await get_aggregated_analytics(
-            tenant_id=tenant_id, date_range=date_range, platform=None, tenant=tenant
+            tenant_id=tenant_id, project_id=project_id, date_range=date_range, platform=None, tenant=tenant
         )
         overview_data = overview_response.get("data", {}).get("overview", {})
 
         # 2. Fetch top performing posts
-        top_posts_response = await get_top_posts(tenant_id=tenant_id, date_range=date_range, limit=5, tenant=tenant)
+        top_posts_response = await get_top_posts(tenant_id=tenant_id, project_id=project_id, date_range=date_range, limit=5, tenant=tenant)
         top_posts = top_posts_response.get("data", [])
 
         # Create user prompt with data

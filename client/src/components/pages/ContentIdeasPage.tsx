@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import NavigationBar from "../UI/NavigationBar";
 import {
   Lightbulb, ChevronDown, ChevronUp, Loader2, Trash2,
   AlertTriangle, Check, Target, Layers, Megaphone,
   Star, FileText, Palette, TrendingUp, ArrowRight, RefreshCw,
-  Sparkles, Send, Edit2, Plus
+  Sparkles, Send, Edit2, Plus, BarChart2
 } from "lucide-react";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from "recharts";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface StrategyPlan { id: string; company_name: string; industry: string; user_prompt: string; created_at: string; }
@@ -55,7 +55,7 @@ export default function ContentIdeasPage() {
   const [deletingId, setDeletingId]         = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [expandedId, setExpandedId]         = useState<string | null>(null);
-  const [activeTab, setActiveTab]           = useState<"ideas"|"categories"|"tone">("ideas");
+  const [activeTab, setActiveTab]           = useState<"ideas"|"categories"|"tone"|"analytics">("ideas");
   const [refinementFeedback, setRefinementFeedback] = useState("");
   const [refining, setRefining]             = useState(false);
   const [error, setError]                   = useState<string | null>(null);
@@ -84,7 +84,7 @@ export default function ContentIdeasPage() {
       };
 
       const res = await fetch(
-        `http://localhost:8000/agent/content-ideas/${resultId}`,
+        `${import.meta.env.VITE_BACKEND_API}/agent/content-ideas/${resultId}`,
         {
           method: "PUT",
           headers: {
@@ -118,7 +118,7 @@ export default function ContentIdeasPage() {
     setRefining(true);
     try {
       const res = await fetch(
-        `http://localhost:8000/agent/content-ideas/${resultId}/refine`,
+        `${import.meta.env.VITE_BACKEND_API}/agent/content-ideas/${resultId}/refine`,
         {
           method: "POST",
           headers: {
@@ -149,9 +149,11 @@ export default function ContentIdeasPage() {
     if (!token) { navigate("/auth"); return; }
     setLoading(true); setError(null);
     try {
+      const activeProjectId = localStorage.getItem("active_project_id");
+      const projectQuery = activeProjectId ? `?project_id=${activeProjectId}` : "";
       const [plansRes, resultsRes] = await Promise.all([
-        fetch("http://localhost:8000/agent/plans",         { headers: { Authorization: `Bearer ${token}` } }),
-        fetch("http://localhost:8000/agent/content-ideas", { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${import.meta.env.VITE_BACKEND_API}/agent/plans${projectQuery}`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${import.meta.env.VITE_BACKEND_API}/agent/content-ideas${projectQuery}`, { headers: { Authorization: `Bearer ${token}` } }),
       ]);
       const plansData   = await plansRes.json();
       const resultsData = await resultsRes.json();
@@ -165,7 +167,9 @@ export default function ContentIdeasPage() {
     if (!selectedPlan || !token) return;
     setGenerating(true); setError(null);
     try {
-      const res  = await fetch("http://localhost:8000/agent/agents/content_ideas_agent/execute", {
+      const activeProjectId = localStorage.getItem("active_project_id");
+      const projectQuery = activeProjectId ? `?project_id=${activeProjectId}` : "";
+      const res  = await fetch(`${import.meta.env.VITE_BACKEND_API}/agent/agents/content_ideas_agent/execute${projectQuery}`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
         body: JSON.stringify({ description: "Generate content ideas", plan_id: selectedPlan })
@@ -185,7 +189,7 @@ export default function ContentIdeasPage() {
     if (!token) return;
     setDeletingId(id);
     try {
-      const res = await fetch(`http://localhost:8000/agent/content-ideas/${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_API}/agent/content-ideas/${id}`, {
         method: "DELETE", headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) { setResults(prev => prev.filter(r => r.id !== id)); if (expandedId === id) setExpandedId(null); }
@@ -198,12 +202,14 @@ export default function ContentIdeasPage() {
     { key: "ideas"      as const, label: "Content Ideas",   icon: Lightbulb },
     { key: "categories" as const, label: "Categories",      icon: Layers },
     { key: "tone"       as const, label: "Tone & Style",    icon: Palette },
+    { key: "analytics"  as const, label: "Analytics",       icon: BarChart2 },
   ];
+
+  const CHART_COLORS = ['#38B2AC', '#4299E1', '#9F7AEA', '#ED64A6', '#F6AD55', '#48BB78', '#F56565'];
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col">
-      <NavigationBar />
-      <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-10">
+            <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-10">
 
         {/* Header */}
         <header className="mb-10 flex items-start justify-between flex-wrap gap-4">
@@ -1016,6 +1022,80 @@ export default function ContentIdeasPage() {
                               </div>
                             </div>
                           )
+                        );
+                      })()}
+
+                      {/* ── ANALYTICS TAB ── */}
+                      {activeTab === "analytics" && (() => {
+                        const ideas = record.result?.content_ideas || [];
+                        if (ideas.length === 0) return <div className="text-center p-10 text-slate-500 font-medium">No data to display charts.</div>;
+                        
+                        const byPriority = [
+                          { name: 'High', value: ideas.filter(i => i.priority === 'High').length },
+                          { name: 'Medium', value: ideas.filter(i => i.priority === 'Medium').length },
+                          { name: 'Low', value: ideas.filter(i => i.priority === 'Low').length },
+                        ].filter(d => d.value > 0);
+                      
+                        const byFormatMap: Record<string, number> = {};
+                        const byPlatformMap: Record<string, number> = {};
+                        
+                        ideas.forEach(idea => {
+                          idea.formats.forEach(f => { byFormatMap[f] = (byFormatMap[f] || 0) + 1; });
+                          idea.platforms.forEach(p => { byPlatformMap[p] = (byPlatformMap[p] || 0) + 1; });
+                        });
+                      
+                        const byFormat = Object.keys(byFormatMap).map(key => ({ name: key, count: byFormatMap[key] })).sort((a,b) => b.count - a.count);
+                        const byPlatform = Object.keys(byPlatformMap).map(key => ({ name: key, count: byPlatformMap[key] })).sort((a,b) => b.count - a.count);
+
+                        return (
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5">
+                              <h4 className="text-xs font-extrabold text-slate-500 uppercase tracking-wider mb-4">Ideas by Priority</h4>
+                              <div className="h-64">
+                                <ResponsiveContainer width="100%" height="100%">
+                                  <PieChart>
+                                    <Pie data={byPriority} cx="50%" cy="50%" innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value" label>
+                                      {byPriority.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                                      ))}
+                                    </Pie>
+                                    <Tooltip />
+                                    <Legend />
+                                  </PieChart>
+                                </ResponsiveContainer>
+                              </div>
+                            </div>
+
+                            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5">
+                              <h4 className="text-xs font-extrabold text-slate-500 uppercase tracking-wider mb-4">Ideas by Format</h4>
+                              <div className="h-64">
+                                <ResponsiveContainer width="100%" height="100%">
+                                  <BarChart data={byFormat} margin={{ top: 5, right: 20, bottom: 25, left: 0 }}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#64748B' }} angle={-45} textAnchor="end" />
+                                    <YAxis allowDecimals={false} axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#64748B' }} />
+                                    <Tooltip cursor={{ fill: '#F1F5F9' }} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                                    <Bar dataKey="count" fill="#38B2AC" radius={[4, 4, 0, 0]} />
+                                  </BarChart>
+                                </ResponsiveContainer>
+                              </div>
+                            </div>
+
+                            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 lg:col-span-2">
+                              <h4 className="text-xs font-extrabold text-slate-500 uppercase tracking-wider mb-4">Ideas by Platform</h4>
+                              <div className="h-64">
+                                <ResponsiveContainer width="100%" height="100%">
+                                  <BarChart data={byPlatform} margin={{ top: 5, right: 20, bottom: 25, left: 0 }}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#64748B' }} />
+                                    <YAxis allowDecimals={false} axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#64748B' }} />
+                                    <Tooltip cursor={{ fill: '#F1F5F9' }} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                                    <Bar dataKey="count" fill="#4299E1" radius={[4, 4, 0, 0]} />
+                                  </BarChart>
+                                </ResponsiveContainer>
+                              </div>
+                            </div>
+                          </div>
                         );
                       })()}
 

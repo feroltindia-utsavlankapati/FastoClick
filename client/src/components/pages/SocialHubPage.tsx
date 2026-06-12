@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import NavigationBar from "../UI/NavigationBar";
 import {
     Share2, Send, Clock, RefreshCw, Trash2, Eye, EyeOff,
     Check, X, AlertCircle, ChevronDown, ChevronUp, Zap, Shield,
@@ -9,7 +8,7 @@ import {
 
 import { FaFacebook, FaInstagram, FaTwitter, FaLinkedin, FaYoutube, FaTiktok, FaPinterest } from "react-icons/fa";
 
-const API = "http://localhost:8000";
+const API = `${import.meta.env.VITE_BACKEND_API}`;
 
 const PLATFORMS = [
     { key: "facebook", name: "Facebook", icon: <FaFacebook />, color: "#1877F2" },
@@ -166,6 +165,7 @@ export default function SocialHubPage() {
                         setPostTimezone(json.data.user.timezone);
                         localStorage.setItem("user_timezone", json.data.user.timezone);
                     }
+                    const activeProjectId = localStorage.getItem("active_project_id") || "";
 
                     // Handle OAuth callback parameters in URL search query
                     const params = new URLSearchParams(window.location.search);
@@ -193,6 +193,7 @@ export default function SocialHubPage() {
                                     },
                                     body: JSON.stringify({
                                         tenant_id: tid,
+                                        project_id: activeProjectId,
                                         platform: oauthPlatform,
                                         code: code,
                                         redirect_uri: oauthRedirectUri,
@@ -237,8 +238,10 @@ export default function SocialHubPage() {
 
     async function loadLibraryMedia(tid: string) {
         if (!tid) return;
+        const activeProjectId = localStorage.getItem("active_project_id");
+        const query = activeProjectId ? `?project_id=${activeProjectId}` : "";
         try {
-            const res = await fetch(`${API}/social/media/${tid}`, {
+            const res = await fetch(`${API}/social/media/${tid}${query}`, {
                 headers: getHeaders(),
             });
             const json = await res.json();
@@ -254,6 +257,8 @@ export default function SocialHubPage() {
             const formData = new FormData();
             formData.append("file", file);
             formData.append("tenant_id", tenantId);
+            const activeProjectId = localStorage.getItem("active_project_id");
+            if (activeProjectId) formData.append("project_id", activeProjectId);
 
             try {
                 const res = await fetch(`${API}/social/media/upload`, {
@@ -294,8 +299,10 @@ export default function SocialHubPage() {
 
     async function loadAccounts(tid: string) {
         if (!tid) return;
+        const activeProjectId = localStorage.getItem("active_project_id");
+        const query = activeProjectId ? `?project_id=${activeProjectId}` : "";
         try {
-            const res = await fetch(`${API}/social/accounts/${tid}`, { headers: getHeaders() });
+            const res = await fetch(`${API}/social/accounts/${tid}${query}`, { headers: getHeaders() });
             const json = await res.json();
             if (json.success) setAccounts(json.data || []);
         } catch {}
@@ -303,8 +310,10 @@ export default function SocialHubPage() {
 
     async function loadPosts(tid: string) {
         if (!tid) return;
+        const activeProjectId = localStorage.getItem("active_project_id");
+        const query = activeProjectId ? `?project_id=${activeProjectId}` : "";
         try {
-            const res = await fetch(`${API}/social/posts/${tid}`, { headers: getHeaders() });
+            const res = await fetch(`${API}/social/posts/${tid}${query}`, { headers: getHeaders() });
             const json = await res.json();
             if (json.success) setPosts(json.data || []);
         } catch {}
@@ -312,8 +321,10 @@ export default function SocialHubPage() {
 
     async function loadCredentials(tid: string) {
         if (!tid) return;
+        const activeProjectId = localStorage.getItem("active_project_id");
+        const query = activeProjectId ? `?project_id=${activeProjectId}` : "";
         try {
-            const res = await fetch(`${API}/social/credentials/${tid}`, { headers: getHeaders() });
+            const res = await fetch(`${API}/social/credentials/${tid}${query}`, { headers: getHeaders() });
             const json = await res.json();
             if (json.success) setCreds(json.data || []);
         } catch {}
@@ -326,6 +337,7 @@ export default function SocialHubPage() {
 
         const payload: any = {
             tenant_id: tenantId,
+            project_id: localStorage.getItem("active_project_id") || undefined,
             caption,
             hashtags,
             mentions,
@@ -555,13 +567,12 @@ export default function SocialHubPage() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 text-slate-900 font-sans overflow-hidden flex flex-col">
-            <NavigationBar />
-            <main className="flex-1 max-w-7xl mx-auto w-full p-6 md:p-10">
+        <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col">
+                        <main className="flex-1 max-w-7xl mx-auto w-full p-6 md:p-10">
                 {/* Header */}
                 <header className="mb-8">
                     <h1 className="text-4xl font-extrabold tracking-tight flex items-center gap-3">
-                        <span className="w-12 h-12 rounded-2xl bg-white border border-slate-200 shadow-sm rounded-xl flex items-center justify-center">
+                        <span className="w-12 h-12 rounded-xl bg-white border border-slate-200 shadow-sm rounded-xl flex items-center justify-center">
                             <Share2 size={24} className="text-primary-600" />
                         </span>
                         Social Hub
@@ -573,7 +584,7 @@ export default function SocialHubPage() {
 
                 {/* Notification */}
                 {message.text && (
-                    <div className={`mb-6 p-4 rounded-2xl font-bold text-sm ${
+                    <div className={`mb-6 p-4 rounded-xl font-bold text-sm ${
                         message.type === "error"
                             ? "bg-red-100 text-red-700"
                             : "bg-green-100 text-green-700"
@@ -583,7 +594,7 @@ export default function SocialHubPage() {
                 )}
 
                 {/* Tabs */}
-                <div className="flex gap-2 mb-8 bg-slate-50 bg-white border border-slate-200 shadow-sm rounded-xl p-2 rounded-[20px] overflow-x-auto">
+                <div className="flex gap-2 mb-8 bg-slate-50 bg-white border border-slate-200 shadow-sm rounded-xl p-2 rounded-xl overflow-x-auto">
                     {tabs.map((tab, i) => (
                         <button
                             key={tab}
@@ -605,7 +616,7 @@ export default function SocialHubPage() {
                                 Active Connections
                             </h2>
                             {accounts.length === 0 ? (
-                                <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[32px] p-10 text-center">
+                                <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-10 text-center">
                                     <div className="flex justify-center gap-4 mb-4 opacity-50">
                                         {PLATFORMS.map(p => (
                                             <span key={p.key} className="text-2xl">{p.icon}</span>
@@ -620,7 +631,7 @@ export default function SocialHubPage() {
                                         const plat = PLATFORMS.find(p => p.key === acc.platform);
                                         const statusColor = acc.status === "active" ? "green" : acc.status === "expiring_soon" ? "amber" : "red";
                                         return (
-                                            <div key={acc.id} className="bg-white border border-slate-200 shadow-sm rounded-xl hover:shadow-md transition-shadow rounded-[28px] p-6">
+                                            <div key={acc.id} className="bg-white border border-slate-200 shadow-sm rounded-xl hover:shadow-md transition-shadow rounded-xl p-6">
                                                 <div className="flex items-start justify-between mb-4">
                                                     <div className="flex items-center gap-3">
                                                         <span className="text-2xl" style={{ color: plat?.color }}>{plat?.icon || "🔗"}</span>
@@ -655,7 +666,7 @@ export default function SocialHubPage() {
                         </div>
 
                         {/* Connection Center */}
-                        <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[32px] p-6 md:p-8">
+                        <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-6 md:p-8">
                             <h2 className="text-lg font-bold mb-1 flex items-center gap-2">
                                 <Zap size={18} className="text-primary-600" />
                                 Connection Center
@@ -670,7 +681,7 @@ export default function SocialHubPage() {
                                     const isConnected = accounts.some(a => a.platform === plat.key);
 
                                     return (
-                                        <div key={plat.key} className="bg-slate-50 border border-slate-200 rounded-xl rounded-2xl p-5 flex flex-col justify-between min-h-[140px]">
+                                        <div key={plat.key} className="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col justify-between min-h-[140px]">
                                             <div className="flex items-start justify-between">
                                                 <div className="flex items-center gap-3">
                                                     <span className="text-3xl" style={{ color: plat.color }}>{plat.icon}</span>
@@ -729,7 +740,7 @@ export default function SocialHubPage() {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <div className="lg:col-span-2 space-y-6">
                             {/* Caption */}
-                            <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6">
+                            <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-6">
                                 <div className="flex items-center justify-between mb-3">
                                     <label className="font-bold text-sm">Caption</label>
                                     <div className="flex gap-2">
@@ -749,7 +760,7 @@ export default function SocialHubPage() {
                             </div>
 
                             {/* Media upload and select area */}
-                            <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6">
+                            <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-6">
                                 <div className="flex items-center justify-between mb-3">
                                     <label className="font-bold text-sm">Media Content (Photo/Video)</label>
                                     <button
@@ -766,7 +777,11 @@ export default function SocialHubPage() {
 
                                 {/* Drag & Drop Area */}
                                 <div
-                                    className={`border-2 border-dashed border-slate-300 hover:border-primary-500 bg-slate-50 transition-colors mb-4 relative ${dragActive ? "active" : ""}`}
+                                    className={`border-2 border-dashed rounded-xl transition-all duration-200 mb-4 relative ${
+                                        dragActive 
+                                        ? "border-primary-500 bg-primary-50/50 scale-[0.99] shadow-inner" 
+                                        : "border-slate-300 hover:border-primary-400 bg-slate-50 hover:bg-slate-100"
+                                    }`}
                                     onDragEnter={handleDrag}
                                     onDragLeave={handleDrag}
                                     onDragOver={handleDrag}
@@ -783,18 +798,20 @@ export default function SocialHubPage() {
                                         onChange={e => e.target.files && handleUpload(e.target.files)}
                                     />
                                     {uploading ? (
-                                        <div className="flex items-center justify-center gap-3 py-4">
+                                        <div className="flex flex-col items-center justify-center py-6 gap-3">
                                             <div className="animate-spin h-6 w-6 border-3 border-primary-600 border-t-transparent rounded-full"></div>
-                                            <span className="font-bold text-primary-600">Uploading...</span>
+                                            <span className="font-bold text-sm text-primary-600">Uploading media...</span>
                                         </div>
                                     ) : (
-                                        <div className="py-4 text-center">
-                                            <Upload size={28} className="mx-auto text-primary-600 mb-2" />
-                                            <p className="font-bold text-xs mb-1">
-                                                {dragActive ? "Drop files here" : "Drag & drop files here"}
+                                        <div className="flex flex-col items-center justify-center py-6 pointer-events-none">
+                                            <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 transition-colors duration-200 ${dragActive ? 'bg-primary-100 text-primary-600' : 'bg-white text-slate-400 shadow-sm'}`}>
+                                                <Upload size={20} />
+                                            </div>
+                                            <p className="font-bold text-sm text-slate-800 mb-1">
+                                                {dragActive ? "Drop media files here" : "Click or drag & drop media"}
                                             </p>
-                                            <p className="text-[10px] text-[#9CA3AF]">
-                                                or click to browse • Images or Videos • Max 100MB
+                                            <p className="text-xs text-slate-500">
+                                                Images (JPG/PNG) or Videos (MP4/WebM) up to 100MB
                                             </p>
                                         </div>
                                     )}
@@ -814,9 +831,12 @@ export default function SocialHubPage() {
                                                             className="w-full h-full object-cover"
                                                         />
                                                     ) : (
-                                                        <div className="w-full h-full flex items-center justify-center">
-                                                            <span className="text-[10px] font-bold text-primary-600 uppercase bg-purple-100 px-2 py-1 rounded">VIDEO</span>
-                                                        </div>
+                                                        <video
+                                                            src={`${API}/social/media/file/${item.id}#t=0.1`}
+                                                            className="w-full h-full object-cover"
+                                                            preload="metadata"
+                                                            controls
+                                                        />
                                                     )}
                                                     <button
                                                         type="button"
@@ -840,7 +860,7 @@ export default function SocialHubPage() {
 
                             {/* Hashtags & Mentions */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6">
+                                <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-6">
                                     <div className="flex items-center justify-between mb-3">
                                         <label className="font-bold text-sm">Hashtags</label>
                                         <button onClick={handleAIHashtags} className="px-3 py-1.5 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl text-xs font-bold flex items-center gap-1.5">
@@ -855,7 +875,7 @@ export default function SocialHubPage() {
                                         className="flex w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50"
                                     />
                                 </div>
-                                <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6">
+                                <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-6">
                                     <label className="font-bold text-sm mb-3 block">Mentions</label>
                                     <input
                                         type="text"
@@ -868,7 +888,7 @@ export default function SocialHubPage() {
                             </div>
 
                             {/* Link */}
-                            <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6">
+                            <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-6">
                                 <label className="font-bold text-sm mb-3 block">Link URL</label>
                                 <input
                                     type="url"
@@ -880,7 +900,7 @@ export default function SocialHubPage() {
                             </div>
 
                             {/* Schedule */}
-                            <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6">
+                            <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-6">
                                 <label className="font-bold text-sm mb-3 block">Schedule</label>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <input
@@ -907,7 +927,7 @@ export default function SocialHubPage() {
                         {/* Right Side — Account Selector & Actions */}
                         <div className="space-y-6">
                             {/* Platform Selector */}
-                            <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6">
+                            <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-6">
                                 <label className="font-bold text-sm mb-4 block">Publish To</label>
                                 {accounts.length === 0 ? (
                                     <p className="text-sm text-[#9CA3AF]">No connected accounts. Connect accounts first.</p>
@@ -919,7 +939,7 @@ export default function SocialHubPage() {
                                             return (
                                                 <label
                                                     key={acc.id}
-                                                    className={`flex items-center gap-3 p-3 rounded-2xl cursor-pointer transition-all ${
+                                                    className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all ${
                                                         isSelected ? "bg-slate-50 border border-slate-200 rounded-xl" : "bg-white border border-slate-200 shadow-sm rounded-lg hover:bg-white border border-slate-200 shadow-sm rounded-xl"
                                                     }`}
                                                 >
@@ -949,7 +969,7 @@ export default function SocialHubPage() {
 
                             {/* Link Existing Post IDs Input Section */}
                             {selectedAccounts.length > 0 && (
-                                <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6">
+                                <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-6">
                                     <label className="font-bold text-sm mb-2 block flex items-center gap-2">
                                         <Shield size={16} className="text-primary-600" />
                                         Link Existing Post IDs
@@ -989,20 +1009,20 @@ export default function SocialHubPage() {
                             <div className="space-y-3">
                                 <button
                                     onClick={() => handleCreatePost("draft")}
-                                    className="w-full px-6 py-3.5 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-2xl font-bold text-sm"
+                                    className="w-full px-6 py-3.5 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl font-bold text-sm"
                                 >
                                     Save Draft
                                 </button>
                                 <button
                                     onClick={() => handleCreatePost("scheduled")}
-                                    className="w-full px-6 py-3.5 inline-flex items-center justify-center font-medium bg-primary-600 text-white hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-2xl font-bold text-sm flex items-center justify-center gap-2"
+                                    className="w-full px-6 py-3.5 inline-flex items-center justify-center font-medium bg-primary-600 text-white hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl font-bold text-sm flex items-center justify-center gap-2"
                                     disabled={!scheduledAt}
                                 >
                                     <Clock size={16} /> Schedule Post
                                 </button>
                                 <button
                                     onClick={() => handleCreatePost("publish_now")}
-                                    className="w-full px-6 py-3.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-2"
+                                    className="w-full px-6 py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2"
                                     style={{
                                         background: "linear-gradient(135deg, #6C63FF, #8B84FF)",
                                         color: "white",
@@ -1033,7 +1053,7 @@ export default function SocialHubPage() {
                         </div>
 
                         {filteredPosts.length === 0 ? (
-                            <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[32px] p-12 text-center">
+                            <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-12 text-center">
                                 <Clock size={48} className="mx-auto text-[#9CA3AF] mb-4" />
                                 <h3 className="text-xl font-bold mb-2">No Posts Found</h3>
                                 <p className="text-slate-500">Create your first post to see it here.</p>
@@ -1044,7 +1064,7 @@ export default function SocialHubPage() {
                                     const badge = STATUS_BADGES[post.status] || STATUS_BADGES.draft;
                                     const isExpanded = expandedPost === post.id;
                                     return (
-                                        <div key={post.id} className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[24px] p-6 transition-all">
+                                        <div key={post.id} className="bg-white border border-slate-200 shadow-sm rounded-xl p-6 transition-all">
                                             <div className="flex items-start justify-between">
                                                 <div className="flex-1 min-w-0 mr-4">
                                                     <p className="font-bold text-sm mb-2 line-clamp-2">{post.caption || "Untitled post"}</p>
@@ -1139,7 +1159,7 @@ export default function SocialHubPage() {
                                                     {post.publish_log?.length > 0 && (
                                                         <div className="mt-3">
                                                             <div className="font-bold text-xs text-slate-500 mb-2">Publish Log</div>
-                                                            <div className="bg-slate-50 border border-slate-200 rounded-xl rounded-xl p-3 space-y-2 max-h-40 overflow-y-auto">
+                                                            <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2 max-h-40 overflow-y-auto">
                                                                 {post.publish_log.map((log: any, i: number) => (
                                                                     <div key={i} className="text-xs flex items-start gap-2">
                                                                         {log.success ? (
@@ -1170,7 +1190,7 @@ export default function SocialHubPage() {
                 {/* ═══ TAB 3: SETTINGS (CREDENTIALS) ═══ */}
                 {activeTab === 3 && (
                     <div>
-                        <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[24px] p-4 mb-6 flex items-start gap-3">
+                        <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-4 mb-6 flex items-start gap-3">
                             <Shield size={20} className="text-[#D97706] mt-0.5" />
                             <div className="text-sm">
                                 <strong className="text-[#D97706]">Security Notice:</strong>{" "}
@@ -1187,7 +1207,7 @@ export default function SocialHubPage() {
                                 const form = credForms[plat.key] || {};
 
                                 return (
-                                    <div key={plat.key} className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[24px] overflow-hidden">
+                                    <div key={plat.key} className="bg-white border border-slate-200 shadow-sm rounded-xl overflow-hidden">
                                         <button
                                             onClick={() => setExpandedPlatform(isExpanded ? null : plat.key)}
                                             className="w-full flex items-center justify-between p-5 text-left"
@@ -1351,7 +1371,7 @@ export default function SocialHubPage() {
             {/* Modal to choose from Media Library */}
             {showLibraryModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/35 backdrop-blur-sm animate-fade-in">
-                    <div className="bg-slate-50 rounded-[32px] w-full max-w-3xl max-h-[85vh] flex flex-col p-6 md:p-8 bg-white border border-slate-200 shadow-sm rounded-xl overflow-hidden relative">
+                    <div className="bg-slate-50 rounded-xl w-full max-w-3xl max-h-[85vh] flex flex-col p-6 md:p-8 bg-white border border-slate-200 shadow-sm rounded-xl overflow-hidden relative">
                         {/* Modal Header */}
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-xl font-bold flex items-center gap-2">
@@ -1372,7 +1392,7 @@ export default function SocialHubPage() {
                         {/* Modal Body / Media List */}
                         <div className="flex-1 overflow-y-auto mb-6 pr-2">
                             {libraryMedia.length === 0 ? (
-                                <div className="text-center py-12 bg-slate-50 border border-slate-200 rounded-xl rounded-2xl">
+                                <div className="text-center py-12 bg-slate-50 border border-slate-200 rounded-xl">
                                     <p className="text-sm text-[#9CA3AF]">No media files in library yet.</p>
                                     <p className="text-xs text-[#9CA3AF] mt-1">Upload files to library to see them here.</p>
                                 </div>
@@ -1391,7 +1411,7 @@ export default function SocialHubPage() {
                                                         setAttachedMedia(prev => [...prev, item]);
                                                     }
                                                 }}
-                                                className={`relative aspect-square rounded-2xl overflow-hidden cursor-pointer transition-all border-2 ${
+                                                className={`relative aspect-square rounded-xl overflow-hidden cursor-pointer transition-all border-2 ${
                                                     isAlreadyAttached ? "border-primary-600 scale-95 shadow-inner" : "border-transparent bg-white border border-slate-200 shadow-sm rounded-xl hover:scale-105"
                                                 }`}
                                             >
@@ -1442,7 +1462,7 @@ export default function SocialHubPage() {
             {/* Modal for Meta Manual Token */}
             {showManualMetaModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/35 backdrop-blur-sm animate-fade-in">
-                    <div className="bg-slate-50 rounded-[32px] w-full max-w-lg flex flex-col p-6 md:p-8 bg-white border border-slate-200 shadow-sm rounded-xl overflow-hidden relative">
+                    <div className="bg-slate-50 rounded-xl w-full max-w-lg flex flex-col p-6 md:p-8 bg-white border border-slate-200 shadow-sm rounded-xl overflow-hidden relative">
                          {/* Modal Header */}
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-xl font-bold flex items-center gap-2">

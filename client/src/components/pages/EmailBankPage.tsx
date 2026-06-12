@@ -16,7 +16,7 @@ export default function EmailBankPage() {
     const fetchTemplates = async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch(`http://localhost:8000/email/templates/?project_id=${projectId}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/email/templates/?project_id=${projectId}`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             if (response.ok) {

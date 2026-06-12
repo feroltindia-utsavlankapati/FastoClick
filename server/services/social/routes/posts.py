@@ -19,6 +19,7 @@ router = APIRouter()
 @router.get("/posts/{tenant_id}")
 async def list_posts(
     tenant_id: str,
+    project_id: str = None,
     status: str = None,
     platform: str = None,
     tenant: TenantContext = Depends(get_current_tenant)
@@ -28,7 +29,10 @@ async def list_posts(
         async with async_session_maker() as session:
             query = select(ScheduledPost).where(
                 ScheduledPost.tenant_id == tenant_id
-            ).order_by(desc(ScheduledPost.created_at))
+            )
+            if project_id:
+                query = query.where(ScheduledPost.project_id == project_id)
+            query = query.order_by(desc(ScheduledPost.created_at))
 
             if status:
                 query = query.where(ScheduledPost.status == status)
@@ -191,6 +195,7 @@ async def create_post(payload: dict, tenant: TenantContext = Depends(get_current
 
             post = ScheduledPost(
                 tenant_id=tenant_id,
+                project_id=payload.get("project_id"),
                 product_id=payload.get("product_id"),
                 caption=payload.get("caption", ""),
                 hashtags=payload.get("hashtags", ""),

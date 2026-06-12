@@ -11,6 +11,7 @@ class Contact(Base):
 
     id = Column(String, primary_key=True, default=generate_uuid)
     tenant_id = Column(String, index=True, nullable=False)
+    project_id = Column(String, index=True, nullable=True)
     first_name = Column(String, nullable=True)
     last_name = Column(String, nullable=True)
     email = Column(String, index=True, nullable=False)
@@ -27,6 +28,7 @@ class EmailTemplate(Base):
 
     id = Column(String, primary_key=True, default=generate_uuid)
     tenant_id = Column(String, index=True, nullable=False)
+    project_id = Column(String, index=True, nullable=True)
     name = Column(String, nullable=False)
     subject = Column(String, nullable=False)
     body_html = Column(Text, nullable=True)

@@ -33,7 +33,7 @@ export default function ProjectSelectionPage() {
                 return;
             }
 
-            const response = await fetch("http://localhost:8000/tenant/projects", {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/tenant/projects`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             const data = await response.json();
@@ -55,7 +55,7 @@ export default function ProjectSelectionPage() {
         setIsSubmitting(true);
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch("http://localhost:8000/tenant/projects", {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/tenant/projects`, {
                 method: "POST",
                 headers: { 
                     "Authorization": `Bearer ${token}`,
@@ -79,7 +79,7 @@ export default function ProjectSelectionPage() {
 
     const selectProject = (projectId: string) => {
         localStorage.setItem("active_project_id", projectId);
-        navigate(`/projects/${projectId}/dashboard`);
+        navigate(`/dashboard`);
     };
 
     return (
@@ -107,8 +107,8 @@ export default function ProjectSelectionPage() {
                     <div className="bg-blue-600 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-600/20">
                         <FolderGit2 className="text-white w-8 h-8" />
                     </div>
-                    <h1 className="text-3xl font-bold text-gray-900 mb-3 tracking-tight">Select a Project Workspace</h1>
-                    <p className="text-gray-500 text-lg">Every module and campaign operates within an isolated project</p>
+                    <h1 className="text-3xl font-bold text-gray-900 mb-3 tracking-tight">Select a Workspace</h1>
+                    <p className="text-gray-500 text-lg">Every module and campaign operates within an isolated workspace</p>
                 </div>
 
                 {loading ? (
@@ -125,7 +125,7 @@ export default function ProjectSelectionPage() {
                             <div className="bg-blue-100 text-blue-600 w-12 h-12 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                                 <Plus className="w-6 h-6" />
                             </div>
-                            <h3 className="text-lg font-semibold text-gray-900">Create New Project</h3>
+                            <h3 className="text-lg font-semibold text-gray-900">Create New Workspace</h3>
                             <p className="text-sm text-gray-500 mt-2 text-center">Start a new isolated workspace</p>
                         </div>
 
@@ -159,10 +159,10 @@ export default function ProjectSelectionPage() {
             {isCreating && (
                 <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                     <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl p-6">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-6">New Project Workspace</h2>
+                        <h2 className="text-2xl font-bold text-gray-900 mb-6">New Workspace</h2>
                         <form onSubmit={handleCreateProject} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Project Name</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Workspace Name</label>
                                 <input 
                                     type="text" 
                                     required
@@ -178,7 +178,7 @@ export default function ProjectSelectionPage() {
                                     value={newProject.description}
                                     onChange={e => setNewProject({...newProject, description: e.target.value})}
                                     className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[100px]"
-                                    placeholder="What is this project about?"
+                                    placeholder="What is this workspace about?"
                                 />
                             </div>
                             <div className="flex gap-3 pt-4">
@@ -194,7 +194,7 @@ export default function ProjectSelectionPage() {
                                     disabled={isSubmitting}
                                     className="flex-1 px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                                 >
-                                    {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Create Project"}
+                                    {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Create Workspace"}
                                 </button>
                             </div>
                         </form>

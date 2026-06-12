@@ -1,9 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import NavigationBar from "../UI/NavigationBar";
 import { Image as ImageIcon, Upload, Trash2, Filter, FileImage, FileVideo, X, Download } from "lucide-react";
 
-const API = "http://localhost:8000";
+const API = `${import.meta.env.VITE_BACKEND_API}`;
 
 function getHeaders() {
     return {
@@ -51,9 +50,14 @@ export default function MediaLibraryPage() {
 
     async function loadMedia(tid: string, type?: string) {
         if (!tid) return;
+        const activeProjectId = localStorage.getItem("active_project_id");
+        const queryParams = [];
+        if (type && type !== "all") queryParams.push(`media_type=${type}`);
+        if (activeProjectId) queryParams.push(`project_id=${activeProjectId}`);
+        
         try {
-            const url = type && type !== "all"
-                ? `${API}/social/media/${tid}?media_type=${type}`
+            const url = queryParams.length > 0
+                ? `${API}/social/media/${tid}?${queryParams.join("&")}`
                 : `${API}/social/media/${tid}`;
             const res = await fetch(url, {
                 headers: { ...getHeaders(), "Content-Type": "application/json" },
@@ -71,6 +75,8 @@ export default function MediaLibraryPage() {
             const formData = new FormData();
             formData.append("file", file);
             formData.append("tenant_id", tenantId);
+            const activeProjectId = localStorage.getItem("active_project_id");
+            if (activeProjectId) formData.append("project_id", activeProjectId);
 
             try {
                 const res = await fetch(`${API}/social/media/upload`, {
@@ -139,8 +145,7 @@ export default function MediaLibraryPage() {
 
     return (
         <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col">
-            <NavigationBar />
-
+            
             <main className="flex-1 max-w-7xl mx-auto w-full p-6 md:p-10">
                 {/* Header */}
                 <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
@@ -171,12 +176,17 @@ export default function MediaLibraryPage() {
 
                 {/* Upload Zone */}
                 <div
-                    className={`border-2 border-dashed border-slate-300 hover:border-primary-500 bg-slate-50 transition-colors mb-8 ${dragActive ? "active" : ""}`}
+                    className={`border-2 border-dashed rounded-2xl p-12 transition-all duration-200 mb-8 relative ${
+                        dragActive 
+                        ? "border-primary-500 bg-primary-50/50 shadow-inner scale-[0.99]" 
+                        : "border-slate-300 hover:border-primary-400 bg-slate-50 hover:bg-slate-100"
+                    }`}
                     onDragEnter={handleDrag}
                     onDragLeave={handleDrag}
                     onDragOver={handleDrag}
                     onDrop={handleDrop}
                     onClick={() => fileInputRef.current?.click()}
+                    style={{ cursor: "pointer" }}
                 >
                     <input
                         ref={fileInputRef}
@@ -187,18 +197,20 @@ export default function MediaLibraryPage() {
                         onChange={e => e.target.files && handleUpload(e.target.files)}
                     />
                     {uploading ? (
-                        <div className="flex items-center justify-center gap-3">
-                            <div className="animate-spin h-6 w-6 border-3 border-primary-600 border-t-transparent rounded-full"></div>
-                            <span className="font-bold text-primary-600">Uploading...</span>
+                        <div className="flex flex-col items-center justify-center gap-4 py-8">
+                            <div className="animate-spin h-8 w-8 border-4 border-primary-600 border-t-transparent rounded-full"></div>
+                            <span className="font-bold text-primary-600">Uploading your files...</span>
                         </div>
                     ) : (
-                        <div>
-                            <Upload size={36} className="mx-auto text-primary-600 mb-3" />
-                            <p className="font-bold text-sm mb-1">
-                                {dragActive ? "Drop files here" : "Drag & drop files here"}
-                            </p>
-                            <p className="text-xs text-[#9CA3AF]">
-                                or click to browse • Images (JPG, PNG, GIF, WebP) • Videos (MP4, WebM) • Max 100MB
+                        <div className="flex flex-col items-center pointer-events-none py-4">
+                            <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-colors duration-200 ${dragActive ? 'bg-primary-100 text-primary-600' : 'bg-white text-slate-400 shadow-sm'}`}>
+                                <Upload size={32} />
+                            </div>
+                            <h3 className="font-bold text-lg mb-2 text-slate-800">
+                                {dragActive ? "Drop media files here to upload" : "Click or drag & drop media files here"}
+                            </h3>
+                            <p className="text-sm text-slate-500 max-w-md mx-auto">
+                                Supports Images (JPG, PNG, GIF, WebP) and Videos (MP4, WebM) up to 100MB per file.
                             </p>
                         </div>
                     )}
@@ -233,8 +245,15 @@ export default function MediaLibraryPage() {
                         {media.map(item => (
                             <div key={item.id} className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[20px] overflow-hidden group">
                                 {/* Thumbnail */}
-                                <div className="aspect-square bg-[#d3d8df] relative overflow-hidden">
-                                    {item.has_thumbnail || isImage(item.mime_type) ? (
+                                <div className="aspect-square bg-slate-200 relative overflow-hidden">
+                                    {isVideo(item.mime_type) ? (
+                                        <video
+                                            src={`${API}/social/media/file/${item.id}#t=0.1`}
+                                            className="w-full h-full object-cover"
+                                            preload="metadata"
+                                            controls
+                                        />
+                                    ) : item.has_thumbnail || isImage(item.mime_type) ? (
                                         <img
                                             src={`${API}/social/media/thumbnail/${item.id}`}
                                             alt={item.original_filename}
@@ -247,7 +266,7 @@ export default function MediaLibraryPage() {
                                         />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center">
-                                            <FileVideo size={40} className="text-[#9CA3AF]" />
+                                            <FileVideo size={40} className="text-slate-400" />
                                         </div>
                                     )}
 
@@ -259,10 +278,10 @@ export default function MediaLibraryPage() {
                                     )}
 
                                     {/* Hover overlay */}
-                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-start justify-end p-2 pointer-events-none">
                                         <button
                                             onClick={() => handleDelete(item.id)}
-                                            className="p-2.5 bg-white/90 rounded-xl hover:bg-white transition-colors"
+                                            className="p-2 bg-white/90 rounded-lg shadow-sm hover:bg-white transition-colors pointer-events-auto"
                                         >
                                             <Trash2 size={16} className="text-danger" />
                                         </button>

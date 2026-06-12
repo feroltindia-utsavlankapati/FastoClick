@@ -55,7 +55,7 @@ export default function EmailProjectDetailsPage() {
     const fetchContacts = async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch(`http://localhost:8000/email/contacts/?project_id=${projectId}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/email/contacts/?project_id=${projectId}`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             if (response.ok) {
@@ -70,7 +70,7 @@ export default function EmailProjectDetailsPage() {
     const fetchProjectDetails = async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch(`http://localhost:8000/tenant/projects/${projectId}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/tenant/projects/${projectId}`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             if (response.ok) {
@@ -87,7 +87,7 @@ export default function EmailProjectDetailsPage() {
     const fetchIdeas = async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch(`http://localhost:8000/email/ideas/project/${projectId}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/email/ideas/project/${projectId}`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             if (response.ok) {
@@ -102,7 +102,7 @@ export default function EmailProjectDetailsPage() {
     const fetchCampaigns = async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch(`http://localhost:8000/email/campaigns/project/${projectId}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/email/campaigns/project/${projectId}`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             if (response.ok) {
@@ -119,7 +119,7 @@ export default function EmailProjectDetailsPage() {
         setIsSaving(true);
         try {
             const token = localStorage.getItem("token");
-            await fetch(`http://localhost:8000/tenant/projects/${project.id}`, {
+            await fetch(`${import.meta.env.VITE_BACKEND_API}/tenant/projects/${project.id}`, {
                 method: "PUT",
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -139,7 +139,7 @@ export default function EmailProjectDetailsPage() {
         if (!newIdeaData.concept) return;
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch(`http://localhost:8000/email/ideas/`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/email/ideas/`, {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -173,7 +173,7 @@ export default function EmailProjectDetailsPage() {
                 alert("You have no contacts in this project. Please add contacts to the Email Bank first, or no emails will be sent.");
             }
             
-            const response = await fetch(`http://localhost:8000/email/campaigns/`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/email/campaigns/`, {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -209,7 +209,7 @@ export default function EmailProjectDetailsPage() {
         if (!confirm("Are you sure you want to cancel this campaign?")) return;
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch(`http://localhost:8000/email/campaigns/${campaignId}/cancel`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/email/campaigns/${campaignId}/cancel`, {
                 method: "PUT",
                 headers: { "Authorization": `Bearer ${token}` }
             });

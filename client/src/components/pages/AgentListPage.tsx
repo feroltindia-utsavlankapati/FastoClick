@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import NavigationBar from "../UI/NavigationBar";
 import { Bot, Check, X, Loader2 } from "lucide-react";
 
 interface Agent {
@@ -16,7 +15,7 @@ export default function AgentListPage() {
     const [loading, setLoading] = useState(true);
     const [executingId, setExecutingId] = useState<string | null>(null);
     const [executionResult, setExecutionResult] = useState<{output: any, confidence: number} | null>(null);
-    const [taskDescription, setTaskDescription] = useState("");
+    const [taskDescriptions, setTaskDescriptions] = useState<Record<string, string>>({});const [taskDescription, setTaskDescription] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -28,7 +27,7 @@ export default function AgentListPage() {
             }
 
             try {
-                const response = await fetch("http://localhost:8000/agent/agents", {
+                const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/agent/agents`, {
                     headers: { "Authorization": `Bearer ${token}` }
                 });
                 const data = await response.json();
@@ -48,13 +47,16 @@ export default function AgentListPage() {
     }, [navigate]);
 
     const handleExecute = async (agentId: string) => {
+        const taskDescription = taskDescriptions[agentId] || "";
         if (!taskDescription.trim()) return;
         setExecutingId(agentId);
         setExecutionResult(null);
 
         const token = localStorage.getItem("token");
         try {
-            const response = await fetch(`http://localhost:8000/agent/agents/${agentId}/execute`, {
+            const activeProjectId = localStorage.getItem("active_project_id");
+            const projectQuery = activeProjectId ? `?project_id=${activeProjectId}` : "";
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/agent/agents/${agentId}/execute${projectQuery}`, {
                 method: "POST",
                 headers: { 
                     "Authorization": `Bearer ${token}`,
@@ -73,14 +75,16 @@ export default function AgentListPage() {
             alert("Error executing agent.");
         } finally {
             setExecutingId(null);
-            setTaskDescription("");
+            setTaskDescriptions((prev) => ({
+                ...prev,
+                [agentId]: "",
+            }));
         }
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 text-slate-900 font-sans overflow-hidden flex flex-col relative">
-            <NavigationBar />
-            
+        <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col relative">
+                        
             {/* Visual Decoration */}
             <div className="absolute top-20 left-10 w-96 h-96 rounded-full bg-slate-50 border border-slate-200 rounded-xl pointer-events-none opacity-20 flex items-center justify-center">
                 <div className="w-64 h-64 rounded-full bg-white border border-slate-200 shadow-sm rounded-xl"></div>
@@ -131,13 +135,21 @@ export default function AgentListPage() {
                                         type="text" 
                                         placeholder="Task description..."
                                         className="w-full bg-slate-100 border border-slate-200 shadow-inner rounded-xl bg-transparent rounded-2xl px-4 py-3 text-sm text-slate-900 placeholder-[#A0AEC0] focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-[#E0E5EC] transition-all font-medium"
-                                        value={taskDescription}
-                                        onChange={e => setTaskDescription(e.target.value)}
+                                        value={taskDescriptions[agent.agent_id] || ""}
+                                            onChange={(e) =>
+                                                setTaskDescriptions((prev) => ({
+                                                    ...prev,
+                                                    [agent.agent_id]: e.target.value,
+                                                }))
+                                            }
                                         disabled={executingId === agent.agent_id}
                                     />
                                     <button 
                                         onClick={() => handleExecute(agent.agent_id)}
-                                        disabled={executingId === agent.agent_id || !taskDescription}
+                                        disabled={
+                                            executingId === agent.agent_id ||
+                                            !(taskDescriptions[agent.agent_id] || "").trim()
+                                        }
                                         className="w-full py-3 inline-flex items-center justify-center font-medium bg-primary-600 text-white hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-2xl font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                     >
                                         {executingId === agent.agent_id ? (

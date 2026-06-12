@@ -14,6 +14,20 @@ class Tenant(Base):
     plan = Column(String, default="free")
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
+class Project(Base):
+    __tablename__ = "projects"
+    
+    id = Column(String, primary_key=True, default=generate_uuid)
+    tenant_id = Column(String, index=True, nullable=False)
+    name = Column(String, nullable=False)
+    description = Column(String, nullable=True)
+    goals = Column(String, nullable=True)
+    target_audience = Column(String, nullable=True)
+    kpis = Column(String, nullable=True)
+    status = Column(String, default="active")
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
 class User(Base):
     __tablename__ = "users"
     
@@ -31,7 +45,8 @@ class CompanyContext(Base):
     __tablename__ = "company_contexts"
     
     id = Column(String, primary_key=True, default=generate_uuid)
-    tenant_id = Column(String, unique=True, index=True, nullable=False)
+    tenant_id = Column(String, index=True, nullable=False)
+    project_id = Column(String, index=True, nullable=True)
     link = Column(String, nullable=True)
     focus = Column(String, nullable=True)
     product_details = Column(String, nullable=True)
@@ -47,6 +62,7 @@ class StrategyPlan(Base):
 
     id = Column(String, primary_key=True, default=generate_uuid)
     tenant_id = Column(String, index=True, nullable=False)
+    project_id = Column(String, index=True, nullable=True)
     product_id = Column(String, index=True, nullable=True)
     company_name = Column(String, nullable=True)
     industry = Column(String, nullable=True)
@@ -60,6 +76,7 @@ class ContentIdeasResult(Base):
 
     id = Column(String, primary_key=True, default=generate_uuid)
     tenant_id = Column(String, index=True, nullable=False)
+    project_id = Column(String, index=True, nullable=True)
     product_id = Column(String, index=True, nullable=True)
     plan_id = Column(String, index=True, nullable=True)   # FK-style ref to strategy_plans.id
     plan_name = Column(String, nullable=True)
@@ -73,6 +90,7 @@ class CompanyProduct(Base):
 
     id = Column(String, primary_key=True, default=generate_uuid)
     tenant_id = Column(String, index=True, nullable=False)
+    project_id = Column(String, index=True, nullable=True)
     name = Column(String, nullable=False)
     type = Column(String, nullable=False)  # 'product' or 'service'
     description = Column(Text, nullable=True)
@@ -92,6 +110,7 @@ class SocialPlatformCredential(Base):
 
     id = Column(String, primary_key=True, default=generate_uuid)
     tenant_id = Column(String, index=True, nullable=False)
+    project_id = Column(String, index=True, nullable=True)
     platform = Column(String, nullable=False)  # meta, twitter, linkedin, youtube, tiktok, pinterest
     client_id_enc = Column(Text, nullable=True)  # encrypted
     client_secret_enc = Column(Text, nullable=True)  # encrypted
@@ -110,6 +129,7 @@ class ConnectedSocialAccount(Base):
 
     id = Column(String, primary_key=True, default=generate_uuid)
     tenant_id = Column(String, index=True, nullable=False)
+    project_id = Column(String, index=True, nullable=True)
     platform = Column(String, nullable=False)
     platform_user_id = Column(String, nullable=True)
     account_name = Column(String, nullable=True)
@@ -130,6 +150,7 @@ class ScheduledPost(Base):
 
     id = Column(String, primary_key=True, default=generate_uuid)
     tenant_id = Column(String, index=True, nullable=False)
+    project_id = Column(String, index=True, nullable=True)
     product_id = Column(String, index=True, nullable=True)
     caption = Column(Text, nullable=True)
     hashtags = Column(Text, nullable=True)  # comma-separated
@@ -156,6 +177,7 @@ class MediaAsset(Base):
 
     id = Column(String, primary_key=True, default=generate_uuid)
     tenant_id = Column(String, index=True, nullable=False)
+    project_id = Column(String, index=True, nullable=True)
     filename = Column(String, nullable=False)
     original_filename = Column(String, nullable=True)
     mime_type = Column(String, nullable=True)
@@ -175,6 +197,7 @@ class PostAnalytics(Base):
 
     id = Column(String, primary_key=True, default=generate_uuid)
     post_id = Column(String, index=True, nullable=False)  # FK to scheduled_posts.id
+    project_id = Column(String, index=True, nullable=True)
     platform = Column(String, nullable=False)
     account_id = Column(String, nullable=True)
     impressions = Column(Integer, default=0)

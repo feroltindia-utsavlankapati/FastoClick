@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Users, UploadCloud, Plus, Download, Search, Trash2 } from "lucide-react";
-import NavigationBar from "../UI/NavigationBar";
 
 interface Contact {
     id: string;
@@ -28,7 +27,8 @@ export default function EmailContactsPage() {
         setLoading(true);
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch("http://localhost:8000/email/contacts/", {
+            const projectId = localStorage.getItem("active_project_id") || "";
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_API}/email/contacts/?project_id=${projectId}`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             if (res.ok) {
@@ -47,10 +47,14 @@ export default function EmailContactsPage() {
         setUploading(true);
         try {
             const token = localStorage.getItem("token");
+            const projectId = localStorage.getItem("active_project_id") || "";
             const formData = new FormData();
             formData.append("file", file);
+            if (projectId) {
+                formData.append("project_id", projectId);
+            }
 
-            const res = await fetch("http://localhost:8000/email/contacts/upload", {
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_API}/email/contacts/upload`, {
                 method: "POST",
                 headers: { "Authorization": `Bearer ${token}` },
                 body: formData
@@ -76,7 +80,7 @@ export default function EmailContactsPage() {
         if (!confirm("Are you sure you want to delete this contact?")) return;
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch(`http://localhost:8000/email/contacts/${id}`, {
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_API}/email/contacts/${id}`, {
                 method: "DELETE",
                 headers: { "Authorization": `Bearer ${token}` }
             });
@@ -107,8 +111,7 @@ export default function EmailContactsPage() {
 
     return (
         <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col">
-            <NavigationBar />
-            
+                        
             <main className="flex-1 max-w-7xl mx-auto w-full p-6 md:p-10 relative z-10 flex flex-col gap-8">
                 <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>

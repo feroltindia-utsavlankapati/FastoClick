@@ -33,7 +33,7 @@ export default function AuthPage() {
     setLoading(true);
     try {
       if (isLogin) {
-        const res  = await fetch("http://localhost:8000/auth/login", {
+        const res  = await fetch(`${import.meta.env.VITE_BACKEND_API}/auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username, password }),
@@ -44,7 +44,7 @@ export default function AuthPage() {
         localStorage.setItem("token", data.data.access_token);
         navigate("/dashboard");
       } else {
-        const res  = await fetch("http://localhost:8000/auth/signup", {
+        const res  = await fetch(`${import.meta.env.VITE_BACKEND_API}/auth/signup`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ tenant_name: tenantName, username, email, password }),

@@ -17,15 +17,21 @@ router = APIRouter()
 
 
 @router.get("/credentials/{tenant_id}")
-async def list_credentials(tenant_id: str, tenant: TenantContext = Depends(get_current_tenant)):
+async def list_credentials(
+    tenant_id: str,
+    project_id: str = None,
+    tenant: TenantContext = Depends(get_current_tenant)
+):
     """List all platform credentials for a tenant (secrets redacted)."""
     try:
         async with async_session_maker() as session:
-            result = await session.execute(
-                select(SocialPlatformCredential).where(
-                    SocialPlatformCredential.tenant_id == tenant_id
-                )
+            query = select(SocialPlatformCredential).where(
+                SocialPlatformCredential.tenant_id == tenant_id
             )
+            if project_id:
+                query = query.where(SocialPlatformCredential.project_id == project_id)
+            
+            result = await session.execute(query)
             creds = result.scalars().all()
 
             data = []
@@ -68,6 +74,7 @@ async def list_credentials(tenant_id: str, tenant: TenantContext = Depends(get_c
 async def save_credential(payload: dict, tenant: TenantContext = Depends(get_current_tenant)):
     """Save or update credentials for a platform."""
     tenant_id = payload.get("tenant_id", "")
+    project_id = payload.get("project_id", "")
     platform = payload.get("platform", "")
     client_id = payload.get("client_id", "")
     client_secret = payload.get("client_secret", "")
@@ -105,6 +112,7 @@ async def save_credential(payload: dict, tenant: TenantContext = Depends(get_cur
             else:
                 cred = SocialPlatformCredential(
                     tenant_id=tenant_id,
+                    project_id=project_id,
                     platform=platform,
                     client_id_enc=encrypt_token(client_id) if client_id else None,
                     client_secret_enc=encrypt_token(client_secret) if client_secret else None,

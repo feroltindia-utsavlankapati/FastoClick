@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import NavigationBar from "../UI/NavigationBar";
 import { CalendarDays, ChevronLeft, ChevronRight, Plus, Clock } from "lucide-react";
 
-const API = "http://localhost:8000";
+const API = `${import.meta.env.VITE_BACKEND_API}`;
+
+import { FaFacebook, FaInstagram, FaTwitter, FaLinkedin, FaYoutube, FaTiktok, FaPinterest } from "react-icons/fa";
 
 const PLATFORMS = [
-    { key: "facebook", icon: "📘", color: "#1877F2" },
-    { key: "instagram", icon: "📸", color: "#E1306C" },
-    { key: "twitter", icon: "𝕏", color: "#000000" },
-    { key: "linkedin", icon: "💼", color: "#0A66C2" },
-    { key: "youtube", icon: "▶️", color: "#FF0000" },
-    { key: "tiktok", icon: "🎵", color: "#00F2EA" },
-    { key: "pinterest", icon: "📌", color: "#E60023" },
+    { key: "facebook", icon: <FaFacebook />, color: "#1877F2" },
+    { key: "instagram", icon: <FaInstagram />, color: "#E1306C" },
+    { key: "twitter", icon: <FaTwitter />, color: "#000000" },
+    { key: "linkedin", icon: <FaLinkedin />, color: "#0A66C2" },
+    { key: "youtube", icon: <FaYoutube />, color: "#FF0000" },
+    { key: "tiktok", icon: <FaTiktok />, color: "#00F2EA" },
+    { key: "pinterest", icon: <FaPinterest />, color: "#E60023" },
 ];
 
 const STATUS_COLORS: Record<string, string> = {
@@ -108,8 +109,10 @@ export default function ContentCalendarPage() {
 
     async function loadPosts(tid: string) {
         if (!tid) return;
+        const activeProjectId = localStorage.getItem("active_project_id");
+        const query = activeProjectId ? `?project_id=${activeProjectId}` : "";
         try {
-            const res = await fetch(`${API}/social/posts/${tid}`, { headers: getHeaders() });
+            const res = await fetch(`${API}/social/posts/${tid}${query}`, { headers: getHeaders() });
             const json = await res.json();
             if (json.success) setPosts(json.data || []);
         } catch {}
@@ -169,14 +172,13 @@ export default function ContentCalendarPage() {
 
     return (
         <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col">
-            <NavigationBar />
-
+            
             <main className="flex-1 max-w-7xl mx-auto w-full p-6 md:p-10">
                 {/* Header */}
                 <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                     <div>
                         <h1 className="text-4xl font-extrabold tracking-tight flex items-center gap-3">
-                            <span className="w-12 h-12 rounded-2xl bg-white border border-slate-200 shadow-sm rounded-xl flex items-center justify-center">
+                            <span className="w-12 h-12 rounded-xl bg-white border border-slate-200 shadow-sm rounded-xl flex items-center justify-center">
                                 <CalendarDays size={24} className="text-primary-600" />
                             </span>
                             Content Calendar
@@ -185,7 +187,7 @@ export default function ContentCalendarPage() {
                     </div>
                     <button
                         onClick={() => navigate("/social")}
-                        className="px-5 py-2.5 inline-flex items-center justify-center font-medium bg-primary-600 text-white hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-2xl text-sm font-bold flex items-center gap-2"
+                        className="px-5 py-2.5 inline-flex items-center justify-center font-medium bg-primary-600 text-white hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-xl text-sm font-bold flex items-center gap-2"
                     >
                         <Plus size={16} /> New Post
                     </button>
@@ -194,21 +196,24 @@ export default function ContentCalendarPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                     {/* Calendar */}
                     <div className="lg:col-span-3">
-                        <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[32px] p-6">
+                        <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-6">
                             {/* Month Navigation */}
                             <div className="flex items-center justify-between mb-6">
-                                <button onClick={prevMonth} className="p-3 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-2xl">
-                                    <ChevronLeft size={20} />
-                                </button>
-                                <div className="text-center">
-                                    <h2 className="text-2xl font-extrabold">{MONTHS[currentMonth]} {currentYear}</h2>
-                                    <button onClick={goToToday} className="text-xs text-primary-600 font-bold hover:underline mt-1">
+                                <div className="flex items-center gap-4">
+                                    <h2 className="text-2xl font-extrabold text-slate-900">{MONTHS[currentMonth]} {currentYear}</h2>
+                                    <button onClick={goToToday} className="px-3 py-1 text-xs font-bold text-primary-700 bg-primary-50 border border-primary-200 hover:bg-primary-100 rounded-lg transition-colors">
                                         Today
                                     </button>
                                 </div>
-                                <button onClick={nextMonth} className="p-3 inline-flex items-center justify-center font-medium bg-slate-100 text-slate-900 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 rounded-2xl">
-                                    <ChevronRight size={20} />
-                                </button>
+                                <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl p-1 shadow-sm">
+                                    <button onClick={prevMonth} className="p-2 text-slate-600 hover:text-slate-900 hover:bg-white rounded-lg transition-all">
+                                        <ChevronLeft size={18} />
+                                    </button>
+                                    <div className="w-px h-5 bg-slate-200 mx-1"></div>
+                                    <button onClick={nextMonth} className="p-2 text-slate-600 hover:text-slate-900 hover:bg-white rounded-lg transition-all">
+                                        <ChevronRight size={18} />
+                                    </button>
+                                </div>
                             </div>
 
                             {/* Day Headers */}
@@ -224,7 +229,7 @@ export default function ContentCalendarPage() {
                             <div className="grid grid-cols-7 gap-2">
                                 {calendarDays.map((day, i) => {
                                     if (day === null) {
-                                        return <div key={`empty-${i}`} className="min-h-[80px]"></div>;
+                                        return <div key={`empty-${i}`} className="min-h-[120px] bg-slate-50/50 rounded-xl border border-dashed border-slate-200"></div>;
                                     }
                                     const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
                                     const dayPosts = postsByDate[dateStr] || [];
@@ -235,26 +240,45 @@ export default function ContentCalendarPage() {
                                         <div
                                             key={dateStr}
                                             onClick={() => setSelectedDate(dateStr === selectedDate ? null : dateStr)}
-                                            className={`bg-white border border-slate-200 hover:border-primary-500 transition-colors ${isToday ? "today" : ""} ${isSelected ? "bg-slate-50 border border-slate-200 rounded-xl" : ""}`}
+                                            className={`
+                                                relative p-2 min-h-[120px] rounded-xl border cursor-pointer transition-all flex flex-col group overflow-hidden
+                                                ${isSelected ? "bg-primary-50 border-primary-400 shadow-sm ring-1 ring-primary-400" : "bg-white border-slate-200 hover:border-primary-300 hover:bg-slate-50"}
+                                                ${isToday && !isSelected ? "ring-2 ring-primary-600 border-transparent" : ""}
+                                            `}
                                         >
-                                            <div className={`text-xs font-bold mb-1 ${isToday ? "text-primary-600" : "text-slate-500"}`}>
-                                                {day}
+                                            <div className="flex justify-between items-start mb-2">
+                                                <span className={`flex items-center justify-center w-7 h-7 rounded-full text-sm font-bold ${isToday ? "bg-primary-600 text-white shadow-md" : "text-slate-700 group-hover:text-primary-700"}`}>
+                                                    {day}
+                                                </span>
+                                                {dayPosts.length > 0 && (
+                                                    <span className="text-[10px] font-bold text-slate-500 bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded-md">
+                                                        {dayPosts.length}
+                                                    </span>
+                                                )}
                                             </div>
-                                            {dayPosts.length > 0 && (
-                                                <div className="flex flex-wrap gap-1">
-                                                    {dayPosts.slice(0, 3).map((post: any, j: number) => (
-                                                        <div
-                                                            key={j}
-                                                            className="w-2 h-2 rounded-full"
-                                                            style={{ backgroundColor: STATUS_COLORS[post.status] || "#6B7280" }}
-                                                            title={`${post.status}: ${(post.caption || "").slice(0, 30)}`}
-                                                        ></div>
-                                                    ))}
-                                                    {dayPosts.length > 3 && (
-                                                        <span className="text-[8px] font-bold text-slate-500">+{dayPosts.length - 3}</span>
-                                                    )}
-                                                </div>
-                                            )}
+                                            
+                                            <div className="flex flex-col gap-1.5 overflow-y-auto flex-1 no-scrollbar pb-1">
+                                                {dayPosts.slice(0, 3).map((post: any, j: number) => (
+                                                    <div 
+                                                        key={j}
+                                                        className="text-[10px] font-semibold truncate px-2 py-1.5 rounded-lg border bg-white shadow-sm flex items-center gap-1.5 transition-colors hover:bg-slate-50"
+                                                        style={{ 
+                                                            borderLeftWidth: '4px',
+                                                            borderLeftColor: STATUS_COLORS[post.status] || "#6B7280",
+                                                            borderColor: `${STATUS_COLORS[post.status]}30`
+                                                        }}
+                                                        title={`${post.status}: ${(post.caption || "").slice(0, 50)}...`}
+                                                    >
+                                                        <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: STATUS_COLORS[post.status] || "#6B7280" }}></div>
+                                                        <span className="truncate text-slate-700">{post.caption || "Untitled"}</span>
+                                                    </div>
+                                                ))}
+                                                {dayPosts.length > 3 && (
+                                                    <div className="text-[10px] text-slate-500 font-bold px-1 py-0.5 text-center bg-slate-50 rounded-md border border-slate-100">
+                                                        +{dayPosts.length - 3} more
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
                                     );
                                 })}
@@ -274,7 +298,7 @@ export default function ContentCalendarPage() {
 
                     {/* Side Panel — Selected Day */}
                     <div>
-                        <div className="bg-white border border-slate-200 shadow-sm rounded-xl rounded-[28px] p-6 sticky top-28">
+                        <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-6 sticky top-28">
                             <h3 className="font-bold mb-4 flex items-center gap-2">
                                 <Clock size={16} className="text-primary-600" />
                                 {selectedDate
@@ -300,31 +324,40 @@ export default function ContentCalendarPage() {
                             ) : (
                                 <div className="space-y-3">
                                     {selectedPosts.map((post: any) => (
-                                        <div key={post.id} className="bg-slate-50 border border-slate-200 rounded-xl rounded-xl p-3">
-                                            <p className="text-xs font-bold mb-1 line-clamp-2">{post.caption || "Untitled"}</p>
-                                            <div className="flex items-center justify-between">
-                                                <div className="flex gap-1">
-                                                    {post.platforms?.map((p: any, i: number) => (
-                                                        <span key={i} className="text-xs">
-                                                            {PLATFORMS.find(pp => pp.key === p.platform)?.icon}
-                                                        </span>
-                                                    ))}
+                                        <div key={post.id} className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+                                            <div className="absolute top-0 left-0 w-1 h-full" style={{ backgroundColor: STATUS_COLORS[post.status] || "#6B7280" }}></div>
+                                            <div className="pl-2">
+                                                <div className="flex items-start justify-between mb-2">
+                                                    <div className="flex gap-1.5 bg-slate-50 p-1 rounded-lg border border-slate-100">
+                                                        {post.platforms?.map((p: any, i: number) => {
+                                                            const plat = PLATFORMS.find(pp => pp.key === p.platform);
+                                                            return (
+                                                                <span key={i} className="text-sm" style={{ color: plat?.color }} title={plat?.key}>
+                                                                    {plat?.icon}
+                                                                </span>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                    <span
+                                                        className="text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider"
+                                                        style={{
+                                                            backgroundColor: `${STATUS_COLORS[post.status]}15`,
+                                                            color: STATUS_COLORS[post.status],
+                                                            border: `1px solid ${STATUS_COLORS[post.status]}30`
+                                                        }}
+                                                    >
+                                                        {post.status.replace("_", " ")}
+                                                    </span>
                                                 </div>
-                                                <span
-                                                    className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                                                    style={{
-                                                        backgroundColor: `${STATUS_COLORS[post.status]}15`,
-                                                        color: STATUS_COLORS[post.status],
-                                                    }}
-                                                >
-                                                    {post.status}
-                                                </span>
+                                                <p className="text-sm font-semibold text-slate-800 mb-3 line-clamp-3 leading-snug">{post.caption || "Untitled"}</p>
+                                                
+                                                {post.scheduled_at && (
+                                                    <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500 bg-slate-50 self-start px-2 py-1 rounded-md border border-slate-100 w-fit">
+                                                        <Clock size={12} className="text-slate-400" />
+                                                        {formatInUserTimezone(post.scheduled_at, "time")}
+                                                    </div>
+                                                )}
                                             </div>
-                                            {post.scheduled_at && (
-                                                <div className="text-[10px] text-[#9CA3AF] mt-1">
-                                                    {formatInUserTimezone(post.scheduled_at, "time")}
-                                                </div>
-                                            )}
                                         </div>
                                     ))}
                                 </div>

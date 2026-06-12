@@ -30,7 +30,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
             try {
                 // Use dashboard endpoint to verify user and token since it returns user details
-                const response = await fetch('http://localhost:8000/tenant/dashboard', {
+                const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/tenant/dashboard`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }

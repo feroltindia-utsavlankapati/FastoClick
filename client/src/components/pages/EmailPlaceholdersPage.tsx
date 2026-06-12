@@ -1,5 +1,4 @@
 import { Braces, Copy, Code, CheckCircle2, TerminalSquare, Info } from "lucide-react";
-import NavigationBar from "../UI/NavigationBar";
 import { useState } from "react";
 
 interface Placeholder {
@@ -59,8 +58,7 @@ export default function EmailPlaceholdersPage() {
 
     return (
         <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col">
-            <NavigationBar />
-            
+                        
             <main className="flex-1 max-w-7xl mx-auto w-full p-6 md:p-10 relative z-10 flex flex-col gap-8">
                 <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>

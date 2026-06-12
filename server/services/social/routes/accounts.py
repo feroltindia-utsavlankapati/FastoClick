@@ -61,15 +61,21 @@ async def get_auth_url(
 
 
 @router.get("/accounts/{tenant_id}")
-async def list_accounts(tenant_id: str, tenant: TenantContext = Depends(get_current_tenant)):
+async def list_accounts(
+    tenant_id: str,
+    project_id: str = None,
+    tenant: TenantContext = Depends(get_current_tenant)
+):
     """List all connected social accounts for a tenant."""
     try:
         async with async_session_maker() as session:
-            result = await session.execute(
-                select(ConnectedSocialAccount).where(
-                    ConnectedSocialAccount.tenant_id == tenant_id
-                )
+            query = select(ConnectedSocialAccount).where(
+                ConnectedSocialAccount.tenant_id == tenant_id
             )
+            if project_id:
+                query = query.where(ConnectedSocialAccount.project_id == project_id)
+            
+            result = await session.execute(query)
             accounts = result.scalars().all()
 
             data = []
@@ -108,6 +114,7 @@ async def list_accounts(tenant_id: str, tenant: TenantContext = Depends(get_curr
 async def oauth_callback(payload: dict, tenant: TenantContext = Depends(get_current_tenant)):
     """Handle OAuth callback — exchange code for tokens and store the account."""
     tenant_id = payload.get("tenant_id", "")
+    project_id = payload.get("project_id", "")
     platform = payload.get("platform", "")
     code = payload.get("code", "")
     redirect_uri = payload.get("redirect_uri", "")
@@ -182,6 +189,7 @@ async def oauth_callback(payload: dict, tenant: TenantContext = Depends(get_curr
                     else:
                         new_acc = ConnectedSocialAccount(
                             tenant_id=tenant_id,
+                            project_id=project_id,
                             platform=platform,
                             platform_user_id=page_id,
                             account_name=page_name,
@@ -230,6 +238,7 @@ async def oauth_callback(payload: dict, tenant: TenantContext = Depends(get_curr
             else:
                 account = ConnectedSocialAccount(
                     tenant_id=tenant_id,
+                    project_id=project_id,
                     platform=platform,
                     platform_user_id=user_info.get("id", ""),
                     account_name=user_info.get("name", ""),
@@ -265,6 +274,7 @@ async def oauth_callback(payload: dict, tenant: TenantContext = Depends(get_curr
 async def connect_manual_token(payload: dict, tenant: TenantContext = Depends(get_current_tenant)):
     """Connect Facebook Pages using a manual Graph Explorer or Page access token."""
     tenant_id = payload.get("tenant_id", "")
+    project_id = payload.get("project_id", "")
     platform = payload.get("platform", "meta")
     token = payload.get("token", "")
 
@@ -370,6 +380,7 @@ async def connect_manual_token(payload: dict, tenant: TenantContext = Depends(ge
                 else:
                     new_acc = ConnectedSocialAccount(
                         tenant_id=tenant_id,
+                        project_id=project_id,
                         platform=platform,
                         platform_user_id=page_id,
                         account_name=page_name,
