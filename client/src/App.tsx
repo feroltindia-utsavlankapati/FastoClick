@@ -7,6 +7,7 @@ import CompanyContextPage from "./components/pages/CompanyContextPage";
 import PlansPage from "./components/pages/PlansPage";
 import ContentIdeasPage from "./components/pages/ContentIdeasPage";
 import SocialHubPage from "./components/pages/SocialHubPage";
+import TrendsHubPage from "./components/pages/TrendsHubPage";
 import ContentCalendarPage from "./components/pages/ContentCalendarPage";
 import MediaLibraryPage from "./components/pages/MediaLibraryPage";
 import SocialAnalyticsPage from "./components/pages/SocialAnalyticsPage";
@@ -40,6 +41,7 @@ function App() {
           <Route path="/plans" element={<PlansPage />} />
           <Route path="/content-ideas" element={<ContentIdeasPage />} />
           <Route path="/social" element={<SocialHubPage />} />
+          <Route path="/social/trends" element={<TrendsHubPage />} />
           <Route path="/calendar" element={<ContentCalendarPage />} />
           <Route path="/media-library" element={<MediaLibraryPage />} />
           <Route path="/social-analytics" element={<SocialAnalyticsPage />} />

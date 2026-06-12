@@ -49,6 +49,13 @@ def create_app() -> FastAPI:
     app.include_router(media.router, prefix="/social")
     app.include_router(analytics.router, prefix="/social")
 
+    # Trends routes
+    try:
+        from .routes import trends
+        app.include_router(trends.router, prefix="/social/trends")
+    except ImportError as e:
+        logger.error(f"Trends routes not available: {e}")
+
     # AI assist routes (Phase 7)
     try:
         from .routes import ai_assist

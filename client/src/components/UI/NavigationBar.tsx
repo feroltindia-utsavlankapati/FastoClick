@@ -100,6 +100,7 @@ export default function NavigationBar({ isOpen, setIsOpen }: SidebarProps) {
             icon: <Share2 size={18} className="text-purple-600 shrink-0" />,
             items: [
                 { path: "/social", label: "Social Hub", icon: <Share2 size={16} className="text-purple-600 shrink-0" /> },
+                { path: "/social/trends", label: "Trends Hub", icon: <TrendingUp size={16} className="text-indigo-500 shrink-0" /> },
                 { path: "/calendar", label: "Content Calendar", icon: <CalendarDays size={16} className="text-cyan-500 shrink-0" /> },
                 { path: "/social-analytics", label: "Analytics Hub", icon: <TrendingUp size={16} className="text-success shrink-0" /> }
             ]
