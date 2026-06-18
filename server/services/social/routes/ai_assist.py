@@ -5,6 +5,7 @@ import logging
 from fastapi import APIRouter, Depends, HTTPException
 from shared.dependencies import get_current_tenant, TenantContext
 from shared.social.ai_suggestions import generate_caption, suggest_hashtags, recommend_best_time
+from shared.utils.ai_integration import AIClient
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -74,4 +75,19 @@ async def ai_recommend_best_time(payload: dict, tenant: TenantContext = Depends(
         return {"success": True, "data": result}
     except Exception as e:
         logger.error(f"Best time recommendation failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/ai/image")
+async def ai_generate_image(payload: dict, tenant: TenantContext = Depends(get_current_tenant)):
+    """Generate an AI-powered image based on a raw idea."""
+    raw_idea = payload.get("raw_idea", "")
+
+    if not raw_idea:
+        raise HTTPException(status_code=400, detail="raw_idea is required")
+
+    try:
+        image_url = await AIClient.generate_image_agentic(tenant.id, raw_idea)
+        return {"success": True, "data": {"image_url": image_url}}
+    except Exception as e:
+        logger.error(f"Image generation failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))

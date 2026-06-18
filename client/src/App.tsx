@@ -18,6 +18,7 @@ import EmailCampaignsPage from "./components/pages/EmailCampaignsPage";
 import EmailAnalyticsPage from "./components/pages/EmailAnalyticsPage";
 import EmailPlaceholdersPage from "./components/pages/EmailPlaceholdersPage";
 import Layout from "./components/UI/Layout";
+import { ToastProvider } from "./components/UI/ToastProvider";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const token = localStorage.getItem("token");
@@ -29,36 +30,38 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/auth" element={<AuthPage />} />
-        
-        <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
-          <Route path="/projects" element={<ProjectSelectionPage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/agents" element={<AgentListPage />} />
-          <Route path="/company-context" element={<CompanyContextPage />} />
-          <Route path="/plans" element={<PlansPage />} />
-          <Route path="/content-ideas" element={<ContentIdeasPage />} />
-          <Route path="/social" element={<SocialHubPage />} />
-          <Route path="/social/trends" element={<TrendsHubPage />} />
-          <Route path="/calendar" element={<ContentCalendarPage />} />
-          <Route path="/media-library" element={<MediaLibraryPage />} />
-          <Route path="/social-analytics" element={<SocialAnalyticsPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
+    <ToastProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/auth" element={<AuthPage />} />
           
-          {/* Email Routes */}
-          <Route path="/email/contacts" element={<EmailContactsPage />} />
-          <Route path="/email/templates" element={<EmailTemplatesPage />} />
-          <Route path="/email/campaigns" element={<EmailCampaignsPage />} />
-          <Route path="/email/analytics" element={<EmailAnalyticsPage />} />
-          <Route path="/email/placeholders" element={<EmailPlaceholdersPage />} />
-        </Route>
+          <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+            <Route path="/projects" element={<ProjectSelectionPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/agents" element={<AgentListPage />} />
+            <Route path="/company-context" element={<CompanyContextPage />} />
+            <Route path="/plans" element={<PlansPage />} />
+            <Route path="/content-ideas" element={<ContentIdeasPage />} />
+            <Route path="/social" element={<SocialHubPage />} />
+            <Route path="/social/trends" element={<TrendsHubPage />} />
+            <Route path="/calendar" element={<ContentCalendarPage />} />
+            <Route path="/media-library" element={<MediaLibraryPage />} />
+            <Route path="/social-analytics" element={<SocialAnalyticsPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            
+            {/* Email Routes */}
+            <Route path="/email/contacts" element={<EmailContactsPage />} />
+            <Route path="/email/templates" element={<EmailTemplatesPage />} />
+            <Route path="/email/campaigns" element={<EmailCampaignsPage />} />
+            <Route path="/email/analytics" element={<EmailAnalyticsPage />} />
+            <Route path="/email/placeholders" element={<EmailPlaceholdersPage />} />
+          </Route>
 
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
-      </Routes>
-    </BrowserRouter>
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </ToastProvider>
   );
 }
 

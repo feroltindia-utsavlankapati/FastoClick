@@ -15,7 +15,8 @@ class Settings(BaseSettings):
     
     # AI
     LITELLM_API_KEY: str = ""
-    OPENROUTER_API_KEY: str = os.getenv("OPENROUTER_API_KEY")
+    OPENROUTER_API_KEY: str = os.getenv("OPENROUTER_API_KEY", "")
+    OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
     DEFAULT_MODEL: str = "gpt-4-turbo"
     MAX_TOKENS_PER_REQUEST: int = 4096
     

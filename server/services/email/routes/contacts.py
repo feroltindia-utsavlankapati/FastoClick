@@ -1,11 +1,11 @@
-from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
+from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, Form
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete
 from shared.database import async_session_maker
 from shared.models.email import Contact
 from shared.dependencies import get_current_tenant, TenantContext
 from ..schemas import ContactCreate, ContactResponse
-from typing import List
+from typing import List, Optional
 import pandas as pd
 import io
 import json
@@ -18,11 +18,14 @@ async def get_db():
 
 @router.get("/", response_model=List[ContactResponse])
 async def list_contacts(
+    project_id: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
     tenant: TenantContext = Depends(get_current_tenant)
 ):
     tenant_id = tenant.id
     stmt = select(Contact).where(Contact.tenant_id == tenant_id)
+    if project_id:
+        stmt = stmt.where(Contact.project_id == project_id)
     result = await db.execute(stmt)
     return result.scalars().all()
 
@@ -35,6 +38,7 @@ async def create_contact(
     tenant_id = tenant.id
     new_contact = Contact(
         tenant_id=tenant_id,
+        project_id=contact.project_id,
         first_name=contact.first_name,
         last_name=contact.last_name,
         email=contact.email,
@@ -62,6 +66,7 @@ async def delete_contact(
 
 @router.post("/upload")
 async def upload_contacts(
+    project_id: Optional[str] = Form(None),
     file: UploadFile = File(...),
     db: AsyncSession = Depends(get_db),
     tenant: TenantContext = Depends(get_current_tenant)
@@ -98,12 +103,15 @@ async def upload_contacts(
             
             # Check for existing
             stmt = select(Contact).where(Contact.tenant_id == tenant_id, Contact.email == email)
+            if project_id:
+                stmt = stmt.where(Contact.project_id == project_id)
             result = await db.execute(stmt)
             existing = result.scalar_one_or_none()
             
             if not existing:
                 new_contact = Contact(
                     tenant_id=tenant_id,
+                    project_id=project_id,
                     email=email,
                     first_name=first_name,
                     last_name=last_name,

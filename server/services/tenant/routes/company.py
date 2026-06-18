@@ -103,32 +103,38 @@ async def get_company_context(tenant_id: str, project_id: Optional[str] = None):
 
 @router.post("/context")
 async def update_company_context(data: CompanyContextUpdate, background_tasks: BackgroundTasks):
-    async with async_session_maker() as session:
-        stmt = select(CompanyContext).where(CompanyContext.tenant_id == data.tenant_id)
-        if data.project_id:
-            stmt = stmt.where(CompanyContext.project_id == data.project_id)
-        result = await session.execute(stmt)
-        context = result.scalars().first()
-        
-        old_link = context.link if context else None
-        
-        if not context:
-            context = CompanyContext(tenant_id=data.tenant_id, project_id=data.project_id)
-            session.add(context)
+    try:
+        async with async_session_maker() as session:
+            stmt = select(CompanyContext).where(CompanyContext.tenant_id == data.tenant_id)
+            if data.project_id:
+                stmt = stmt.where(CompanyContext.project_id == data.project_id)
+            result = await session.execute(stmt)
+            context = result.scalars().first()
             
-        if data.link is not None: context.link = data.link
-        if data.focus is not None: context.focus = data.focus
-        if data.product_details is not None: context.product_details = data.product_details
-        if data.service_details is not None: context.service_details = data.service_details
-        if data.company_details is not None: context.company_details = data.company_details
-        
-        await session.commit()
-        
-        # Trigger background scraping if link has been added or updated
-        if data.link and data.link.strip() != "" and data.link != old_link:
-            background_tasks.add_task(background_scrape_and_update, data.tenant_id, data.project_id, data.link.strip())
+            old_link = context.link if context else None
             
-        return {"success": True, "message": "Company context updated"}
+            if not context:
+                context = CompanyContext(tenant_id=data.tenant_id, project_id=data.project_id)
+                session.add(context)
+                
+            if data.link is not None: context.link = data.link
+            if data.focus is not None: context.focus = data.focus
+            if data.product_details is not None: context.product_details = data.product_details
+            if data.service_details is not None: context.service_details = data.service_details
+            if data.company_details is not None: context.company_details = data.company_details
+            
+            await session.commit()
+            
+            # Trigger background scraping if link has been added or updated
+            if data.link and data.link.strip() != "" and data.link != old_link:
+                background_tasks.add_task(background_scrape_and_update, data.tenant_id, data.project_id, data.link.strip())
+                
+            return {"success": True, "message": "Company context updated"}
+    except Exception as e:
+        logger.error(f"Error updating context: {str(e)}")
+        import traceback
+        trace = traceback.format_exc()
+        raise HTTPException(status_code=500, detail=f"Exception: {str(e)}\n{trace}")
 
 @router.post("/upload")
 async def upload_company_document(

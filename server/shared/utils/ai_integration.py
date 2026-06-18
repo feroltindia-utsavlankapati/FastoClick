@@ -6,8 +6,18 @@ from shared.database import async_session_maker
 from shared.models.tenant import CompanyContext
 from shared.config import get_settings
 
+import dspy
+from langchain_community.utilities.dalle_image_generator import DallEAPIWrapper
+
 logger = logging.getLogger(__name__)
 settings = get_settings()
+
+class ImagePromptOptimizer(dspy.Signature):
+    """You are an elite AI Image Prompt Engineer. Take a raw user idea and company context, and output a highly detailed, professional image generation prompt suitable for DALL-E 3 or Midjourney. Include lighting, camera angle, style, and composition details. Return ONLY the prompt text."""
+    
+    company_context = dspy.InputField(desc="The background and brand identity of the company.")
+    raw_idea = dspy.InputField(desc="The user's raw, simple idea for an image.")
+    optimized_prompt = dspy.OutputField(desc="A highly detailed, 2-3 paragraph image generation prompt.")
 
 class AIClient:
     """
@@ -90,4 +100,42 @@ class AIClient:
                 return data["choices"][0]["message"]["content"]
         except Exception as e:
             logger.error(f"AI Completion Error: {str(e)}")
+            raise
+
+    @staticmethod
+    async def generate_image_agentic(tenant_id: str, raw_idea: str) -> str:
+        """Uses DSPy to optimize the prompt and Langchain DALL-E 3 to generate the image."""
+        company_info = await AIClient.get_company_context(tenant_id)
+        
+        # 1. DSPy Prompt Optimization
+        if settings.OPENROUTER_API_KEY:
+            # Configure DSPy to use OpenRouter as the LM backbone
+            lm = dspy.OpenAI(
+                api_base="https://openrouter.ai/api/v1", 
+                api_key=settings.OPENROUTER_API_KEY, 
+                model="openai/gpt-4o-mini"
+            )
+            dspy.settings.configure(lm=lm)
+            
+            # Predict the optimized prompt
+            optimizer = dspy.Predict(ImagePromptOptimizer)
+            result = optimizer(company_context=company_info, raw_idea=raw_idea)
+            final_prompt = result.optimized_prompt
+        else:
+            final_prompt = f"{raw_idea} (Brand Context: {company_info[:100]})"
+            
+        logger.info(f"DSPy Optimized Prompt: {final_prompt}")
+        
+        # 2. Langchain Image Generation
+        # Fallback if the user explicitly provided "dummy" or if the key is missing entirely
+        if not settings.OPENAI_API_KEY or settings.OPENAI_API_KEY.lower() == "dummy":
+            logger.warning("OPENAI_API_KEY is missing or set to dummy. Returning mock image URL.")
+            return "https://via.placeholder.com/1024x1024.png?text=Agentic+Image+Generation+Mock"
+            
+        try:
+            dalle = DallEAPIWrapper(api_key=settings.OPENAI_API_KEY, model="dall-e-3")
+            image_url = dalle.run(final_prompt)
+            return image_url
+        except Exception as e:
+            logger.error(f"Failed to generate image via Langchain: {e}")
             raise

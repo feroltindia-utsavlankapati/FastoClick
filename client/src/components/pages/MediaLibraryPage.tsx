@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Image as ImageIcon, Upload, Trash2, Filter, FileImage, FileVideo, X, Download } from "lucide-react";
+import { Image as ImageIcon, Upload, Trash2, Filter, FileImage, FileVideo, X, Download, Sparkles } from "lucide-react";
 
 const API = `${import.meta.env.VITE_BACKEND_API}`;
 
@@ -28,6 +28,12 @@ export default function MediaLibraryPage() {
     const [dragActive, setDragActive] = useState(false);
     const [message, setMessage] = useState({ text: "", type: "" });
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    // AI Generator State
+    const [aiModalOpen, setAiModalOpen] = useState(false);
+    const [aiIdea, setAiIdea] = useState("");
+    const [aiGenerating, setAiGenerating] = useState(false);
+    const [aiResultUrl, setAiResultUrl] = useState("");
 
     useEffect(() => {
         const init = async () => {
@@ -132,6 +138,29 @@ export default function MediaLibraryPage() {
         loadMedia(tenantId, f);
     }
 
+    async function handleGenerateAIImage() {
+        if (!aiIdea) return;
+        setAiGenerating(true);
+        setAiResultUrl("");
+        try {
+            const res = await fetch(`${API}/ai/image`, {
+                method: "POST",
+                headers: { ...getHeaders(), "Content-Type": "application/json" },
+                body: JSON.stringify({ raw_idea: aiIdea })
+            });
+            const json = await res.json();
+            if (json.success && json.data.image_url) {
+                setAiResultUrl(json.data.image_url);
+            } else {
+                setMessage({ text: "Failed to generate image.", type: "error" });
+            }
+        } catch (err) {
+            setMessage({ text: "Error calling AI.", type: "error" });
+        } finally {
+            setAiGenerating(false);
+        }
+    }
+
     const isImage = (mime: string) => mime?.startsWith("image/");
     const isVideo = (mime: string) => mime?.startsWith("video/");
 
@@ -161,7 +190,13 @@ export default function MediaLibraryPage() {
                         </p>
                     </div>
                     <div className="flex items-center gap-3">
-                        <span className="text-sm text-slate-500 font-bold">{media.length} files</span>
+                        <button
+                            onClick={() => setAiModalOpen(true)}
+                            className="bg-primary-100 hover:bg-primary-200 text-primary-700 px-4 py-2 rounded-xl font-bold text-sm transition-all flex items-center gap-2 shadow-sm"
+                        >
+                            <Sparkles size={16} /> Generate AI Image
+                        </button>
+                        <span className="text-sm text-slate-500 font-bold hidden md:inline">{media.length} files</span>
                     </div>
                 </header>
 
@@ -308,6 +343,65 @@ export default function MediaLibraryPage() {
                     </div>
                 )}
             </main>
+
+            {/* AI Generator Modal */}
+            {aiModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setAiModalOpen(false)}></div>
+                    <div className="bg-white rounded-[24px] shadow-2xl w-full max-w-2xl relative z-10 overflow-hidden flex flex-col max-h-[90vh]">
+                        <div className="p-6 md:p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                            <div>
+                                <h2 className="text-2xl font-extrabold flex items-center gap-2">
+                                    <Sparkles className="text-primary-500" />
+                                    Agentic Image Generator
+                                </h2>
+                                <p className="text-slate-500 font-medium text-sm mt-1">Our AI will automatically optimize your raw idea with your company context.</p>
+                            </div>
+                            <button onClick={() => setAiModalOpen(false)} className="p-2 hover:bg-slate-200 rounded-full transition-colors">
+                                <X size={20} className="text-slate-500" />
+                            </button>
+                        </div>
+                        <div className="p-6 md:p-8 overflow-y-auto">
+                            <label className="block text-sm font-bold text-slate-700 mb-2">Raw Idea / Vision</label>
+                            <textarea
+                                value={aiIdea}
+                                onChange={(e) => setAiIdea(e.target.value)}
+                                placeholder="E.g., A minimalist coffee cup on a wooden table..."
+                                className="w-full h-32 p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none resize-none bg-slate-50 mb-6"
+                            />
+
+                            <button
+                                onClick={handleGenerateAIImage}
+                                disabled={!aiIdea || aiGenerating}
+                                className="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-4 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50"
+                            >
+                                {aiGenerating ? (
+                                    <>
+                                        <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
+                                        Generating Magic...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Sparkles size={18} /> Generate Image
+                                    </>
+                                )}
+                            </button>
+
+                            {aiResultUrl && (
+                                <div className="mt-8">
+                                    <h3 className="font-bold mb-4 text-slate-800">Generated Result:</h3>
+                                    <div className="rounded-xl overflow-hidden shadow-lg border border-slate-200 bg-slate-100 flex items-center justify-center min-h-[300px]">
+                                        <img src={aiResultUrl} alt="Generated" className="w-full h-auto object-cover" />
+                                    </div>
+                                    <p className="text-xs text-slate-500 mt-4 text-center font-medium">
+                                        Right click the image and select "Save Image As..." to download, then upload it to your library!
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

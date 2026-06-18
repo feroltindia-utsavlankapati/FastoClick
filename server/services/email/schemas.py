@@ -3,6 +3,7 @@ from typing import Optional, List, Dict, Any
 from datetime import datetime
 
 class ContactBase(BaseModel):
+    project_id: Optional[str] = None
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     email: EmailStr
@@ -17,6 +18,7 @@ class ContactCreate(ContactBase):
 class ContactResponse(ContactBase):
     id: str
     tenant_id: str
+    project_id: Optional[str]
     is_unsubscribed: bool
     created_at: datetime
     updated_at: datetime

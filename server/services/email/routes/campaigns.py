@@ -5,7 +5,7 @@ from shared.database import async_session_maker
 from shared.models.email import EmailCampaign, EmailCampaignContact, Contact, EmailTemplate, EmailLog
 from shared.dependencies import get_current_tenant, TenantContext
 from ..schemas import EmailCampaignCreate, EmailCampaignResponse, CampaignAnalyticsResponse
-from typing import List
+from typing import List, Optional
 from datetime import datetime, timezone
 from ..email_sender import process_campaign
 
@@ -17,11 +17,14 @@ async def get_db():
 
 @router.get("/", response_model=List[EmailCampaignResponse])
 async def list_campaigns(
+    project_id: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
     tenant: TenantContext = Depends(get_current_tenant)
 ):
     tenant_id = tenant.id
     stmt = select(EmailCampaign).where(EmailCampaign.tenant_id == tenant_id)
+    if project_id:
+        stmt = stmt.where(EmailCampaign.project_id == project_id)
     result = await db.execute(stmt)
     return result.scalars().all()
 

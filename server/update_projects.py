@@ -1,20 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, delete
-from shared.database import async_session_maker
-from shared.models.tenant import (
-    Project, CompanyContext, StrategyPlan, ContentIdeasResult, CompanyProduct,
-    SocialPlatformCredential, ConnectedSocialAccount, ScheduledPost, MediaAsset, PostAnalytics
-)
-from shared.models.email import (
-    Contact, EmailTemplate, EmailCampaign, EmailCampaignContact, EmailLog
-)
-from shared.dependencies import get_current_tenant, TenantContext
-from pydantic import BaseModel
-from typing import List, Optional, Dict, Any
-from datetime import datetime
+import re
 
+with open("c:/Utsav/ferolt/FastoClick/server/services/tenant/routes/projects.py", "r") as f:
+    content = f.read()
 
+# Add imports
+imports_to_add = """
 import os
 import io
 import json
@@ -28,138 +18,13 @@ logger = logging.getLogger(__name__)
 MEDIA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))), "media_uploads")
 THUMB_DIR = os.path.join(MEDIA_DIR, "thumbnails")
 
+"""
+content = content.replace("router = APIRouter()", imports_to_add + "\nrouter = APIRouter()")
 
-router = APIRouter()
+# Replace backup_project
+backup_pattern = re.compile(r"@router\.get\(\"\/\{project_id\}\/backup\"\).*?return backup_data\n", re.DOTALL)
 
-class ProjectBase(BaseModel):
-    name: str
-    description: Optional[str] = None
-    goals: Optional[str] = None
-    target_audience: Optional[str] = None
-    kpis: Optional[str] = None
-    status: Optional[str] = "active"
-
-class ProjectCreate(ProjectBase):
-    pass
-
-class ProjectResponse(ProjectBase):
-    id: str
-    tenant_id: str
-    created_at: datetime
-    updated_at: datetime
-
-    class Config:
-        from_attributes = True
-
-async def get_db():
-    async with async_session_maker() as session:
-        yield session
-
-@router.get("", response_model=List[ProjectResponse])
-async def list_projects(
-    db: AsyncSession = Depends(get_db),
-    tenant: TenantContext = Depends(get_current_tenant)
-):
-    stmt = select(Project).where(Project.tenant_id == tenant.id)
-    result = await db.execute(stmt)
-    return result.scalars().all()
-
-@router.post("", response_model=ProjectResponse)
-async def create_project(
-    project: ProjectCreate,
-    db: AsyncSession = Depends(get_db),
-    tenant: TenantContext = Depends(get_current_tenant)
-):
-    new_project = Project(
-        tenant_id=tenant.id,
-        name=project.name,
-        description=project.description,
-        goals=project.goals,
-        target_audience=project.target_audience,
-        kpis=project.kpis,
-        status=project.status
-    )
-    db.add(new_project)
-    await db.commit()
-    await db.refresh(new_project)
-    return new_project
-
-@router.get("/{project_id}", response_model=ProjectResponse)
-async def get_project(
-    project_id: str,
-    db: AsyncSession = Depends(get_db),
-    tenant: TenantContext = Depends(get_current_tenant)
-):
-    stmt = select(Project).where(Project.id == project_id, Project.tenant_id == tenant.id)
-    result = await db.execute(stmt)
-    project = result.scalar_one_or_none()
-    
-    if not project:
-        raise HTTPException(status_code=404, detail="Project not found")
-        
-    return project
-
-@router.put("/{project_id}", response_model=ProjectResponse)
-async def update_project(
-    project_id: str,
-    project_update: ProjectCreate,
-    db: AsyncSession = Depends(get_db),
-    tenant: TenantContext = Depends(get_current_tenant)
-):
-    stmt = select(Project).where(Project.id == project_id, Project.tenant_id == tenant.id)
-    result = await db.execute(stmt)
-    project = result.scalar_one_or_none()
-    
-    if not project:
-        raise HTTPException(status_code=404, detail="Project not found")
-        
-    for key, value in project_update.dict().items():
-        setattr(project, key, value)
-        
-    await db.commit()
-    await db.refresh(project)
-    return project
-
-@router.delete("/{project_id}")
-async def delete_project(
-    project_id: str,
-    db: AsyncSession = Depends(get_db),
-    tenant: TenantContext = Depends(get_current_tenant)
-):
-    # Verify project belongs to tenant
-    stmt = select(Project).where(Project.id == project_id, Project.tenant_id == tenant.id)
-    result = await db.execute(stmt)
-    project = result.scalar_one_or_none()
-    
-    if not project:
-        raise HTTPException(status_code=404, detail="Project not found")
-
-    # Fetch all campaigns for this project to delete EmailCampaignContact and EmailLog
-    camp_stmt = select(EmailCampaign.id).where(EmailCampaign.project_id == project_id)
-    camp_res = await db.execute(camp_stmt)
-    campaign_ids = camp_res.scalars().all()
-    
-    if campaign_ids:
-        await db.execute(delete(EmailCampaignContact).where(EmailCampaignContact.campaign_id.in_(campaign_ids)))
-        await db.execute(delete(EmailLog).where(EmailLog.campaign_id.in_(campaign_ids)))
-        
-    # Delete entities that have project_id directly, ordered from children to parents
-    models_with_project_id = [
-        ContentIdeasResult, PostAnalytics,
-        Contact, EmailTemplate,
-        CompanyContext, CompanyProduct,
-        SocialPlatformCredential, ConnectedSocialAccount, MediaAsset,
-        StrategyPlan, ScheduledPost, EmailCampaign
-    ]
-    
-    for model in models_with_project_id:
-        await db.execute(delete(model).where(model.project_id == project_id))
-        
-    await db.delete(project)
-    await db.commit()
-    return {"message": "Project deleted successfully"}
-
-@router.get("/{project_id}/backup")
+new_backup = """@router.get("/{project_id}/backup")
 async def backup_project(
     project_id: str,
     db: AsyncSession = Depends(get_db),
@@ -345,3 +210,9 @@ async def restore_project(
         logger.error(f"Restore failed: {e}")
         await db.rollback()
         raise HTTPException(status_code=500, detail=f"Restore failed: {str(e)}")
+"""
+
+content = backup_pattern.sub(new_backup, content)
+
+with open("c:/Utsav/ferolt/FastoClick/server/services/tenant/routes/projects.py", "w") as f:
+    f.write(content)

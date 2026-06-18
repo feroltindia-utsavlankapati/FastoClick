@@ -31,7 +31,24 @@ export default function CompanyContextPage() {
         features: ""
     });
     
-    const tenantId = "demo-tenant"; 
+    // Extract tenantId from JWT token
+    let tenantId = "demo-tenant";
+    const token = localStorage.getItem("token");
+    if (token) {
+        try {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            const decoded = JSON.parse(jsonPayload);
+            if (decoded.tenant_id) {
+                tenantId = decoded.tenant_id;
+            }
+        } catch (e) {
+            console.error("Failed to decode token", e);
+        }
+    } 
 
     const fetchContext = async () => {
         const token = localStorage.getItem("token");
@@ -107,7 +124,8 @@ export default function CompanyContextPage() {
                 // Refresh context shortly after in case scraping updates empty fields quickly
                 setTimeout(fetchContext, 3000);
             } else {
-                alert("Failed to save details.");
+                const errData = await res.json();
+                alert(`Failed to save details: ${JSON.stringify(errData)}`);
             }
         } catch (err) {
             console.error(err);
