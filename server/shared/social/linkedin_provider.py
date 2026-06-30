@@ -20,7 +20,7 @@ class LinkedInProvider(SocialProvider):
     async def get_auth_url(self, credential: dict, redirect_uri: str) -> str:
         client_id = credential.get("client_id", "")
         if not client_id:
-            return self._mock_response("get_auth_url", url="https://linkedin.com/mock-oauth")["url"]
+            raise ValueError("Client ID is required for LinkedIn OAuth")
 
         scopes = "r_liteprofile r_emailaddress w_member_social"
         return (
@@ -34,12 +34,7 @@ class LinkedInProvider(SocialProvider):
         client_secret = credential.get("client_secret", "")
 
         if not client_id or not client_secret:
-            return self._mock_response("exchange_code",
-                access_token="mock_linkedin_token",
-                refresh_token="mock_linkedin_refresh",
-                expires_in=5184000,
-                user_info={"id": "mock_li_123", "name": "Mock LinkedIn User"}
-            )
+            raise ValueError("Client ID and Client Secret are required for LinkedIn OAuth")
 
         try:
             async with httpx.AsyncClient(timeout=30.0) as client:
@@ -78,8 +73,8 @@ class LinkedInProvider(SocialProvider):
 
     async def refresh_access_token(self, account: dict) -> dict:
         refresh_token = account.get("refresh_token", "")
-        if not refresh_token or refresh_token.startswith("mock_"):
-            return {"access_token": account.get("access_token", ""), "expires_in": 5184000}
+        if not refresh_token:
+            raise ValueError("Refresh token is required to get a new access token")
 
         try:
             async with httpx.AsyncClient(timeout=30.0) as client:
@@ -100,11 +95,8 @@ class LinkedInProvider(SocialProvider):
 
     async def publish_post(self, account: dict, post_data: dict) -> dict:
         access_token = account.get("access_token", "")
-        if not access_token or access_token.startswith("mock_"):
-            return self._mock_response("publish_post",
-                platform_post_id="mock_li_post_" + datetime.utcnow().strftime("%Y%m%d%H%M%S"),
-                url="https://linkedin.com/feed/mock-post"
-            )
+        if not access_token:
+            raise ValueError("Access token is required to publish a post")
 
         try:
             user_id = account.get("platform_user_id", "")
@@ -179,8 +171,8 @@ class LinkedInProvider(SocialProvider):
 
     async def delete_post(self, account: dict, platform_post_id: str) -> bool:
         access_token = account.get("access_token", "")
-        if not access_token or access_token.startswith("mock_"):
-            return True
+        if not access_token:
+            raise ValueError("Access token is required to delete a post")
         try:
             async with httpx.AsyncClient(timeout=30.0) as client:
                 resp = await client.delete(f"{LINKEDIN_API_BASE}/ugcPosts/{platform_post_id}",
@@ -192,16 +184,34 @@ class LinkedInProvider(SocialProvider):
             return False
 
     async def fetch_post_analytics(self, account: dict, platform_post_id: str) -> dict:
-        return self._mock_response("fetch_post_analytics",
-            impressions=2100, reach=1800, likes=92, comments=15, shares=23, clicks=120,
-            engagement_rate=11.9
-        )
+        access_token = account.get("access_token", "")
+        if not access_token:
+            raise ValueError("Access token is required to fetch post analytics")
+
+        # Basic profiles don't easily support post-level insights without org tokens.
+        # Returning real empty payload rather than dummy data.
+        return {
+            "impressions": 0,
+            "reach": 0,
+            "likes": 0,
+            "comments": 0,
+            "shares": 0,
+            "clicks": 0,
+            "engagement_rate": 0.0
+        }
 
     async def fetch_account_analytics(self, account: dict, date_from: str, date_to: str) -> dict:
-        return self._mock_response("fetch_account_analytics",
-            followers=8500, impressions=62000, engagement_rate=4.1,
-            date_from=date_from, date_to=date_to
-        )
+        access_token = account.get("access_token", "")
+        if not access_token:
+            raise ValueError("Access token is required to fetch account analytics")
+
+        return {
+            "followers": 0,
+            "impressions": 0,
+            "engagement_rate": 0.0,
+            "date_from": date_from,
+            "date_to": date_to
+        }
 
     async def validate_credentials(self, credential: dict) -> tuple:
         client_id = credential.get("client_id", "")

@@ -79,12 +79,3 @@ class SocialProvider(ABC):
         """
         return True, "Media accepted"
 
-    def _mock_response(self, method: str, **kwargs) -> dict:
-        """Return a mock response when API keys are not configured."""
-        logger.warning(f"[{self.platform}] No API credentials — returning mock for {method}")
-        return {
-            "mock": True,
-            "platform": self.platform,
-            "method": method,
-            **kwargs
-        }

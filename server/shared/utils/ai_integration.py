@@ -66,8 +66,7 @@ class AIClient:
         )
         
         if not settings.OPENROUTER_API_KEY:
-            logger.warning("OPENROUTER_API_KEY is not set. Returning mock response.")
-            return f"[MOCK AI RESPONSE based on context: {company_info[:100]}...]"
+            raise ValueError("OPENROUTER_API_KEY is not configured. Please add your API key to use AI features.")
             
         try:
             async with httpx.AsyncClient(timeout=40.0) as client:
@@ -108,29 +107,27 @@ class AIClient:
         company_info = await AIClient.get_company_context(tenant_id)
         
         # 1. DSPy Prompt Optimization
-        if settings.OPENROUTER_API_KEY:
-            # Configure DSPy to use OpenRouter as the LM backbone
-            lm = dspy.OpenAI(
-                api_base="https://openrouter.ai/api/v1", 
-                api_key=settings.OPENROUTER_API_KEY, 
-                model="openai/gpt-4o-mini"
-            )
-            dspy.settings.configure(lm=lm)
+        if not settings.OPENROUTER_API_KEY:
+            raise ValueError("OPENROUTER_API_KEY is not configured. Please add your API key for prompt optimization.")
             
-            # Predict the optimized prompt
-            optimizer = dspy.Predict(ImagePromptOptimizer)
-            result = optimizer(company_context=company_info, raw_idea=raw_idea)
-            final_prompt = result.optimized_prompt
-        else:
-            final_prompt = f"{raw_idea} (Brand Context: {company_info[:100]})"
+        # Configure DSPy to use OpenRouter as the LM backbone
+        lm = dspy.OpenAI(
+            api_base="https://openrouter.ai/api/v1", 
+            api_key=settings.OPENROUTER_API_KEY, 
+            model="openai/gpt-4o-mini"
+        )
+        dspy.settings.configure(lm=lm)
+        
+        # Predict the optimized prompt
+        optimizer = dspy.Predict(ImagePromptOptimizer)
+        result = optimizer(company_context=company_info, raw_idea=raw_idea)
+        final_prompt = result.optimized_prompt
             
         logger.info(f"DSPy Optimized Prompt: {final_prompt}")
         
         # 2. Langchain Image Generation
-        # Fallback if the user explicitly provided "dummy" or if the key is missing entirely
         if not settings.OPENAI_API_KEY or settings.OPENAI_API_KEY.lower() == "dummy":
-            logger.warning("OPENAI_API_KEY is missing or set to dummy. Returning mock image URL.")
-            return "https://via.placeholder.com/1024x1024.png?text=Agentic+Image+Generation+Mock"
+            raise ValueError("OPENAI_API_KEY is not configured. Please add your OpenAI API key to use DALL-E image generation.")
             
         try:
             dalle = DallEAPIWrapper(api_key=settings.OPENAI_API_KEY, model="dall-e-3")

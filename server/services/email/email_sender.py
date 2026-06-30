@@ -3,6 +3,8 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import logging
 import json
+import urllib.parse
+from bs4 import BeautifulSoup
 from shared.database import async_session_maker
 from shared.models.email import EmailCampaign, EmailCampaignContact, Contact, EmailTemplate, EmailLog
 from shared.config import get_settings
@@ -122,7 +124,20 @@ async def process_campaign(campaign_id: str):
                     if body_html:
                         body_html += f'<img src="{tracking_pixel_url}" width="1" height="1" alt="" />'
                     
-                    # Note: Click tracking would require rewriting hrefs in body_html to route through our server
+                    # Click tracking: rewrite hrefs in body_html to route through our server
+                    if body_html:
+                        try:
+                            soup = BeautifulSoup(body_html, "html.parser")
+                            for a_tag in soup.find_all("a", href=True):
+                                orig_url = a_tag["href"]
+                                if orig_url.startswith("http"):
+                                    encoded_url = urllib.parse.quote(orig_url, safe="")
+                                    track_url = f"{settings.API_BASE_URL}/email/track/click/{log.id}?url={encoded_url}"
+                                    a_tag["href"] = track_url
+                            body_html = str(soup)
+                        except Exception as parse_e:
+                            logger.error(f"[EMAIL SENDER] Failed to parse HTML for click tracking: {parse_e}")
+                            print(f"[EMAIL SENDER] Failed to parse HTML for click tracking: {parse_e}")
                     
                     # Send email
                     msg = MIMEMultipart("alternative")

@@ -20,7 +20,7 @@ class MetaProvider(SocialProvider):
     async def get_auth_url(self, credential: dict, redirect_uri: str) -> str:
         app_id = credential.get("app_id") or credential.get("client_id", "")
         if not app_id:
-            return self._mock_response("get_auth_url", url="https://facebook.com/mock-oauth")["url"]
+            raise ValueError("App ID / Client ID is required for Meta OAuth")
 
         config_id = credential.get("additional_config", {}).get("config_id", "")
         if config_id:
@@ -43,20 +43,7 @@ class MetaProvider(SocialProvider):
         client_secret = credential.get("client_secret", "")
 
         if not app_id or not client_secret:
-            return self._mock_response("exchange_code",
-                access_token="mock_meta_token_abc123",
-                refresh_token="",
-                expires_in=5184000,
-                user_info={"id": "mock_user_123", "name": "Mock Meta User"},
-                pages=[
-                    {
-                        "id": "mock_page_123",
-                        "name": "Mock Meta Page",
-                        "access_token": "mock_meta_token_abc123",
-                        "picture": ""
-                    }
-                ]
-            )
+            raise ValueError("App ID and Client Secret are required for Meta OAuth")
 
         try:
             async with httpx.AsyncClient(timeout=30.0) as client:
@@ -132,11 +119,8 @@ class MetaProvider(SocialProvider):
 
     async def publish_post(self, account: dict, post_data: dict) -> dict:
         access_token = account.get("access_token", "")
-        if not access_token or access_token.startswith("mock_"):
-            return self._mock_response("publish_post",
-                platform_post_id="mock_post_" + datetime.utcnow().strftime("%Y%m%d%H%M%S"),
-                url="https://facebook.com/mock-post"
-            )
+        if not access_token:
+            raise ValueError("Access token is required to publish a post")
 
         try:
             async with httpx.AsyncClient(timeout=120.0) as client:
@@ -242,8 +226,8 @@ class MetaProvider(SocialProvider):
 
     async def delete_post(self, account: dict, platform_post_id: str) -> bool:
         access_token = account.get("access_token", "")
-        if not access_token or access_token.startswith("mock_"):
-            return True
+        if not access_token:
+            raise ValueError("Access token is required to delete a post")
         try:
             async with httpx.AsyncClient(timeout=30.0) as client:
                 resp = await client.delete(
@@ -257,11 +241,8 @@ class MetaProvider(SocialProvider):
 
     async def fetch_post_analytics(self, account: dict, platform_post_id: str) -> dict:
         access_token = account.get("access_token", "")
-        # if not access_token or access_token.startswith("mock_"):
-        #     return self._mock_response("fetch_post_analytics",
-        #         impressions=1250, reach=980, likes=67, comments=12, shares=8, clicks=45,
-        #         engagement_rate=6.96
-        #     )
+        if not access_token:
+            raise ValueError("Access token is required to fetch post analytics")
 
         impressions = 0
         reach = 0
@@ -364,10 +345,34 @@ class MetaProvider(SocialProvider):
 
 
     async def fetch_account_analytics(self, account: dict, date_from: str, date_to: str) -> dict:
-        return self._mock_response("fetch_account_analytics",
-            followers=5420, impressions=45000, engagement_rate=3.2,
-            date_from=date_from, date_to=date_to
-        )
+        access_token = account.get("access_token", "")
+        if not access_token:
+            raise ValueError("Access token is required to fetch account analytics")
+
+        page_id = account.get("platform_user_id", "me")
+        followers = 0
+        try:
+            async with httpx.AsyncClient(timeout=30.0) as client:
+                resp = await client.get(
+                    f"{GRAPH_API_BASE}/{page_id}",
+                    params={
+                        "fields": "followers_count",
+                        "access_token": access_token
+                    }
+                )
+                if resp.status_code == 200:
+                    data = resp.json()
+                    followers = data.get("followers_count", 0)
+        except Exception as e:
+            logger.error(f"Meta fetch_account_analytics failed: {e}")
+
+        return {
+            "followers": followers,
+            "impressions": 0,
+            "engagement_rate": 0.0,
+            "date_from": date_from,
+            "date_to": date_to
+        }
 
     async def validate_credentials(self, credential: dict) -> tuple:
         app_id = credential.get("app_id") or credential.get("client_id", "")

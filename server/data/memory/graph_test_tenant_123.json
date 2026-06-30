@@ -1,0 +1,48 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "id": "Summer 2024 Campaign"
+    },
+    {
+      "id": "Millennial Users"
+    },
+    {
+      "id": "FOMO Strategy"
+    },
+    {
+      "id": "Winter 2025 Campaign"
+    },
+    {
+      "id": "Premium Users"
+    }
+  ],
+  "edges": [
+    {
+      "relation": "targeted",
+      "metadata": {
+        "campaign": "summer_24"
+      },
+      "source": "Summer 2024 Campaign",
+      "target": "Millennial Users"
+    },
+    {
+      "relation": "used",
+      "metadata": {
+        "campaign": "summer_24"
+      },
+      "source": "Summer 2024 Campaign",
+      "target": "FOMO Strategy"
+    },
+    {
+      "relation": "upsells",
+      "metadata": {
+        "campaign": "winter_25"
+      },
+      "source": "Winter 2025 Campaign",
+      "target": "Premium Users"
+    }
+  ]
+}

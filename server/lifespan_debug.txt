@@ -1,0 +1,176 @@
+Lifespan started
+DB initialized
+Agents dir: C:\Utsav\ferolt\FastoClick\server\services\agent_orchestrator\agents
+Registered agents: []
+Lifespan started
+DB initialized
+Agents dir: C:\Utsav\ferolt\FastoClick\server\services\agent_orchestrator\agents
+Failed to load base_agent.py: No module named 'networkx'
+Traceback (most recent call last):
+  File "C:\Utsav\ferolt\FastoClick\server\services\agent_orchestrator\registry.py", line 33, in auto_discover_and_register
+    module = importlib.import_module(module_name)
+  File "C:\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "C:\Utsav\ferolt\FastoClick\server\services\agent_orchestrator\agents\base_agent.py", line 5, in <module>
+    from shared.utils.memory_client import MemoryClient
+  File "C:\Utsav\ferolt\FastoClick\server\shared\utils\memory_client.py", line 4, in <module>
+    import networkx as nx
+ModuleNotFoundError: No module named 'networkx'
+
+Failed to load content_ideas_agent.py: No module named 'networkx'
+Traceback (most recent call last):
+  File "C:\Utsav\ferolt\FastoClick\server\services\agent_orchestrator\registry.py", line 33, in auto_discover_and_register
+    module = importlib.import_module(module_name)
+  File "C:\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "C:\Utsav\ferolt\FastoClick\server\services\agent_orchestrator\agents\content_ideas_agent.py", line 10, in <module>
+    from .base_agent import BaseMarketingAgent, AgentState
+  File "C:\Utsav\ferolt\FastoClick\server\services\agent_orchestrator\agents\base_agent.py", line 5, in <module>
+    from shared.utils.memory_client import MemoryClient
+  File "C:\Utsav\ferolt\FastoClick\server\shared\utils\memory_client.py", line 4, in <module>
+    import networkx as nx
+ModuleNotFoundError: No module named 'networkx'
+
+Failed to load strategy_agent.py: No module named 'networkx'
+Traceback (most recent call last):
+  File "C:\Utsav\ferolt\FastoClick\server\services\agent_orchestrator\registry.py", line 33, in auto_discover_and_register
+    module = importlib.import_module(module_name)
+  File "C:\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "C:\Utsav\ferolt\FastoClick\server\services\agent_orchestrator\agents\strategy_agent.py", line 12, in <module>
+    from .base_agent import BaseMarketingAgent, AgentState
+  File "C:\Utsav\ferolt\FastoClick\server\services\agent_orchestrator\agents\base_agent.py", line 5, in <module>
+    from shared.utils.memory_client import MemoryClient
+  File "C:\Utsav\ferolt\FastoClick\server\shared\utils\memory_client.py", line 4, in <module>
+    import networkx as nx
+ModuleNotFoundError: No module named 'networkx'
+
+Failed to load trends_agent.py: No module named 'duckduckgo_search'
+Traceback (most recent call last):
+  File "C:\Utsav\ferolt\FastoClick\server\services\agent_orchestrator\registry.py", line 33, in auto_discover_and_register
+    module = importlib.import_module(module_name)
+  File "C:\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "C:\Utsav\ferolt\FastoClick\server\services\agent_orchestrator\agents\trends_agent.py", line 6, in <module>
+    from shared.utils.web_search import perform_news_search, perform_web_search
+  File "C:\Utsav\ferolt\FastoClick\server\shared\utils\web_search.py", line 2, in <module>
+    from duckduckgo_search import DDGS
+ModuleNotFoundError: No module named 'duckduckgo_search'
+
+Registered agents: []
+Lifespan started
+DB initialized
+Agents dir: C:\Utsav\ferolt\FastoClick\server\services\agent_orchestrator\agents
+Registered agents: [AgentManifest(agent_id='content_ideas_agent', name='Content Ideas Generator Agent', version='1.0.0', description='Analyzes a selected marketing strategy plan and generates structured, creative content ideas including formats, platforms, tone, captions, and priority levels.', capabilities=['plan_analysis', 'content_ideation', 'platform_mapping', 'format_suggestion', 'tone_definition', 'caption_generation', 'priority_scoring'], tools_required=[], max_concurrent_instances=20, default_timeout_seconds=300, human_approval_required=True, approval_confidence_threshold=0.85, tenant_plan_required='starter'), AgentManifest(agent_id='strategy_agent', name='Marketing Strategy Planning Agent', version='2.0.0', description='Creates complete execution strategy plans and exports them into structured JSON and Excel reports.', capabilities=['prompt_analysis', 'company_analysis', 'strategy_planning', 'execution_planning', 'goal_mapping', 'timeline_creation', 'excel_export'], tools_required=['web_search'], max_concurrent_instances=20, default_timeout_seconds=300, human_approval_required=True, approval_confidence_threshold=0.85, tenant_plan_required='starter')]
+Lifespan started
+DB initialized
+Agents dir: C:\Utsav\ferolt\FastoClick\server\services\agent_orchestrator\agents
+Failed to load base_agent.py: No module named 'networkx'
+Traceback (most recent call last):
+  File "C:\Utsav\ferolt\FastoClick\server\services\agent_orchestrator\registry.py", line 33, in auto_discover_and_register
+    module = importlib.import_module(module_name)
+  File "C:\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "C:\Utsav\ferolt\FastoClick\server\services\agent_orchestrator\agents\base_agent.py", line 5, in <module>
+    from shared.utils.memory_client import MemoryClient
+  File "C:\Utsav\ferolt\FastoClick\server\shared\utils\memory_client.py", line 4, in <module>
+    import networkx as nx
+ModuleNotFoundError: No module named 'networkx'
+
+Failed to load content_ideas_agent.py: No module named 'networkx'
+Traceback (most recent call last):
+  File "C:\Utsav\ferolt\FastoClick\server\services\agent_orchestrator\registry.py", line 33, in auto_discover_and_register
+    module = importlib.import_module(module_name)
+  File "C:\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "C:\Utsav\ferolt\FastoClick\server\services\agent_orchestrator\agents\content_ideas_agent.py", line 10, in <module>
+    from .base_agent import BaseMarketingAgent, AgentState
+  File "C:\Utsav\ferolt\FastoClick\server\services\agent_orchestrator\agents\base_agent.py", line 5, in <module>
+    from shared.utils.memory_client import MemoryClient
+  File "C:\Utsav\ferolt\FastoClick\server\shared\utils\memory_client.py", line 4, in <module>
+    import networkx as nx
+ModuleNotFoundError: No module named 'networkx'
+
+Failed to load strategy_agent.py: No module named 'networkx'
+Traceback (most recent call last):
+  File "C:\Utsav\ferolt\FastoClick\server\services\agent_orchestrator\registry.py", line 33, in auto_discover_and_register
+    module = importlib.import_module(module_name)
+  File "C:\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "C:\Utsav\ferolt\FastoClick\server\services\agent_orchestrator\agents\strategy_agent.py", line 12, in <module>
+    from .base_agent import BaseMarketingAgent, AgentState
+  File "C:\Utsav\ferolt\FastoClick\server\services\agent_orchestrator\agents\base_agent.py", line 5, in <module>
+    from shared.utils.memory_client import MemoryClient
+  File "C:\Utsav\ferolt\FastoClick\server\shared\utils\memory_client.py", line 4, in <module>
+    import networkx as nx
+ModuleNotFoundError: No module named 'networkx'
+
+Failed to load trends_agent.py: No module named 'duckduckgo_search'
+Traceback (most recent call last):
+  File "C:\Utsav\ferolt\FastoClick\server\services\agent_orchestrator\registry.py", line 33, in auto_discover_and_register
+    module = importlib.import_module(module_name)
+  File "C:\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "C:\Utsav\ferolt\FastoClick\server\services\agent_orchestrator\agents\trends_agent.py", line 6, in <module>
+    from shared.utils.web_search import perform_news_search, perform_web_search
+  File "C:\Utsav\ferolt\FastoClick\server\shared\utils\web_search.py", line 2, in <module>
+    from duckduckgo_search import DDGS
+ModuleNotFoundError: No module named 'duckduckgo_search'
+
+Registered agents: []

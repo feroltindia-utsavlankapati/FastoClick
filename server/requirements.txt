@@ -82,6 +82,7 @@ beautifulsoup4
 lxml
 selenium
 playwright
+duckduckgo-search
 
 # =========================
 # Data Processing
@@ -123,3 +124,10 @@ litellm
 # =========================
 PyMuPDF
 openpyxl
+
+# =========================
+# Memory (RAG + GraphRAG)
+# =========================
+chromadb
+networkx
+sentence-transformers

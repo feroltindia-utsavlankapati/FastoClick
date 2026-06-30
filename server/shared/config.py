@@ -25,12 +25,7 @@ class Settings(BaseSettings):
     MEMORY_SERVICE_URL: str = "http://localhost:8005"
     APPROVAL_SERVICE_URL: str = "http://localhost:8006"
     
-    # Vault (Optional for local dev)
-    VAULT_URL: str = "http://localhost:8200"
-    VAULT_TOKEN: str = ""
-    
-    # Kafka
-    KAFKA_BROKERS: str = "localhost:9092"
+
     
     # Security
     JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY")

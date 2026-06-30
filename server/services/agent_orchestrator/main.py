@@ -12,11 +12,19 @@ from .registry import agent_registry
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    with open("lifespan_debug.txt", "a") as f:
+        f.write("Lifespan started\n")
     # Initialize the database if needed
     await init_db()
+    with open("lifespan_debug.txt", "a") as f:
+        f.write("DB initialized\n")
     # Discover and register agents
     agents_dir = os.path.join(os.path.dirname(__file__), "agents")
+    with open("lifespan_debug.txt", "a") as f:
+        f.write(f"Agents dir: {agents_dir}\n")
     await agent_registry.auto_discover_and_register(agents_dir)
+    with open("lifespan_debug.txt", "a") as f:
+        f.write(f"Registered agents: {agent_registry.list_agents()}\n")
     yield
 
 def create_app() -> FastAPI:

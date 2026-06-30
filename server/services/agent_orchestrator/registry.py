@@ -45,6 +45,9 @@ class AgentRegistry:
                             self.register(manifest, agent_class)
                 except Exception as e:
                     print(f"Failed to load agent from {filename}: {e}")
+                    import traceback
+                    with open("lifespan_debug.txt", "a") as f:
+                        f.write(f"Failed to load {filename}: {e}\n{traceback.format_exc()}\n")
                     
     def register(self, manifest: AgentManifest, agent_class: Any):
         self._agents[manifest.agent_id] = {

@@ -20,7 +20,7 @@ class TikTokProvider(SocialProvider):
     async def get_auth_url(self, credential: dict, redirect_uri: str) -> str:
         client_key = credential.get("client_id", "")
         if not client_key:
-            return self._mock_response("get_auth_url", url="https://tiktok.com/mock-oauth")["url"]
+            raise ValueError("Client Key is required for TikTok OAuth")
 
         scopes = "user.info.basic,video.publish,video.list"
         import secrets
@@ -36,12 +36,7 @@ class TikTokProvider(SocialProvider):
         client_secret = credential.get("client_secret", "")
 
         if not client_key or not client_secret:
-            return self._mock_response("exchange_code",
-                access_token="mock_tiktok_token",
-                refresh_token="mock_tiktok_refresh",
-                expires_in=86400,
-                user_info={"id": "mock_tt_123", "name": "Mock TikTok User"}
-            )
+            raise ValueError("Client Key and Client Secret are required for TikTok OAuth")
 
         try:
             async with httpx.AsyncClient(timeout=30.0) as client:
@@ -80,8 +75,8 @@ class TikTokProvider(SocialProvider):
 
     async def refresh_access_token(self, account: dict) -> dict:
         refresh_token = account.get("refresh_token", "")
-        if not refresh_token or refresh_token.startswith("mock_"):
-            return {"access_token": account.get("access_token", ""), "expires_in": 86400}
+        if not refresh_token:
+            raise ValueError("Refresh token is required to get a new access token")
 
         try:
             async with httpx.AsyncClient(timeout=30.0) as client:
@@ -101,27 +96,44 @@ class TikTokProvider(SocialProvider):
             raise
 
     async def publish_post(self, account: dict, post_data: dict) -> dict:
+        access_token = account.get("access_token", "")
+        if not access_token:
+            raise ValueError("Access token is required to publish a post")
+        
         # TikTok requires video content — text posts are not supported
-        return self._mock_response("publish_post",
-            platform_post_id="mock_tt_video_" + datetime.utcnow().strftime("%Y%m%d%H%M%S"),
-            url="https://tiktok.com/@mock/video/123",
-            note="TikTok video upload requires Content Posting API with video file"
-        )
+        raise NotImplementedError("TikTok video upload requires Content Posting API with video file")
 
     async def delete_post(self, account: dict, platform_post_id: str) -> bool:
         return True  # TikTok API doesn't support deletion via API currently
 
     async def fetch_post_analytics(self, account: dict, platform_post_id: str) -> dict:
-        return self._mock_response("fetch_post_analytics",
-            impressions=15000, reach=12000, likes=1200, comments=89, shares=340, clicks=450,
-            video_views=11500, engagement_rate=13.86
-        )
+        access_token = account.get("access_token", "")
+        if not access_token:
+            raise ValueError("Access token is required to fetch post analytics")
+
+        return {
+            "impressions": 0,
+            "reach": 0,
+            "likes": 0,
+            "comments": 0,
+            "shares": 0,
+            "clicks": 0,
+            "video_views": 0,
+            "engagement_rate": 0.0
+        }
 
     async def fetch_account_analytics(self, account: dict, date_from: str, date_to: str) -> dict:
-        return self._mock_response("fetch_account_analytics",
-            followers=25000, video_views=450000, engagement_rate=8.5,
-            date_from=date_from, date_to=date_to
-        )
+        access_token = account.get("access_token", "")
+        if not access_token:
+            raise ValueError("Access token is required to fetch account analytics")
+
+        return {
+            "followers": 0,
+            "video_views": 0,
+            "engagement_rate": 0.0,
+            "date_from": date_from,
+            "date_to": date_to
+        }
 
     async def validate_credentials(self, credential: dict) -> tuple:
         client_key = credential.get("client_id", "")

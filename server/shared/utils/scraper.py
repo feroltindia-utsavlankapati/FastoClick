@@ -8,28 +8,7 @@ from shared.config import get_settings
 logger = logging.getLogger(__name__)
 settings = get_settings()
 
-MOCK_COMPANY_DETAILS = {
-    "company_overview": "FastoClick is an innovative digital marketing and customer engagement ecosystem designed to help brands scale rapidly through high-conversion campaigns, advanced analytics, and automated multi-channel touchpoints.",
-    "services": [
-        "Growth Marketing Strategy",
-        "Multi-Channel Campaign Automation",
-        "Interactive Landing Page Design",
-        "Advanced Customer Segmentation",
-        "Analytics and Performance Insights"
-    ],
-    "products": [
-        "FastoClick Engine: Core automation and strategy execution suite",
-        "FastoClick Analytics: Premium real-time analytics dashboard"
-    ],
-    "target_audience": "Mid-to-enterprise level e-commerce brands, digital SaaS providers, and fast-growing agencies looking to automate customer acquisition.",
-    "branding": "Modern, energetic, results-driven, highly professional, with an authoritative yet conversational tone.",
-    "industry": "MarTech / B2B SaaS / Digital Marketing Automation",
-    "social_links": [
-        "https://linkedin.com/company/fastoclick",
-        "https://twitter.com/fastoclick"
-    ],
-    "contact_details": "support@fastoclick.com | +1 (800) 555-0199"
-}
+
 
 async def scrape_website(url: str) -> str:
     """Scrapes raw visible text from a website url."""
@@ -88,8 +67,7 @@ async def scrape_website(url: str) -> str:
 async def extract_company_details(scraped_text: str) -> Dict[str, Any]:
     """Uses OpenRouter/LLM to extract structured company information in JSON format from scraped text."""
     if not settings.OPENROUTER_API_KEY:
-        logger.warning("OPENROUTER_API_KEY is not set. Returning mock company details.")
-        return MOCK_COMPANY_DETAILS
+        raise ValueError("OPENROUTER_API_KEY is missing. Please configure your API key in the settings to enable AI scraping.")
 
     prompt = (
         "Analyze the following website copy of a company and extract structured business intelligence details. "
@@ -151,8 +129,7 @@ async def extract_company_details(scraped_text: str) -> Dict[str, Any]:
             
     except Exception as e:
         logger.error(f"Error extracting company details via LLM: {str(e)}")
-        # Fallback to premium mock details so operation never fails completely
-        return MOCK_COMPANY_DETAILS
+        raise RuntimeError(f"AI Extraction failed. Please verify your OpenRouter API key and try again. Error: {str(e)}")
 
 async def run_scraper_pipeline(tenant_id: str, url: str) -> Dict[str, Any]:
     """Runs the full scraping and extraction pipeline, returning structured details."""
@@ -164,4 +141,4 @@ async def run_scraper_pipeline(tenant_id: str, url: str) -> Dict[str, Any]:
         return details
     except Exception as e:
         logger.error(f"Failed in run_scraper_pipeline: {str(e)}")
-        return MOCK_COMPANY_DETAILS
+        raise

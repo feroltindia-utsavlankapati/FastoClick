@@ -20,7 +20,7 @@ class TwitterProvider(SocialProvider):
     async def get_auth_url(self, credential: dict, redirect_uri: str) -> str:
         client_id = credential.get("client_id", "")
         if not client_id:
-            return self._mock_response("get_auth_url", url="https://twitter.com/mock-oauth")["url"]
+            raise ValueError("Client ID is required for Twitter OAuth")
 
         scopes = "tweet.read tweet.write users.read offline.access"
         import secrets
@@ -40,12 +40,7 @@ class TwitterProvider(SocialProvider):
         client_secret = credential.get("client_secret", "")
 
         if not client_id or not client_secret:
-            return self._mock_response("exchange_code",
-                access_token="mock_twitter_token_abc123",
-                refresh_token="mock_twitter_refresh_abc123",
-                expires_in=7200,
-                user_info={"id": "mock_tw_123", "name": "Mock Twitter User", "username": "@mockuser"}
-            )
+            raise ValueError("Client ID and Client Secret are required for Twitter OAuth")
 
         try:
             async with httpx.AsyncClient(timeout=30.0) as client:
@@ -84,8 +79,8 @@ class TwitterProvider(SocialProvider):
 
     async def refresh_access_token(self, account: dict) -> dict:
         refresh_token = account.get("refresh_token", "")
-        if not refresh_token or refresh_token.startswith("mock_"):
-            return {"access_token": account.get("access_token", ""), "expires_in": 7200}
+        if not refresh_token:
+            raise ValueError("Refresh token is required to get a new access token")
 
         try:
             async with httpx.AsyncClient(timeout=30.0) as client:
@@ -106,11 +101,8 @@ class TwitterProvider(SocialProvider):
 
     async def publish_post(self, account: dict, post_data: dict) -> dict:
         access_token = account.get("access_token", "")
-        if not access_token or access_token.startswith("mock_"):
-            return self._mock_response("publish_post",
-                platform_post_id="mock_tweet_" + datetime.utcnow().strftime("%Y%m%d%H%M%S"),
-                url="https://twitter.com/mock/status/123"
-            )
+        if not access_token:
+            raise ValueError("Access token is required to publish a post")
 
         try:
             async with httpx.AsyncClient(timeout=60.0) as client:
@@ -169,8 +161,8 @@ class TwitterProvider(SocialProvider):
 
     async def delete_post(self, account: dict, platform_post_id: str) -> bool:
         access_token = account.get("access_token", "")
-        if not access_token or access_token.startswith("mock_"):
-            return True
+        if not access_token:
+            raise ValueError("Access token is required to delete a post")
         try:
             async with httpx.AsyncClient(timeout=30.0) as client:
                 resp = await client.delete(f"{TWITTER_API_BASE}/tweets/{platform_post_id}",
@@ -183,11 +175,8 @@ class TwitterProvider(SocialProvider):
 
     async def fetch_post_analytics(self, account: dict, platform_post_id: str) -> dict:
         access_token = account.get("access_token", "")
-        if not access_token or access_token.startswith("mock_"):
-            return self._mock_response("fetch_post_analytics",
-                impressions=890, reach=720, likes=45, comments=8, shares=15, clicks=8,
-                engagement_rate=8.54
-            )
+        if not access_token:
+            raise ValueError("Access token is required to fetch post analytics")
 
         try:
             async with httpx.AsyncClient(timeout=30.0) as client:
@@ -224,10 +213,36 @@ class TwitterProvider(SocialProvider):
             return {}
 
     async def fetch_account_analytics(self, account: dict, date_from: str, date_to: str) -> dict:
-        return self._mock_response("fetch_account_analytics",
-            followers=3200, impressions=28000, engagement_rate=2.8,
-            date_from=date_from, date_to=date_to
-        )
+        access_token = account.get("access_token", "")
+        if not access_token:
+            raise ValueError("Access token is required to fetch account analytics")
+
+        try:
+            async with httpx.AsyncClient(timeout=30.0) as client:
+                resp = await client.get(f"{TWITTER_API_BASE}/users/me",
+                    headers={"Authorization": f"Bearer {access_token}"},
+                    params={"user.fields": "public_metrics"}
+                )
+                resp.raise_for_status()
+                data = resp.json().get("data", {})
+                metrics = data.get("public_metrics", {})
+
+                followers = metrics.get("followers_count", 0)
+                following = metrics.get("following_count", 0)
+                tweet_count = metrics.get("tweet_count", 0)
+
+                return {
+                    "followers": followers,
+                    "following": following,
+                    "tweet_count": tweet_count,
+                    "impressions": 0,
+                    "engagement_rate": 0.0,
+                    "date_from": date_from,
+                    "date_to": date_to
+                }
+        except Exception as e:
+            logger.error(f"Twitter fetch_account_analytics failed: {e}")
+            return {}
 
     async def validate_credentials(self, credential: dict) -> tuple:
         client_id = credential.get("client_id", "")

@@ -20,7 +20,7 @@ class PinterestProvider(SocialProvider):
     async def get_auth_url(self, credential: dict, redirect_uri: str) -> str:
         client_id = credential.get("client_id", "")
         if not client_id:
-            return self._mock_response("get_auth_url", url="https://pinterest.com/mock-oauth")["url"]
+            raise ValueError("Client ID is required for Pinterest OAuth")
 
         scopes = "boards:read,boards:write,pins:read,pins:write,user_accounts:read"
         return (
@@ -34,12 +34,7 @@ class PinterestProvider(SocialProvider):
         client_secret = credential.get("client_secret", "")
 
         if not client_id or not client_secret:
-            return self._mock_response("exchange_code",
-                access_token="mock_pinterest_token",
-                refresh_token="mock_pinterest_refresh",
-                expires_in=2592000,
-                user_info={"id": "mock_pin_123", "name": "Mock Pinterest User"}
-            )
+            raise ValueError("Client ID and Client Secret are required for Pinterest OAuth")
 
         try:
             async with httpx.AsyncClient(timeout=30.0) as client:
@@ -74,8 +69,8 @@ class PinterestProvider(SocialProvider):
 
     async def refresh_access_token(self, account: dict) -> dict:
         refresh_token = account.get("refresh_token", "")
-        if not refresh_token or refresh_token.startswith("mock_"):
-            return {"access_token": account.get("access_token", ""), "expires_in": 2592000}
+        if not refresh_token:
+            raise ValueError("Refresh token is required to get a new access token")
 
         try:
             async with httpx.AsyncClient(timeout=30.0) as client:
@@ -96,11 +91,8 @@ class PinterestProvider(SocialProvider):
 
     async def publish_post(self, account: dict, post_data: dict) -> dict:
         access_token = account.get("access_token", "")
-        if not access_token or access_token.startswith("mock_"):
-            return self._mock_response("publish_post",
-                platform_post_id="mock_pin_" + datetime.utcnow().strftime("%Y%m%d%H%M%S"),
-                url="https://pinterest.com/pin/mock123"
-            )
+        if not access_token:
+            raise ValueError("Access token is required to publish a post")
 
         try:
             async with httpx.AsyncClient(timeout=60.0) as client:
@@ -131,8 +123,8 @@ class PinterestProvider(SocialProvider):
 
     async def delete_post(self, account: dict, platform_post_id: str) -> bool:
         access_token = account.get("access_token", "")
-        if not access_token or access_token.startswith("mock_"):
-            return True
+        if not access_token:
+            raise ValueError("Access token is required to delete a post")
         try:
             async with httpx.AsyncClient(timeout=30.0) as client:
                 resp = await client.delete(f"{PINTEREST_API_BASE}/pins/{platform_post_id}",
@@ -144,16 +136,32 @@ class PinterestProvider(SocialProvider):
             return False
 
     async def fetch_post_analytics(self, account: dict, platform_post_id: str) -> dict:
-        return self._mock_response("fetch_post_analytics",
-            impressions=3400, reach=2800, likes=156, comments=22, shares=89, clicks=110,
-            engagement_rate=11.09
-        )
+        access_token = account.get("access_token", "")
+        if not access_token:
+            raise ValueError("Access token is required to fetch post analytics")
+
+        return {
+            "impressions": 0,
+            "reach": 0,
+            "likes": 0,
+            "comments": 0,
+            "shares": 0,
+            "clicks": 0,
+            "engagement_rate": 0.0
+        }
 
     async def fetch_account_analytics(self, account: dict, date_from: str, date_to: str) -> dict:
-        return self._mock_response("fetch_account_analytics",
-            followers=4200, impressions=38000, engagement_rate=5.6,
-            date_from=date_from, date_to=date_to
-        )
+        access_token = account.get("access_token", "")
+        if not access_token:
+            raise ValueError("Access token is required to fetch account analytics")
+
+        return {
+            "followers": 0,
+            "impressions": 0,
+            "engagement_rate": 0.0,
+            "date_from": date_from,
+            "date_to": date_to
+        }
 
     async def validate_credentials(self, credential: dict) -> tuple:
         client_id = credential.get("client_id", "")

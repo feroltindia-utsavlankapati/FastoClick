@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import TypedDict, List, Dict, Any, Optional
 from langgraph.graph import StateGraph, END
 from pydantic import BaseModel
+from shared.utils.memory_client import MemoryClient
 
 class AgentTask(BaseModel):
     description: str
@@ -34,8 +35,8 @@ class BaseMarketingAgent(ABC):
     def __init__(self, manifest: Any, tenant_id: str):
         self.manifest = manifest
         self.tenant_id = tenant_id
-        # In a real implementation, you would initialize memory, governance (CGH), LLM clients here.
-        # self.memory = MemoryClient(tenant_id)
+        # Initialize dual memory module (Vector + Graph RAG)
+        self.memory = MemoryClient(tenant_id)
         # self.llm = LiteLLMClient(...)
         self.graph = self._build_graph()
         
@@ -58,8 +59,12 @@ class BaseMarketingAgent(ABC):
         return g.compile()
         
     async def _load_context(self, state: AgentState) -> AgentState:
-        # Mocking context loading
-        context = AgentContext(summary="Business Context loaded.")
+        # Load real context using the dual memory module
+        task_desc = state["task"].description
+        retrieved_context = await self.memory.retrieve_context(task_desc)
+        
+        summary = f"Task: {task_desc}\n\nHistorical Memory Context:\n{retrieved_context}"
+        context = AgentContext(summary=summary)
         state["context"] = context
         return state
         

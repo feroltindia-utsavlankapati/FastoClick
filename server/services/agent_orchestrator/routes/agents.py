@@ -10,6 +10,10 @@ async def list_agents():
     """List all registered agents."""
     return agent_registry.list_agents()
 
+@router.get("/debug_agents")
+async def debug_agents():
+    return {"size": len(agent_registry._agents), "keys": list(agent_registry._agents.keys())}
+
 @router.post("/agents/{agent_id}/execute")
 async def execute_agent(
     agent_id: str,

@@ -51,6 +51,8 @@ async def background_scrape_and_update(tenant_id: str, project_id: Optional[str]
             stmt = select(CompanyContext).where(CompanyContext.tenant_id == tenant_id)
             if project_id:
                 stmt = stmt.where(CompanyContext.project_id == project_id)
+            else:
+                stmt = stmt.where((CompanyContext.project_id.is_(None)) | (CompanyContext.project_id == ""))
             result = await session.execute(stmt)
             context = result.scalars().first()
             if not context:
@@ -84,6 +86,8 @@ async def get_company_context(tenant_id: str, project_id: Optional[str] = None):
         stmt = select(CompanyContext).where(CompanyContext.tenant_id == tenant_id)
         if project_id:
             stmt = stmt.where(CompanyContext.project_id == project_id)
+        else:
+            stmt = stmt.where((CompanyContext.project_id.is_(None)) | (CompanyContext.project_id == ""))
         result = await session.execute(stmt)
         context = result.scalars().first()
         if not context:
@@ -108,6 +112,8 @@ async def update_company_context(data: CompanyContextUpdate, background_tasks: B
             stmt = select(CompanyContext).where(CompanyContext.tenant_id == data.tenant_id)
             if data.project_id:
                 stmt = stmt.where(CompanyContext.project_id == data.project_id)
+            else:
+                stmt = stmt.where((CompanyContext.project_id.is_(None)) | (CompanyContext.project_id == ""))
             result = await session.execute(stmt)
             context = result.scalars().first()
             
@@ -159,6 +165,8 @@ async def upload_company_document(
             stmt = select(CompanyContext).where(CompanyContext.tenant_id == tenant_id)
             if project_id:
                 stmt = stmt.where(CompanyContext.project_id == project_id)
+            else:
+                stmt = stmt.where((CompanyContext.project_id.is_(None)) | (CompanyContext.project_id == ""))
             result = await session.execute(stmt)
             context = result.scalars().first()
             

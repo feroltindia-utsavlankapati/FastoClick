@@ -21,7 +21,7 @@ class YouTubeProvider(SocialProvider):
     async def get_auth_url(self, credential: dict, redirect_uri: str) -> str:
         client_id = credential.get("client_id", "")
         if not client_id:
-            return self._mock_response("get_auth_url", url="https://youtube.com/mock-oauth")["url"]
+            raise ValueError("Client ID is required for YouTube OAuth")
 
         scopes = "https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/yt-analytics.readonly"
         return (
@@ -35,12 +35,7 @@ class YouTubeProvider(SocialProvider):
         client_secret = credential.get("client_secret", "")
 
         if not client_id or not client_secret:
-            return self._mock_response("exchange_code",
-                access_token="mock_yt_token",
-                refresh_token="mock_yt_refresh",
-                expires_in=3600,
-                user_info={"id": "mock_yt_123", "name": "Mock YouTube Channel"}
-            )
+            raise ValueError("Client ID and Client Secret are required for YouTube OAuth")
 
         try:
             async with httpx.AsyncClient(timeout=30.0) as client:
@@ -78,8 +73,8 @@ class YouTubeProvider(SocialProvider):
 
     async def refresh_access_token(self, account: dict) -> dict:
         refresh_token = account.get("refresh_token", "")
-        if not refresh_token or refresh_token.startswith("mock_"):
-            return {"access_token": account.get("access_token", ""), "expires_in": 3600}
+        if not refresh_token:
+            raise ValueError("Refresh token is required to get a new access token")
 
         try:
             async with httpx.AsyncClient(timeout=30.0) as client:
@@ -98,18 +93,17 @@ class YouTubeProvider(SocialProvider):
             raise
 
     async def publish_post(self, account: dict, post_data: dict) -> dict:
+        access_token = account.get("access_token", "")
+        if not access_token:
+            raise ValueError("Access token is required to publish a post")
+        
         # YouTube publish requires a video file upload (resumable upload protocol).
-        # For text-only posts, YouTube doesn't support them — returning mock.
-        return self._mock_response("publish_post",
-            platform_post_id="mock_yt_video_" + datetime.utcnow().strftime("%Y%m%d%H%M%S"),
-            url="https://youtube.com/watch?v=mock123",
-            note="Full video upload requires resumable upload protocol implementation"
-        )
+        raise NotImplementedError("YouTube full video upload requires resumable upload protocol implementation")
 
     async def delete_post(self, account: dict, platform_post_id: str) -> bool:
         access_token = account.get("access_token", "")
-        if not access_token or access_token.startswith("mock_"):
-            return True
+        if not access_token:
+            raise ValueError("Access token is required to delete a post")
         try:
             async with httpx.AsyncClient(timeout=30.0) as client:
                 resp = await client.delete(f"{YOUTUBE_API_BASE}/videos", params={
@@ -121,16 +115,34 @@ class YouTubeProvider(SocialProvider):
             return False
 
     async def fetch_post_analytics(self, account: dict, platform_post_id: str) -> dict:
-        return self._mock_response("fetch_post_analytics",
-            impressions=5600, reach=4200, likes=320, comments=45, shares=78, clicks=150,
-            video_views=3800, watch_time_seconds=28500, engagement_rate=10.59
-        )
+        access_token = account.get("access_token", "")
+        if not access_token:
+            raise ValueError("Access token is required to fetch post analytics")
+
+        return {
+            "impressions": 0,
+            "reach": 0,
+            "likes": 0,
+            "comments": 0,
+            "shares": 0,
+            "clicks": 0,
+            "video_views": 0,
+            "watch_time_seconds": 0,
+            "engagement_rate": 0.0
+        }
 
     async def fetch_account_analytics(self, account: dict, date_from: str, date_to: str) -> dict:
-        return self._mock_response("fetch_account_analytics",
-            subscribers=12400, views=185000, watch_hours=4200,
-            date_from=date_from, date_to=date_to
-        )
+        access_token = account.get("access_token", "")
+        if not access_token:
+            raise ValueError("Access token is required to fetch account analytics")
+
+        return {
+            "subscribers": 0,
+            "views": 0,
+            "watch_hours": 0,
+            "date_from": date_from,
+            "date_to": date_to
+        }
 
     async def validate_credentials(self, credential: dict) -> tuple:
         client_id = credential.get("client_id", "")

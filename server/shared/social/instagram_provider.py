@@ -42,7 +42,7 @@ class InstagramProvider(SocialProvider):
     async def get_auth_url(self, credential: dict, redirect_uri: str) -> str:
         app_id = credential.get("app_id") or credential.get("client_id", "")
         if not app_id:
-            return self._mock_response("get_auth_url", url="https://instagram.com/mock-oauth")["url"]
+            raise ValueError("App ID / Client ID is required for Instagram OAuth")
 
         config_id = credential.get("additional_config", {}).get("config_id", "")
         if config_id:
@@ -65,20 +65,7 @@ class InstagramProvider(SocialProvider):
         client_secret = credential.get("client_secret", "")
 
         if not app_id or not client_secret:
-            return self._mock_response("exchange_code",
-                access_token="mock_instagram_token_abc123",
-                refresh_token="",
-                expires_in=5184000,
-                user_info={"id": "mock_insta_user_123", "name": "Mock Instagram User"},
-                pages=[
-                    {
-                        "id": "mock_insta_account_123",
-                        "name": "Mock Instagram Business",
-                        "access_token": "mock_instagram_token_abc123",
-                        "picture": ""
-                    }
-                ]
-            )
+            raise ValueError("App ID and Client Secret are required for Instagram OAuth")
 
         try:
             async with httpx.AsyncClient(timeout=30.0) as client:
@@ -231,11 +218,8 @@ class InstagramProvider(SocialProvider):
 
     async def publish_post(self, account: dict, post_data: dict) -> dict:
         access_token = account.get("access_token", "")
-        if not access_token or access_token.startswith("mock_"):
-            return self._mock_response("publish_post",
-                platform_post_id="mock_insta_" + datetime.utcnow().strftime("%Y%m%d%H%M%S"),
-                url="https://instagram.com/mock-post"
-            )
+        if not access_token:
+            raise ValueError("Access token is required to publish a post")
 
         try:
             async with httpx.AsyncClient(timeout=120.0) as client:
@@ -450,10 +434,34 @@ class InstagramProvider(SocialProvider):
         }
 
     async def fetch_account_analytics(self, account: dict, date_from: str, date_to: str) -> dict:
-        return self._mock_response("fetch_account_analytics",
-            followers=8750, impressions=95000, engagement_rate=4.8,
-            date_from=date_from, date_to=date_to
-        )
+        access_token = account.get("access_token", "")
+        if not access_token:
+            raise ValueError("Access token is required to fetch account analytics")
+
+        insta_account_id = account.get("platform_user_id", "me")
+        followers = 0
+        try:
+            async with httpx.AsyncClient(timeout=30.0) as client:
+                resp = await client.get(
+                    f"{GRAPH_API_BASE}/{insta_account_id}",
+                    params={
+                        "fields": "followers_count",
+                        "access_token": access_token
+                    }
+                )
+                if resp.status_code == 200:
+                    data = resp.json()
+                    followers = data.get("followers_count", 0)
+        except Exception as e:
+            logger.error(f"Instagram fetch_account_analytics failed: {e}")
+
+        return {
+            "followers": followers,
+            "impressions": 0,
+            "engagement_rate": 0.0,
+            "date_from": date_from,
+            "date_to": date_to
+        }
 
     async def validate_credentials(self, credential: dict) -> tuple:
         app_id = credential.get("app_id") or credential.get("client_id", "")
